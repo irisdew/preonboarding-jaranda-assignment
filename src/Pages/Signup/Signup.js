@@ -1,9 +1,11 @@
-import React, { useRef, useState } from 'react'
+import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
 import PasswordPolicy from 'Components/PasswordPolicy/PasswordPolicy'
 import Address from 'Components/Address/Address'
+import CardPopup from 'Pages/Signup/CardPopup'
 // import Button from 'Components/Button/Button'
 import { useInput } from 'Utils/useInput'
+import { usePopup } from 'Pages/Signup/usePopup'
 
 export default function Signup() {
   const [pass, , onChangePass] = useInput('')
@@ -15,12 +17,18 @@ export default function Signup() {
     eight: false,
   })
 
+  const [cardNum, setCardNum] = useState('카드 번호')
+  //카드 입력 모달 창
+  const [showPopup, setPopup, openPopup, closePopup] = usePopup()
+
+
   //비밀번호와 비밀번호확인이 일치하지 않을 때
   const CheckPassWord = () => {
     if (pass !== passConfirm) {
       console.log('비밀번호가 일치하지 않습니다')
     }
   }
+
 
   const CheckPasswordPolicy = (password) => {
     console.log('password policy: ', password)
@@ -50,6 +58,10 @@ export default function Signup() {
     }
 
     setPassPolicy(currentPassword)
+
+  const onCardSubmit = (cardData, close) => {
+    setCardNum(cardData)
+    setPopup(close)
   }
 
   return (
@@ -88,13 +100,18 @@ export default function Signup() {
           </li>
           <li>
             {/* <InputTitle>주소</InputTitle> */}
-            <Address />
+            {/* <Address /> */}
           </li>
           <li>
             <InputTitle>결제 정보</InputTitle>
             <FlexDiv>
-              <Input type="text" placeholder="카드 번호" disabled />
-              <SmallButton>카드 입력하기</SmallButton>
+              <Input
+                type="text"
+                value={cardNum}
+                placeholder="{cardNum}"
+                disabled
+              />
+              <SmallButton onClick={openPopup}>카드 입력하기</SmallButton>
             </FlexDiv>
           </li>
           <li>
@@ -107,6 +124,12 @@ export default function Signup() {
           <LongButton>가입하기</LongButton>
         </ul>
       </form>
+      {showPopup ? (
+        <>
+          <CardPopup onSubmit={onCardSubmit} />
+          <Background onClick={closePopup} />
+        </>
+      ) : null}
     </FormSection>
   )
 }
@@ -121,7 +144,7 @@ const FormTitle = styled.div`
   margin: 10rem 0 3rem;
 `
 
-const InputTitle = styled.div`
+export const InputTitle = styled.div`
   font-size: 1.6rem;
   font-weight: 600;
   margin: 1rem 0;
@@ -157,14 +180,24 @@ const Button1 = styled.button`
   height: 4.5rem;
   background-color: #0085fd;
   color: white;
+  cursor: pointer;
 `
 
-const LongButton = styled(Button1)`
+export const LongButton = styled(Button1)`
   width: 100%;
-  margin: 3rem 0;
+  margin-top: 3rem;
 `
 
 export const SmallButton = styled(Button1)`
   width: 30rem;
   margin-left: 1rem;
+`
+const Background = styled.div`
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.15);
+  z-index: 1;
 `
