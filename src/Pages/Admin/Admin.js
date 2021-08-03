@@ -1,174 +1,56 @@
-import { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import React, { useState, useEffect, useRef } from 'react'
+import styled from 'styled-components/macro'
 import UserTable from './UserTable/UserTable'
 
-const usersData = [
-  {
-    id: 0,
-    email: 'admin@jaranda.com',
-    password: 'admin1234',
-    name: 'admin',
-    address: {
-      postcode: '04213',
-      address: '서울특별시 마포구 마포대로 122',
-      address_detail: '14층',
-    },
-    card_number: '0000-0000-0000-0000',
-    age: 0,
-    auth: 'admin',
-    access: ['/admin'],
-  },
-  {
-    id: 1,
-    email: 'kimteacher@jaranda.com',
-    password: 'kimteacher1234',
-    name: '김선생',
-    address: {
-      postcode: '04413',
-      address: '서울특별시 관악구 관악로 1',
-      address_detail: '302호',
-    },
-    card_number: '2342-7575-2347-9201',
-    age: 30,
-    auth: 'teacher',
-    access: ['/teacher'],
-  },
-  {
-    id: 2,
-    email: 'leeteacher@jaranda.com',
-    password: 'leeteacher1234',
-    name: '이선생',
-    address: {
-      postcode: '05213',
-      address: '서울특별시 송파구 양재대로 1239',
-      address_detail: '방이동, 한국체육대학교',
-    },
-    card_number: '5678-5231-2345-9973',
-    age: 25,
-    auth: 'teacher',
-    access: ['/teacher'],
-  },
-  {
-    id: 3,
-    email: 'parkteacher@jaranda.com',
-    password: 'parkteacher1234',
-    name: '박선생',
-    address: {
-      postcode: '05213',
-      address: '서울특별시 동대문구 서울시립대로',
-      address_detail: '163',
-    },
-    card_number: '7345-9485-0023-4212',
-    age: 20,
-    auth: 'teacher',
-    access: ['/teacher'],
-  },
-  {
-    id: 4,
-    email: 'kimstudent@jaranda.com',
-    password: 'kimstudent1234',
-    name: '김학생',
-    address: {
-      postcode: '12457',
-      address: '경기도 가평군 청평면 은행나무길 8-8',
-      address_detail: '101-301',
-    },
-    card_number: '2342-7235-2347-9201',
-    age: 5,
-    auth: 'student',
-    access: ['/student'],
-  },
-  {
-    id: 5,
-    email: 'leestudent@jaranda.com',
-    password: 'leestudent1234',
-    name: '이학생',
-    address: {
-      postcode: '25922',
-      address: '강원도 삼척시 당저동1길 21',
-      address_detail: 'A동 1층',
-    },
-    card_number: '5678-8342-2345-9973',
-    age: 10,
-    auth: 'student',
-    access: ['/student'],
-  },
-  {
-    id: 6,
-    email: 'parkstudent@jaranda.com',
-    password: 'parkstudent1234',
-    name: '박학생',
-    address: {
-      postcode: '13802',
-      address: '경기도 과천시 관문로 143',
-      address_detail: '중앙동, 래미안에코팰리스아파트',
-    },
-    card_number: '7345-9485-1122-4212',
-    age: 15,
-    auth: 'student',
-    access: [],
-  },
-  {
-    id: 7,
-    email: 'kimparent@jaranda.com',
-    password: 'kimparent1234',
-    name: '김부모',
-    address: {
-      postcode: '14723',
-      address: '경기도 부천시 경인로117번길 27',
-      address_detail: '송내동, 부천중동역2차푸르지오B단지',
-    },
-    card_number: '3423-7575-2347-9201',
-    age: 30,
-    auth: 'parent',
-    access: ['/parent'],
-  },
-  {
-    id: 8,
-    email: 'leeparent@jaranda.com',
-    password: 'leeparent1234',
-    name: '이부모',
-    address: {
-      postcode: '10323',
-      address: '경기도 고양시 일산동구 위시티4로 45',
-      address_detail: '위시티일산자이4단지아파트',
-    },
-    card_number: '7234-5231-2345-9973',
-    age: 35,
-    auth: 'parent',
-    access: ['/parent'],
-  },
-  {
-    id: 9,
-    email: 'parkparent@jaranda.com',
-    password: 'parkparent1234',
-    name: '박부모',
-    address: {
-      postcode: '15628',
-      address: '경기도 안산시 상록구 항호1길 14',
-      address_detail: '118동',
-    },
-    card_number: '0344-9485-0023-4212',
-    age: 40,
-    auth: 'parent',
-    access: ['/parent'],
-  },
-]
-
-localStorage.setItem('usersData', JSON.stringify(usersData))
+import Search from 'Components/Admin/Search'
 
 export default function Admin() {
-  const [usersData, setUsersData] = useState([])
+  const [userInfo, setUserInfo] = useState([])
+  const searchRef = useRef()
 
   useEffect(() => {
-    const usersData = JSON.parse(localStorage.getItem('usersData'))
-
-    setUsersData(usersData)
+    fetchData()
   }, [])
+
+  const fetchData = () => {
+    fetch('http://localhost:3000/data/users.json')
+      .then((res) => res.json())
+      .then((res) => {
+        setUserInfo(res)
+      })
+  }
+
+  const filterUserInfo = (selected) => {
+    let inputValue = searchRef.current.value
+    let filtering = ''
+    let dataFilter = []
+    fetchData()
+
+    // if (e.target.nextElementSibling) {
+    if (inputValue.length > 0 && selected !== '선택') {
+      // const inputValue = e.target.nextElementSibling.value
+
+      if (selected === '아이디') filtering = 'email'
+      if (selected === '이름') filtering = 'name'
+      if (selected === '나이') {
+        filtering = 'age'
+        dataFilter = userInfo.filter(
+          (item) => String(item[filtering]).indexOf(inputValue) !== -1
+        )
+      } else {
+        dataFilter = userInfo.filter(
+          (item) => item[filtering].indexOf(inputValue) !== -1
+        )
+      }
+      console.log('검색결과', dataFilter)
+      setUserInfo(dataFilter)
+    }
+  }
 
   return (
     <div>
-      <UserTable usersData={usersData} setUsersData={setUsersData} />
+      <Search filterUserInfo={filterUserInfo} searchRef={searchRef} />
+      <UserTable usersData={userInfo} setUsersData={setUserInfo} />
       <UserAddButtonWrapper>
         <UserAddButton>사용자 추가</UserAddButton>
       </UserAddButtonWrapper>

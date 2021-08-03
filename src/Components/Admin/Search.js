@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components/macro'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faAngleDown } from '@fortawesome/free-solid-svg-icons'
 
-export default function Search() {
+export default function Search({ filterUserInfo, searchRef }) {
   const [selected, setSelected] = useState('선택')
   const [checkSelect, setCheckSelect] = useState(false)
 
   // 선택 버튼
   const selectBtn = () => {
-    if (checkSelect) {
-      setCheckSelect(false)
-    } else {
-      setCheckSelect(true)
-    }
+    setCheckSelect(!checkSelect)
+  }
+
+  // 아이디, 이름, 나이 선택
+  const selectValue = (e) => {
+    setCheckSelect(false)
+    setSelected(e.target.innerText)
   }
 
   return (
@@ -24,16 +26,16 @@ export default function Search() {
           <FontAwesomeIcon icon={faAngleDown} size="lg" color="#aac14f" />
         </DropBtn>
         <Menu checkSelect={checkSelect}>
-          <span>아이디</span>
-          <span>이름</span>
-          <span>나이</span>
+          <span onClick={selectValue}>아이디</span>
+          <span onClick={selectValue}>이름</span>
+          <span onClick={selectValue}>나이</span>
         </Menu>
       </Dropdown>
       <InputBox>
-        <InputBtn>
+        <InputBtn onClick={() => filterUserInfo(selected)}>
           <FontAwesomeIcon icon={faSearch} size="lg" />
         </InputBtn>
-        <input placeholder="검색..." />
+        <input placeholder="검색..." ref={searchRef} />
       </InputBox>
     </Container>
   )
@@ -80,6 +82,7 @@ const Menu = styled.div`
     margin-left: 1.4rem;
 
     &:hover {
+      cursor: pointer;
       color: #dd346c;
     }
   }
