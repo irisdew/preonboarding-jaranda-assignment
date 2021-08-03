@@ -15,10 +15,10 @@ const PolicyItem = ({ policy, content }) => {
 export default function PasswordPolicy({ passPolicy }) {
   return (
     <PolicyContainer>
-      <PolicyItem passPolicy={passPolicy.numeric} content="숫자" />
-      <PolicyItem passPolicy={passPolicy.special} content="특수문자" />
-      <PolicyItem passPolicy={passPolicy.alphabet} content="영문" />
-      <PolicyItem passPolicy={passPolicy.eight} content="8자리 이상" />
+      <PolicyItem policy={passPolicy.numeric} content="숫자" />
+      <PolicyItem policy={passPolicy.special} content="특수문자" />
+      <PolicyItem policy={passPolicy.alphabet} content="영문" />
+      <PolicyItem policy={passPolicy.eight} content="8자리 이상" />
     </PolicyContainer>
   )
 }
