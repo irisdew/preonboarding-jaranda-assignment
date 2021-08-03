@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
+import PasswordPolicy from 'Components/PasswordPolicy/PasswordPolicy'
 import Address from 'Components/Address/Address'
 import CardPopup from 'Pages/Signup/CardPopup'
 // import Button from 'Components/Button/Button'
@@ -9,9 +10,17 @@ import { usePopup } from 'Pages/Signup/usePopup'
 export default function Signup() {
   const [pass, , onChangePass] = useInput('')
   const [passConfirm, , onChangePassConfirm] = useInput('')
+  const [passPolicy, setPassPolicy] = useState({
+    numeric: false,
+    special: false,
+    alphabet: false,
+    eight: false,
+  })
+
   const [cardNum, setCardNum] = useState('카드 번호')
   //카드 입력 모달 창
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
+
 
   //비밀번호와 비밀번호확인이 일치하지 않을 때
   const CheckPassWord = () => {
@@ -19,6 +28,36 @@ export default function Signup() {
       console.log('비밀번호가 일치하지 않습니다')
     }
   }
+
+
+  const CheckPasswordPolicy = (password) => {
+    console.log('password policy: ', password)
+
+    const numeric = /[0-9]/g
+    const alphabet = /[a-z]/gi
+    const special = /[~!@#$%^&*()_+|<>?:{}]/g
+
+    const currentPassword = {}
+
+    if (numeric.test(password)) {
+      console.log('숫자')
+      currentPassword.numeric = true
+    }
+    if (special.test(password)) {
+      console.log('특수문자')
+      currentPassword.special = true
+      console.log(passPolicy)
+    }
+    if (alphabet.test(password)) {
+      currentPassword.alphabet = true
+      console.log('영문')
+    }
+    if (password.length >= 8) {
+      currentPassword.eight = true
+      console.log('8자리 이상')
+    }
+
+    setPassPolicy(currentPassword)
 
   const onCardSubmit = (cardData, close) => {
     setCardNum(cardData)
@@ -42,7 +81,9 @@ export default function Signup() {
               placeholder="비밀번호"
               value={pass}
               onChange={onChangePass}
+              onBlur={(e) => CheckPasswordPolicy(e.target.value)}
             />
+            <PasswordPolicy value={pass} passPolicy={passPolicy} />
             <Input
               type="password"
               placeholder="비밀번호 확인"
