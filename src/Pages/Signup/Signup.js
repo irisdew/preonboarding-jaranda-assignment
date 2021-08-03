@@ -16,7 +16,9 @@ export default function Signup() {
     alphabet: false,
     eight: false,
   })
-
+  const [post, setPost] = useInput('')
+  const [addr, setAddr] = useInput('')
+  const [extraAddr, setExtraAddr, onChangeExtraAddr] = useInput('')
   const [cardNum, setCardNum] = useState('카드 번호')
   //카드 입력 모달 창
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
@@ -99,7 +101,15 @@ export default function Signup() {
           </li>
           <li>
             {/* <InputTitle>주소</InputTitle> */}
-            {/* <Address /> */}
+            <Address
+              post={post}
+              setPost={setPost}
+              addr={addr}
+              setAddr={setAddr}
+              extraAddr={extraAddr}
+              setExtraAddr={setExtraAddr}
+              onChangeExtraAddr={onChangeExtraAddr}
+            />
           </li>
           <li>
             <InputTitle>결제 정보</InputTitle>
