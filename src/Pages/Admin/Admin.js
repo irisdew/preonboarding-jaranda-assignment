@@ -3,10 +3,15 @@ import styled from 'styled-components/macro'
 import UserTable from './UserTable/UserTable'
 
 import Search from 'Pages/Admin/Search/Search'
+import Pagination from 'Pages/Admin/Pagination/Pagination'
 
 export default function Admin() {
   const [userInfo, setUserInfo] = useState([])
   const [filterInfo, setFilterInfo] = useState([])
+  const [pagingData, setPagingData] = useState({
+    currentPage: 0,
+    fullPage: 0,
+  })
   const searchRef = useRef()
 
   useEffect(() => {
@@ -14,6 +19,7 @@ export default function Admin() {
       .then((res) => res.json())
       .then((res) => {
         setUserInfo(res)
+        setPagingData({ currentPage: 1, fullPage: Math.ceil(res.length / 4) })
       })
   }, [])
 
@@ -31,30 +37,36 @@ export default function Admin() {
       )
 
       console.log('검색결과', dataFilter)
+
       setFilterInfo(dataFilter)
+      setPagingData({
+        currentPage: 1,
+        fullPage: Math.ceil(dataFilter.length / 4),
+      })
     }
   }
 
   const refreshBtn = () => {
     setFilterInfo(userInfo)
+    setPagingData({
+      currentPage: 1,
+      fullPage: Math.ceil(userInfo.length / 4),
+    })
   }
 
   return (
-    <div>
+    <>
       <Search
         filterUserInfo={filterUserInfo}
         searchRef={searchRef}
         refreshBtn={refreshBtn}
       />
-      <UserTable
-        usersData={userInfo}
-        filterData={filterInfo}
-        setUsersData={setUserInfo}
-      />
+      <UserTable usersData={userInfo} filterData={filterInfo} />
       <UserAddButtonWrapper>
         <UserAddButton>사용자 추가</UserAddButton>
       </UserAddButtonWrapper>
-    </div>
+      <Pagination pagingData={pagingData} />
+    </>
   )
 }
 
