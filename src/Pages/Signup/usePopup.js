@@ -6,13 +6,11 @@ export const usePopup = () => {
   const openPopup = (event) => {
     event.preventDefault() //페이지의 새로고침 방지
     setPopup(true)
-    console.log('popup')
   }
 
   const closePopup = (event) => {
     event.preventDefault() //페이지의 새로고침 방지
     setPopup(false)
-    console.log('close')
   }
-  return [showPopup, openPopup, closePopup]
+  return [showPopup, setPopup, openPopup, closePopup]
 }

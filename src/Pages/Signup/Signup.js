@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
 import Address from 'Components/Address/Address'
 import CardPopup from 'Pages/Signup/CardPopup'
@@ -9,6 +9,10 @@ import { usePopup } from 'Pages/Signup/usePopup'
 export default function Signup() {
   const [pass, , onChangePass] = useInput('')
   const [passConfirm, , onChangePassConfirm] = useInput('')
+  const [cardNum, setCardNum] = useState('카드 번호')
+  //카드 입력 모달 창
+  const [showPopup, setPopup, openPopup, closePopup] = usePopup()
+
   //비밀번호와 비밀번호확인이 일치하지 않을 때
   const CheckPassWord = () => {
     if (pass !== passConfirm) {
@@ -16,8 +20,10 @@ export default function Signup() {
     }
   }
 
-  //카드 입력 모달 창
-  const [showPopup, openPopup, closePopup] = usePopup()
+  const onCardSubmit = (cardData, close) => {
+    setCardNum(cardData)
+    setPopup(close)
+  }
 
   return (
     <FormSection>
@@ -58,7 +64,12 @@ export default function Signup() {
           <li>
             <InputTitle>결제 정보</InputTitle>
             <FlexDiv>
-              <Input type="text" placeholder="카드 번호" disabled />
+              <Input
+                type="text"
+                value={cardNum}
+                placeholder="{cardNum}"
+                disabled
+              />
               <SmallButton onClick={openPopup}>카드 입력하기</SmallButton>
             </FlexDiv>
           </li>
@@ -74,7 +85,7 @@ export default function Signup() {
       </form>
       {showPopup ? (
         <>
-          <CardPopup />
+          <CardPopup onSubmit={onCardSubmit} />
           <Background onClick={closePopup} />
         </>
       ) : null}
