@@ -1,22 +1,10 @@
 import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
-
+import Address from 'Components/Address/Address'
 // import Button from 'Components/Button/Button'
+import { useInput } from 'Utils/useInput'
 
 export default function Signup() {
-  //input에 입력된 값을 읽고 설정할 수 있음
-  const useInput = (initialValue) => {
-    const [value, setValue] = useState(initialValue)
-    const onChange = (event) => {
-      const {
-        target: { value },
-      } = event
-
-      setValue(value)
-    }
-    return { value, onChange }
-  }
-
   //비밀번호와 비밀번호확인이 일치하지 않을 때
   const CheckPassWord = () => {
     if (pass.value !== passConfirm.value) {
@@ -24,8 +12,8 @@ export default function Signup() {
     }
   }
 
-  const pass = useInput('')
-  const passConfirm = useInput('')
+  const [pass, , onChangePass] = useInput('')
+  const [passConfirm, , onChangePassConfirm] = useInput('')
 
   return (
     <FormSection>
@@ -42,15 +30,15 @@ export default function Signup() {
             <Input
               type="password"
               placeholder="비밀번호"
-              value={pass.value}
-              onChange={pass.onChange}
+              value={pass}
+              onChange={onChangePass}
             />
             <Input
               type="password"
               placeholder="비밀번호 확인"
               onBlur={CheckPassWord}
-              value={passConfirm.value}
-              onChange={passConfirm.onChange}
+              value={passConfirm}
+              onChange={onChangePassConfirm}
             />
           </li>
           <li>
@@ -61,12 +49,7 @@ export default function Signup() {
           </li>
           <li>
             {/* <InputTitle>주소</InputTitle> */}
-            <FlexDiv>
-              <Input type="text" placeholder="우편번호" disabled />
-              <SmallButton>주소 검색하기</SmallButton>
-            </FlexDiv>
-            <Input type="text" placeholder="기본 주소" disabled />
-            <Input type="text" placeholder="상세 주소" />
+            <Address />
           </li>
           <li>
             <InputTitle>결제 정보</InputTitle>
@@ -105,16 +88,22 @@ const InputTitle = styled.div`
   margin: 1rem 0;
 `
 
-const FlexDiv = styled.div`
+export const FlexDiv = styled.div`
   display: flex;
 `
 
-const Input = styled.input`
+export const Input = styled.input`
   width: 100%;
   height: 4.5rem;
   border: 1px solid rgba(154, 154, 154, 0.5);
   padding: 0.5rem 1rem;
   margin-bottom: 1rem;
+
+  :hover {
+    color: #0085fd;
+    border: solid 1px #0085fd;
+    background-color: rgba(0, 133, 253, 0.1);
+  }
 `
 
 const Radio = styled.input`
@@ -136,7 +125,7 @@ const LongButton = styled(Button1)`
   margin: 3rem 0;
 `
 
-const SmallButton = styled(Button1)`
+export const SmallButton = styled(Button1)`
   width: 30rem;
   margin-left: 1rem;
 `
