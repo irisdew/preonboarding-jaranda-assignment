@@ -4,11 +4,15 @@ import { useInput } from 'Utils/useInput'
 
 const daum = window.daum
 
-export default function Address() {
-  const [post, setPost] = useInput('')
-  const [addr, setAddr] = useInput('')
-  const [extraAddr, setExtraAddr, onChangeExtraAddr] = useInput('')
-
+export default function Address({
+  post,
+  setPost,
+  addr,
+  setAddr,
+  extraAddr,
+  setExtraAddr,
+  onChangeExtraAddr,
+}) {
   function setDaumAddr(e) {
     e.preventDefault()
 
@@ -63,10 +67,11 @@ export default function Address() {
           value={post}
           placeholder="우편번호"
           onClick={setDaumAddr}
+          disabled
         />
         <SmallButton onClick={(e) => setDaumAddr(e)}>주소 검색하기</SmallButton>
       </FlexDiv>
-      <Input type="text" placeholder="기본 주소" value={addr} />
+      <Input type="text" placeholder="기본 주소" value={addr} disabled />
       <Input
         type="text"
         placeholder="상세 주소"
