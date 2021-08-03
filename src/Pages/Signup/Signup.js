@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import PasswordPolicy from 'Components/PasswordPolicy/PasswordPolicy'
 import Address from 'Components/Address/Address'
@@ -21,14 +21,12 @@ export default function Signup() {
   //카드 입력 모달 창
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
 
-
   //비밀번호와 비밀번호확인이 일치하지 않을 때
   const CheckPassWord = () => {
     if (pass !== passConfirm) {
       console.log('비밀번호가 일치하지 않습니다')
     }
   }
-
 
   const CheckPasswordPolicy = (password) => {
     console.log('password policy: ', password)
@@ -58,6 +56,7 @@ export default function Signup() {
     }
 
     setPassPolicy(currentPassword)
+  }
 
   const onCardSubmit = (cardData, close) => {
     setCardNum(cardData)
@@ -83,7 +82,7 @@ export default function Signup() {
               onChange={onChangePass}
               onBlur={(e) => CheckPasswordPolicy(e.target.value)}
             />
-            <PasswordPolicy value={pass} passPolicy={passPolicy} />
+            <PasswordPolicy passPolicy={passPolicy} />
             <Input
               type="password"
               placeholder="비밀번호 확인"

@@ -3,11 +3,11 @@ import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
-const PolicyItem = ({ passPolicy, content }) => {
+const PolicyItem = ({ policy, content }) => {
   return (
     <PolicyItemWrapper>
-      <CheckIcon icon={faCheck} color={passPolicy ? '#aac14f' : '#aeb0b4'} />
-      <PolicySpan txtColor={passPolicy}>{content}</PolicySpan>
+      <CheckIcon icon={faCheck} color={policy ? '#aac14f' : '#aeb0b4'} />
+      <PolicySpan txtColor={policy}>{content}</PolicySpan>
     </PolicyItemWrapper>
   )
 }

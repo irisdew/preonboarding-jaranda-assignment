@@ -1,5 +1,5 @@
 import React from 'react'
 
 export default function Main() {
-  return
+  return <div>Main</div>
 }
