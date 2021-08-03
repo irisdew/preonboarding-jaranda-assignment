@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components/macro'
+import UserTable from './UserTable/UserTable'
 
 import Search from 'Components/Admin/Search'
 
@@ -49,6 +50,24 @@ export default function Admin() {
   return (
     <div>
       <Search filterUserInfo={filterUserInfo} searchRef={searchRef} />
+      <UserTable usersData={userInfo} setUsersData={setUserInfo} />
+      <UserAddButtonWrapper>
+        <UserAddButton>사용자 추가</UserAddButton>
+      </UserAddButtonWrapper>
     </div>
   )
 }
+
+const UserAddButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+`
+
+const UserAddButton = styled.button`
+  margin-top: 20px;
+  width: 100px;
+  height: 50px;
+  border: 1px solid black;
+`
