@@ -70,18 +70,18 @@ export default function CardPopup(props) {
   )
 }
 
-// const CardInput = styled.input`
-//   margin: 0 0.5rem;
-//   text-align: center;
-//   width: 5rem;
-//   height: 5rem;
-//   border: 1px solid black;
-// `
-
-const CardInput = styled(Input)`
+const CardInput = styled.input`
   margin: 0 0.5rem;
   text-align: center;
+  width: 5rem;
+  height: 5rem;
+  border: 1px solid black;
 `
+
+// const CardInput = styled(Input)`
+//   margin: 0 0.5rem;
+//   text-align: center;
+// `
 
 const Wrapper = styled.div`
   width: 40rem;
