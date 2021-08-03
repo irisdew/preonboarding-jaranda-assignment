@@ -1,25 +1,23 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FlexDiv, Input, SmallButton } from 'Pages/Signup/Signup'
 import { useInput } from 'Utils/useInput'
+
 const daum = window.daum
 
 export default function Address() {
-  const [post, setPost] = useState('')
-  const [addr, setAddr] = useState('')
-  const [extraAddr, setExtraAddr] = useState('')
+  const [post, setPost] = useInput('')
+  const [addr, setAddr] = useInput('')
+  const [extraAddr, setExtraAddr, onChangeExtraAddr] = useInput('')
 
-  function setDaumAddr() {
+  function setDaumAddr(e) {
+    e.preventDefault()
+
     const width = 500
     const height = 600
 
-    // 입력 초기화
-    setPost('')
-    setAddr('')
-    setExtraAddr('')
-
     daum.postcode.load(function () {
       new daum.Postcode({
-        onComplete: function (data) {
+        oncomplete: function (data) {
           // 우편번호 입력
           setPost(data.zonecode)
 
@@ -43,7 +41,9 @@ export default function Address() {
             // 건물명이 있고, 공동주택일 경우 추가한다.
             if (data.buildingName !== '' && data.apartment === 'Y') {
               tempExtraAddr +=
-                extraAddr !== '' ? ', ' + data.buildingName : data.buildingName
+                tempExtraAddr !== ''
+                  ? ', ' + data.buildingName
+                  : data.buildingName
             }
             // 상세주소 최종 문자열 조합
             setExtraAddr('(' + tempExtraAddr + ')')
@@ -64,14 +64,14 @@ export default function Address() {
           placeholder="우편번호"
           onClick={setDaumAddr}
         />
-        <SmallButton onClick={setDaumAddr}>주소 검색하기</SmallButton>
+        <SmallButton onClick={(e) => setDaumAddr(e)}>주소 검색하기</SmallButton>
       </FlexDiv>
       <Input type="text" placeholder="기본 주소" value={addr} />
       <Input
         type="text"
         placeholder="상세 주소"
         value={extraAddr}
-        // onChange={onChangeExtraAddr}
+        onChange={onChangeExtraAddr}
       />
     </>
   )
