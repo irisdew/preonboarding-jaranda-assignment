@@ -3,25 +3,22 @@ import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
-export default function PasswordPolicy() {
+const PolicyItem = ({ passPolicy, content }) => {
+  return (
+    <PolicyItemWrapper>
+      <CheckIcon icon={faCheck} color={passPolicy ? '#aac14f' : '#aeb0b4'} />
+      <PolicySpan txtColor={passPolicy}>{content}</PolicySpan>
+    </PolicyItemWrapper>
+  )
+}
+
+export default function PasswordPolicy({ passPolicy }) {
   return (
     <PolicyContainer>
-      <PolicyItem class="password-policy-item" id="policy-numeric">
-        <CheckIcon icon={faCheck} color="#aeb0b4" />
-        <PolicySpan>숫자</PolicySpan>
-      </PolicyItem>
-      <PolicyItem class="password-policy-item" id="policy-specialcharacter">
-        <CheckIcon icon={faCheck} color="#aeb0b4" />
-        <PolicySpan>특수문자</PolicySpan>
-      </PolicyItem>
-      <PolicyItem class="password-policy-item" id="policy-alphabet">
-        <CheckIcon icon={faCheck} color="#aeb0b4" />
-        <PolicySpan>영문</PolicySpan>
-      </PolicyItem>
-      <PolicyItem class="password-policy-item" id="policy-characterlength">
-        <CheckIcon icon={faCheck} color="#aeb0b4" />
-        <PolicySpan>8자리 이상</PolicySpan>
-      </PolicyItem>
+      <PolicyItem passPolicy={passPolicy.numeric} content="숫자" />
+      <PolicyItem passPolicy={passPolicy.special} content="특수문자" />
+      <PolicyItem passPolicy={passPolicy.alphabet} content="영문" />
+      <PolicyItem passPolicy={passPolicy.eight} content="8자리 이상" />
     </PolicyContainer>
   )
 }
@@ -32,7 +29,7 @@ const PolicyContainer = styled.div`
   margin-left: 0.5rem;
 `
 
-const PolicyItem = styled.div`
+const PolicyItemWrapper = styled.div`
   float: left;
   margin-right: 1.1rem;
 `
@@ -50,5 +47,6 @@ const PolicySpan = styled.span`
   float: right;
   font-size: 1.4rem;
   letter-spacing: -0.05rem;
-  color: #aeb0b4;
+  color: ${(props) => (props.txtColor ? 'black' : '#aeb0b4')};
+  font-weight: ${(props) => (props.txtColor ? '700' : '400')};
 `

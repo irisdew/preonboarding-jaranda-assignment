@@ -6,15 +6,51 @@ import Address from 'Components/Address/Address'
 import { useInput } from 'Utils/useInput'
 
 export default function Signup() {
+  const [pass, , onChangePass] = useInput('')
+  const [passConfirm, , onChangePassConfirm] = useInput('')
+  const [passPolicy, setPassPolicy] = useState({
+    numeric: false,
+    special: false,
+    alphabet: false,
+    eight: false,
+  })
+
   //비밀번호와 비밀번호확인이 일치하지 않을 때
   const CheckPassWord = () => {
-    if (pass.value !== passConfirm.value) {
+    if (pass !== passConfirm) {
       console.log('비밀번호가 일치하지 않습니다')
     }
   }
 
-  const [pass, , onChangePass] = useInput('')
-  const [passConfirm, , onChangePassConfirm] = useInput('')
+  const CheckPasswordPolicy = (password) => {
+    console.log('password policy: ', password)
+
+    const numeric = /[0-9]/g
+    const alphabet = /[a-z]/gi
+    const special = /[~!@#$%^&*()_+|<>?:{}]/g
+
+    const currentPassword = {}
+
+    if (numeric.test(password)) {
+      console.log('숫자')
+      currentPassword.numeric = true
+    }
+    if (special.test(password)) {
+      console.log('특수문자')
+      currentPassword.special = true
+      console.log(passPolicy)
+    }
+    if (alphabet.test(password)) {
+      currentPassword.alphabet = true
+      console.log('영문')
+    }
+    if (password.length >= 8) {
+      currentPassword.eight = true
+      console.log('8자리 이상')
+    }
+
+    setPassPolicy(currentPassword)
+  }
 
   return (
     <FormSection>
@@ -33,8 +69,9 @@ export default function Signup() {
               placeholder="비밀번호"
               value={pass}
               onChange={onChangePass}
+              onBlur={(e) => CheckPasswordPolicy(e.target.value)}
             />
-            <PasswordPolicy />
+            <PasswordPolicy value={pass} passPolicy={passPolicy} />
             <Input
               type="password"
               placeholder="비밀번호 확인"
