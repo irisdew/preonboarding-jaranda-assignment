@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
+import PasswordPolicy from 'Components/PasswordPolicy/PasswordPolicy'
 import Address from 'Components/Address/Address'
 // import Button from 'Components/Button/Button'
 import { useInput } from 'Utils/useInput'
@@ -33,6 +34,7 @@ export default function Signup() {
               value={pass}
               onChange={onChangePass}
             />
+            <PasswordPolicy />
             <Input
               type="password"
               placeholder="비밀번호 확인"
