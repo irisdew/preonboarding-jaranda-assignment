@@ -13,6 +13,7 @@ export default function UserRow({
   },
 }) {
   const userData = [id + 1, email, name, age, address, card_number, auth]
+
   return (
     <tr>
       {userData.map((data, index) => (

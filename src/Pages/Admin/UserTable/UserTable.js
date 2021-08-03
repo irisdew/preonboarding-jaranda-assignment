@@ -7,6 +7,7 @@ export default function UserTable({ usersData, setUserData }) {
   const handleClickTable = () => {
     console.log(1)
   }
+  console.log(usersData)
   return (
     <Table onClick={handleClickTable}>
       <UserCategoryRow />

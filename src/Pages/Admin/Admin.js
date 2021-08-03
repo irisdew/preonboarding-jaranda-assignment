@@ -3,6 +3,7 @@ import styled from 'styled-components/macro'
 import UserTable from './UserTable/UserTable'
 
 import Search from 'Components/Admin/Search'
+import UserAddForm from './UserTable/UserAddForm/UserAddForm'
 
 export default function Admin() {
   const [userInfo, setUserInfo] = useState([])
@@ -13,7 +14,7 @@ export default function Admin() {
   }, [])
 
   const fetchData = () => {
-    fetch('http://localhost:3000/data/users.json')
+    fetch('http://localhost:3002/data/users.json')
       .then((res) => res.json())
       .then((res) => {
         setUserInfo(res)
@@ -24,7 +25,7 @@ export default function Admin() {
     let inputValue = searchRef.current.value
     let filtering = ''
     let dataFilter = []
-    fetchData()
+    // fetchData()
 
     // if (e.target.nextElementSibling) {
     if (inputValue.length > 0 && selected !== '선택') {
@@ -43,20 +44,41 @@ export default function Admin() {
         )
       }
       console.log('검색결과', dataFilter)
+      console.log(dataFilter)
       setUserInfo(dataFilter)
     }
   }
 
   return (
-    <div>
+    <AdminWrapper>
       <Search filterUserInfo={filterUserInfo} searchRef={searchRef} />
       <UserTable usersData={userInfo} setUsersData={setUserInfo} />
+      <UserAddForm userData={getUserDataTemplate()} />
       <UserAddButtonWrapper>
         <UserAddButton>사용자 추가</UserAddButton>
       </UserAddButtonWrapper>
-    </div>
+    </AdminWrapper>
   )
 }
+
+function getUserDataTemplate(id) {
+  const template = {
+    // id,
+    email: 'ex: abcdefg@jaranda.com',
+    name: 'ex: 김학생',
+    age: 'ex: 10',
+    address: 'ex: 경기도 부천시 경인로117번길 27',
+    card_num: 'ex: 0000-0000-0000-0000',
+    auth: 'ex: parent',
+  }
+  return Object.entries(template)
+}
+
+const AdminWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
 
 const UserAddButtonWrapper = styled.div`
   display: flex;
