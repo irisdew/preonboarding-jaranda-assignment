@@ -1,6 +1,6 @@
 import React from 'react'
 import { FlexDiv, Input, SmallButton } from 'Pages/Signup/Signup'
-import { useInput } from 'Utils/useInput'
+import { useInput } from 'Utils/Hooks/useInput'
 
 const daum = window.daum
 
