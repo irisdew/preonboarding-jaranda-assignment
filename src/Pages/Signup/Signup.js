@@ -8,7 +8,7 @@ import PasswordPolicy from 'Components/PasswordPolicy/PasswordPolicy'
 import Address from 'Components/Address/Address'
 import CardPopup from 'Pages/Signup/CardPopup'
 // import Toast from 'Components/Toast/Toast'
-
+import validation from 'Utils/Validation/Validation'
 import { useInput } from 'Utils/Hooks/useInput'
 import { usePopup } from 'Pages/Signup/usePopup'
 
@@ -36,33 +36,14 @@ export default function Signup() {
   }
 
   const CheckPasswordPolicy = (password) => {
-    console.log('password policy: ', password)
-
-    const numeric = /[0-9]/g
-    const alphabet = /[a-z]/gi
-    const special = /[~!@#$%^&*()_+|<>?:{}]/g
-
-    const currentPassword = {}
-
-    if (numeric.test(password)) {
-      console.log('숫자')
-      currentPassword.numeric = true
-    }
-    if (special.test(password)) {
-      console.log('특수문자')
-      currentPassword.special = true
-      console.log(passPolicy)
-    }
-    if (alphabet.test(password)) {
-      currentPassword.alphabet = true
-      console.log('영문')
-    }
-    if (password.length >= 8) {
-      currentPassword.eight = true
-      console.log('8자리 이상')
-    }
-
-    setPassPolicy(currentPassword)
+    const { isNumeric, isSpecialCharacter, isAlphabet, isOverEight } =
+      validation
+    setPassPolicy({
+      numeric: isNumeric(password),
+      special: isSpecialCharacter(password),
+      alphabet: isAlphabet(password),
+      eight: isOverEight(password),
+    })
   }
 
   const onCardSubmit = (cardData, close) => {
