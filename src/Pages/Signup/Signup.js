@@ -4,7 +4,7 @@ import PasswordPolicy from 'Components/PasswordPolicy/PasswordPolicy'
 import Address from 'Components/Address/Address'
 import CardPopup from 'Pages/Signup/CardPopup'
 // import Button from 'Components/Button/Button'
-import { useInput } from 'Utils/useInput'
+import { useInput } from 'Utils/Hooks/useInput'
 import { usePopup } from 'Pages/Signup/usePopup'
 
 export default function Signup() {
