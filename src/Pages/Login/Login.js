@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
@@ -10,17 +10,25 @@ import Toast from 'Components/Toast/Toast'
 import validation from 'Utils/Validation/Validation'
 import useToast from 'Utils/Hooks/useToast'
 import auth from 'Utils/Auth/Auth'
+import { rememberMeStorage } from 'Utils/Storage'
 import { loginState } from 'Constant'
 import bgImgUrl from 'Assets/Images/bg-sign_in.png'
 import mBgImgUrl from 'Assets/Images/bg-sign_in-m.png'
 
-export default function Login(props) {
+export default function Login() {
   const history = useHistory()
   const [isRememberId, setIsRememberId] = useState(false)
   const idInputRef = useRef(null)
   const pwInputRef = useRef(null)
-  const rememberRef = useRef(null)
   const { isShow, message, toast } = useToast()
+
+  useEffect(() => {
+    const rememberId = rememberMeStorage.load()
+    if (rememberId) {
+      setIsRememberId(true)
+      idInputRef.current.value = rememberId
+    }
+  }, [])
 
   const handleRememberMe = useCallback(
     ({ target: { checked } }) => {
@@ -35,20 +43,20 @@ export default function Login(props) {
     if (!id.value) {
       toast('이메일을 입력해주세요.')
       id.focus()
-      return
     } else if (!pw.value) {
       toast('비밀번호를 입력해주세요.')
       pw.focus()
-      return
     } else if (!validation.isEmail(id.value)) {
       toast('유효하지 않은 이메일입니다.')
       id.value = ''
       id.focus()
-      return
     } else {
       const state = auth.login(id.value, pw.value)
       switch (state.name) {
         case loginState.SUCCESS.name:
+          isRememberId
+            ? rememberMeStorage.save(id.value)
+            : rememberMeStorage.remove()
           history.push('/')
           return
 
@@ -66,11 +74,7 @@ export default function Login(props) {
           throw new Error('is not valid state')
       }
     }
-  }, [])
-
-  const handleSignup = useCallback(() => {
-    toast('Test')
-  }, [])
+  }, [isRememberId])
 
   return (
     <Layout>
@@ -87,15 +91,14 @@ export default function Login(props) {
               placeholder="비밀번호"
             />
             <StyledCustomCheckBox
-              ref={rememberRef}
-              cehcekd={isRememberId}
+              checked={isRememberId}
               id="rememberId"
               checkHandler={handleRememberMe}
             >
               아이디 기억하기
             </StyledCustomCheckBox>
             <LoginButton clickHandler={handleLogin}>로그인</LoginButton>
-            <SingupButton clickHandler={handleSignup}>회원가입</SingupButton>
+            <SignupButton to="/signup">회원가입</SignupButton>
             <StyledLink to="/">관리자 로그인</StyledLink>
           </LoginContent>
         </Container>
@@ -188,9 +191,23 @@ const LoginButton = styled(Button)`
     }
   }
 `
-const SingupButton = styled(Button)`
+const SignupButton = styled(Link)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 5.2rem;
   margin-bottom: 3.8rem;
+  border-radius: 0.6rem;
+  color: #fff;
   background-color: #0085fd;
+  cursor: pointer;
+  &:hover {
+    color: #fff;
+  }
+  @media screen and ${({ theme }) => theme.device.tablet} {
+    height: 4.4rem;
+  }
 `
 
 const StyledLink = styled(Link)`

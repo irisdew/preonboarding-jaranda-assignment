@@ -1,25 +1,23 @@
-import React, { forwardRef } from 'react'
+import React from 'react'
 import styled from 'styled-components/macro'
 
-const CustomCheckBox = forwardRef(
-  ({ className, children, id, checked, checkHandler }, ref) => {
-    return (
-      <Wrapper className={className}>
-        <input
-          ref={ref}
-          type="checkbox"
-          id={id}
-          checked={checked}
-          tabIndex="-1"
-          onChange={checkHandler}
-        />
-        <label htmlFor={id} tabIndex="0">
-          {children}
-        </label>
-      </Wrapper>
-    )
-  }
-)
+const CustomCheckBox = ({ className, children, id, checked, checkHandler }) => {
+  return (
+    <Wrapper className={className}>
+      <input
+        // ref={ref}
+        type="checkbox"
+        id={id}
+        checked={checked}
+        tabIndex="-1"
+        onChange={checkHandler}
+      />
+      <label htmlFor={id} tabIndex="0">
+        {children}
+      </label>
+    </Wrapper>
+  )
+}
 
 export default CustomCheckBox
 

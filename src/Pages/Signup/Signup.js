@@ -48,13 +48,13 @@ export default function Signup() {
     const { name, value } = event.target
 
     if (name === 'name') {
-      if (!validation.isKorean(value)) {
+      if (validation.isNotKorean(value)) {
         toast('이름을 한글로 입력해주세요!')
         return
       }
     }
     if (name === 'age') {
-      if (!validation.isNumeric(value)) {
+      if (validation.isNotNumeric(value)) {
         toast('숫자만 입력해주세요!')
         return
       }
@@ -212,7 +212,7 @@ const Label = styled.label`
 
 export const LongButton = styled(Button)`
   width: 100%;
-  margin-top: 3rem;
+  margin-top: 5rem;
   background-color: #0085fd;
 `
 

@@ -4,10 +4,11 @@
 export const storageKeys = Object.freeze({
   USER_LIST: { name: 'USER_LIST', desc: '등록된 유저 목록' },
   CURRENT_ACCOUNT: { name: 'CURRENT_ACCOUNT', desc: '로그인된 계정' },
+  REMEMBER_ME: { name: 'REMEMBER_ME', desc: '아이디 기억하기' },
 })
 
 export const loginState = Object.freeze({
-  SUCCESS: { name: 'SUCCESS', desc: '성공' },
+  SUCCESS: { name: 'SUCCESS', desc: '로그인 성공' },
   FAIL: {
     name: 'FAIL',
     reason: {

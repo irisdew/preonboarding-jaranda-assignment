@@ -14,7 +14,11 @@ export default function Header() {
     const {
       location: { pathname },
     } = history
-    return path === pathname.toLowerCase() ? 1 : 0
+    if (Array.isArray(path)) {
+      return path.indexOf(pathname.toLowerCase()) !== -1 ? 1 : 0
+    } else {
+      return path === pathname.toLowerCase() ? 1 : 0
+    }
   }
 
   const handleOpenMobileMenu = () => {
@@ -68,7 +72,10 @@ export default function Header() {
               </>
             ) : (
               <NavItem>
-                <StyledLink to="/login" active={isActiveLink('/login')}>
+                <StyledLink
+                  to="/login"
+                  active={isActiveLink(['/login', '/signup'])}
+                >
                   로그인/회원가입
                 </StyledLink>
               </NavItem>
