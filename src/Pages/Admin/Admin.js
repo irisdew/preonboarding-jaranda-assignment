@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components/macro'
 import UserTable from './UserTable/UserTable'
-import Search from 'Components/Admin/Search'
+import Search from 'Pages/Admin/Search/Search'
 import UserAddForm from './UserTable/UserAddForm/UserAddForm'
 import Pagination from 'Pages/Admin/Pagination/Pagination'
 import useDidMountEffect from 'Utils/Hooks/useDidMountEffect'
@@ -37,42 +37,38 @@ export default function Admin() {
   // 페이지 변경
   useDidMountEffect(() => {
     const userList = userListStorage.load()
-    const temp = userList.slice(
+    const dataSlice = userList.slice(
       pagingData.currentPage * 5 - 5,
       pagingData.currentPage * 5
     )
 
-    setFilterInfo(temp)
+    setFilterInfo(dataSlice)
     setSearchCheck(true)
     console.log('페이지 변경', pagingData.currentPage)
   }, [pagingData.currentPage])
 
   const filterUserInfo = (selected) => {
-    // const getData = JSON.parse(localStorage.getItem('data'))
+    const userList = userListStorage.load()
     let inputValue = searchRef.current.value
-    let filtering = ''
-    // let dataFilter = []
 
     if (inputValue.length > 0 && selected !== '선택') {
+      let filtering = ''
       if (selected === '이메일') filtering = 'email'
       if (selected === '이름') filtering = 'name'
       if (selected === '나이') filtering = 'age'
-      const dataFilter = usersInfo.filter(
+      const dataFilter = userList.filter(
         (item) => item[filtering].indexOf(inputValue) !== -1
       )
-
-      // const dataFilter = getData
-      //   .filter((item) => item[filtering].indexOf(inputValue) !== -1)
-      //   .slice(pagingData.currentPage * 5 - 5, pagingData.currentPage * 5)
-      // const lastId = dataFilter.filter((ele, index) => index === 5)[0].id
+      const filterSlice = dataFilter.slice(
+        pagingData.currentPage * 5 - 5,
+        pagingData.currentPage * 5
+      )
 
       console.log('검색결과', dataFilter)
-      // console.log('마지막', lastId)
 
-      setFilterInfo(dataFilter)
+      setFilterInfo(filterSlice)
       setPagingData({
-        // currentPage: 1,
-        ...pagingData,
+        currentPage: 1,
         fullPage: Math.ceil(dataFilter.length / 5),
       })
     }
@@ -80,32 +76,28 @@ export default function Admin() {
   }
 
   const refreshBtn = () => {
-    setFilterInfo(usersInfo)
+    const userList = userListStorage.load()
+    setFilterInfo(userList)
     setSearchCheck(false)
-    setPagingData({ currentPage: 1, fullPage: Math.ceil(usersInfo.length / 5) })
+    setPagingData({ currentPage: 1, fullPage: Math.ceil(userList.length / 5) })
   }
 
   const changePageNum = (e) => {
-    // prev, next
-    if (e.target.dataset.check) {
-      if (e.target.dataset.check === 'prev') {
-        setPagingData({
-          ...pagingData,
-          currentPage: pagingData.currentPage - 1,
-          // currentPage:
-          //   pagingData.currentPage > 1 ? pagingData.currentPage - 1 : 1,
-        })
-      }
-      if (e.target.dataset.check === 'next') {
-        setPagingData({
-          ...pagingData,
-          currentPage: pagingData.currentPage + 1,
-        })
-      }
+    setPagingData({ ...pagingData, currentPage: Number(e.target.innerText) })
+  }
+
+  const arrowBtn = (e) => {
+    if (e.target.dataset.check === 'prev') {
+      setPagingData({
+        ...pagingData,
+        currentPage: pagingData.currentPage - 1,
+      })
     }
-    // number btn
-    else {
-      setPagingData({ ...pagingData, currentPage: Number(e.target.innerText) })
+    if (e.target.dataset.check === 'next') {
+      setPagingData({
+        ...pagingData,
+        currentPage: pagingData.currentPage + 1,
+      })
     }
   }
 
@@ -135,7 +127,11 @@ export default function Admin() {
           사용자 추가
         </UserAddButton>
       </UserAddButtonWrapper>
-      <Pagination pagingData={pagingData} changePageNum={changePageNum} />
+      <Pagination
+        pagingData={pagingData}
+        changePageNum={changePageNum}
+        arrowBtn={arrowBtn}
+      />
     </AdminWrapper>
   )
 }
@@ -155,7 +151,7 @@ function getUserDataTemplate() {
 const AdminWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
 `
 
 const UserAddButtonWrapper = styled.div`

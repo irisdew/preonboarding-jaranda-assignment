@@ -3,22 +3,27 @@ import styled from 'styled-components/macro'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons'
 
-export default function Pagination({ pagingData, changePageNum }) {
+export default function Pagination({ pagingData, changePageNum, arrowBtn }) {
   return (
     <Container>
       <Paging>
         {pagingData.currentPage > 1 && (
-          <Prev onClick={changePageNum} data-check="prev">
+          <Prev onClick={arrowBtn} data-check="prev">
             <FontAwesomeIcon icon={faCaretLeft} />
           </Prev>
         )}
-        {[...Array(pagingData.fullPage)].map((ele, index) => (
+        {/* {[...Array(pagingData.fullPage)].map((ele, index) => (
           <a key={index}>
             <span onClick={changePageNum}>{index + 1}</span>
           </a>
+        ))} */}
+        {[...Array(pagingData.fullPage)].map((ele, index) => (
+          <span onClick={changePageNum} key={index}>
+            {index + 1}
+          </span>
         ))}
         {pagingData.fullPage > pagingData.currentPage && (
-          <Next onClick={changePageNum} data-check="next">
+          <Next onClick={arrowBtn} data-check="next">
             <FontAwesomeIcon icon={faCaretRight} />
           </Next>
         )}
@@ -35,11 +40,12 @@ const Container = styled.div`
 `
 
 const Paging = styled.div`
-  a {
+  /* a {
     margin-right: 1rem;
-  }
+  } */
 
   span {
+    margin-right: 1rem;
     padding: 0.8rem;
     border: 0.1rem solid #aac14f;
     border-radius: 0.3rem;
@@ -53,7 +59,8 @@ const Paging = styled.div`
 `
 
 // 이전
-const Prev = styled.a`
+// const Prev = styled.a`
+const Prev = styled.span`
   padding: 0.8rem;
   border: 0.1rem solid #aac14f;
   border-radius: 0.3rem;
@@ -66,7 +73,8 @@ const Prev = styled.a`
 `
 
 // 이후
-const Next = styled.a`
+// const Next = styled.a`
+const Next = styled.span`
   padding: 0.8rem;
   border: 0.1rem solid #aac14f;
   border-radius: 0.3rem;
