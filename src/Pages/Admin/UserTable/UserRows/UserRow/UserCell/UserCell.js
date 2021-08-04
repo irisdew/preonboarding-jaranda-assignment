@@ -1,6 +1,7 @@
 import { EditContext } from 'Pages/Admin/UserTable/UserTable'
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { userListStorage } from 'Utils/Storage'
 
 const TABLE = {
   0: 'id',
@@ -21,7 +22,8 @@ export default function UserCell({ info, id, index }) {
     if (
       index !== targetData.index ||
       id !== targetData.id ||
-      targetData.index === 0
+      targetData.index === 0 ||
+      targetData.id === 0
     )
       return
 
@@ -29,6 +31,8 @@ export default function UserCell({ info, id, index }) {
   }, [index, id, targetData])
 
   const handleBlurInput = () => {
+    const usersInfo = userListStorage.load()
+
     if (editInputData.length) {
       const [modifiedItem] = usersInfo.filter(
         (userInfo) => userInfo.id === targetData.id
@@ -48,8 +52,8 @@ export default function UserCell({ info, id, index }) {
           return userInfo
         }
       })
-
-      setUsersInfo(modifiedItems)
+      console.log(modifiedItems)
+      userListStorage.save(modifiedItems)
     }
     setIsOpenedEditInput(false)
   }

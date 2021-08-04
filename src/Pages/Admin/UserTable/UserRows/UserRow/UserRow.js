@@ -12,7 +12,7 @@ export default function UserRow({
     auth,
   },
 }) {
-  const userInfo = [id + 1, email, name, age, address, card_number, auth]
+  const userInfo = [id, email, name, age, address, card_number, auth]
 
   return (
     <tr id={`${id}`}>

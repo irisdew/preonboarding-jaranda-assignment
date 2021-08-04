@@ -39,21 +39,21 @@ export default function UserTable({
       id: clickedRowData.id,
       index: Number(id),
     })
-
-    return (
-      <Table onClick={handleClickTable}>
-        <UserCategoryRow />
-        <EditContext.Provider value={value}>
-          {searchCheck ? (
-            <UserRows usersInfo={filterData} />
-          ) : (
-            <UserRows usersInfo={usersInfo} />
-          )}
-          {/* <UserRows usersInfo={usersInfo} /> */}
-        </EditContext.Provider>
-      </Table>
-    )
   }
+
+  return (
+    <Table onClick={handleClickTable}>
+      <UserCategoryRow />
+      <EditContext.Provider value={value}>
+        {searchCheck ? (
+          <UserRows usersInfo={filterData} />
+        ) : (
+          <UserRows usersInfo={usersInfo} />
+        )}
+        {/* <UserRows usersInfo={usersInfo} /> */}
+      </EditContext.Provider>
+    </Table>
+  )
 }
 
 const Table = styled.table`

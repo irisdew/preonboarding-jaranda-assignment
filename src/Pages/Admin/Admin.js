@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components/macro'
 import UserTable from './UserTable/UserTable'
-import Search from 'Components/Admin/Search'
+import Search from 'Pages/Admin/Search/Search'
 import UserAddForm from './UserTable/UserAddForm/UserAddForm'
 import Pagination from 'Pages/Admin/Pagination/Pagination'
 import useDidMountEffect from 'Utils/Hooks/useDidMountEffect'
@@ -19,12 +19,13 @@ export default function Admin() {
   const searchRef = useRef()
 
   const handleAddUserInfo = (value) => {
+    const usersInfo = userListStorage.load()
     const newUserInfo = {
       ...value,
-      id: usersInfo.length,
+      id: usersInfo.length + 1,
       address: { address: value.address },
     }
-    setUsersInfo([...usersInfo, newUserInfo])
+    userListStorage.save([...usersInfo, newUserInfo])
   }
 
   useEffect(() => {
