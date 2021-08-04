@@ -43,7 +43,7 @@ const Wrapper = styled.div`
     align-items: center;
     font-size: 1.2rem;
     font-weight: 500;
-    color: #4a4a4a;
+    color: ${({ theme }) => theme.color.deepGrey};
     cursor: pointer;
     user-select: none;
 
@@ -55,13 +55,13 @@ const Wrapper = styled.div`
       margin-right: 0.7rem;
       border-radius: 0.4rem;
       text-align: center;
-      background-color: #f1f1f3;
+      background-color: ${({ theme }) => theme.color.lightGreyC};
     }
   }
 
   input[type='checkbox']:checked + label:before {
     content: '\\2713';
-    color: #fff;
-    background-color: #55b1b2;
+    color: ${({ theme }) => theme.color.white};
+    background-color: ${({ theme }) => theme.color.secondary};
   }
 `

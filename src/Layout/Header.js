@@ -96,7 +96,7 @@ const Wrapper = styled.header`
   left: 0;
   width: 100%;
   height: 6.3rem;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.color.white};
   z-index: 300;
   @media screen and ${({ theme }) => theme.device.tablet} {
     height: 4.8rem;
@@ -137,7 +137,7 @@ const StyledNav = styled.nav.attrs(({ mobileShow }) => ({
     right: 0;
     width: 25rem;
     height: 100vh;
-    background-color: #fff;
+    background-color: ${({ theme }) => theme.color.white};
     visibility: ${({ visibility }) => visibility};
     transform: ${({ transform }) => transform};
     transition: ${({ transition }) => transition};
@@ -164,7 +164,7 @@ const NavList = styled.ul`
     position: relative;
     flex-direction: column;
     padding: 1.7rem;
-    background-color: #fff;
+    background-color: ${({ theme }) => theme.color.white};
   }
 `
 const NavItem = styled.li`
@@ -181,7 +181,7 @@ const navButtonMixin = css`
   align-items: center;
   height: 100%;
   font-weight: 400;
-  color: #4a4a4a;
+  color: ${({ theme }) => theme.color.deepGrey};
 
   &:hover {
     font-weight: 600;
@@ -189,8 +189,8 @@ const navButtonMixin = css`
   }
 `
 
-const StyledLink = styled(Link).attrs(({ active }) => ({
-  color: active ? '#87bf44' : '#4a4a4a',
+const StyledLink = styled(Link).attrs(({ active, theme }) => ({
+  color: active ? theme.color.primary : theme.color.deepGrey,
   weight: active ? '600' : '400',
 }))`
   ${navButtonMixin};
