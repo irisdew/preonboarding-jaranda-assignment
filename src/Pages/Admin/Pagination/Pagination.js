@@ -3,21 +3,25 @@ import styled from 'styled-components/macro'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons'
 
-export default function Pagination({ pagingData }) {
+export default function Pagination({ pagingData, changePageNum }) {
   return (
     <Container>
       <Paging>
-        <Prev>
-          <FontAwesomeIcon icon={faCaretLeft} />
-        </Prev>
+        {pagingData.currentPage > 1 && (
+          <Prev onClick={changePageNum} data-check="prev">
+            <FontAwesomeIcon icon={faCaretLeft} />
+          </Prev>
+        )}
         {[...Array(pagingData.fullPage)].map((ele, index) => (
           <a key={index}>
-            <span>{index + 1}</span>
+            <span onClick={changePageNum}>{index + 1}</span>
           </a>
         ))}
-        <Next>
-          <FontAwesomeIcon icon={faCaretRight} />
-        </Next>
+        {pagingData.fullPage > pagingData.currentPage && (
+          <Next onClick={changePageNum} data-check="next">
+            <FontAwesomeIcon icon={faCaretRight} />
+          </Next>
+        )}
       </Paging>
     </Container>
   )
