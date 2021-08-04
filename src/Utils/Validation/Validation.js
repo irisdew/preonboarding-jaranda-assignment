@@ -43,6 +43,14 @@ const validation = {
   isOverEight(data) {
     return data.length >= 8
   },
+
+  isKorean(data) {
+    if (!data) {
+      return false
+    }
+    const reg = /[ㄱ-ㅎㅏ-ㅣ가-힣]/gi
+    return reg.test(data)
+  },
 }
 
 export default validation

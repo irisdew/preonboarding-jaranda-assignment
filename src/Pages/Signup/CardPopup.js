@@ -1,13 +1,21 @@
 import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
+import validation from 'Utils/Validation/Validation'
+import Toast from 'Components/Toast/Toast'
+import useToast from 'Utils/Hooks/useToast'
 import { useInput } from 'Utils/Hooks/useInput'
 import { usePopup } from 'Pages/Signup/usePopup'
 import { FlexDiv, Input, InputTitle, LongButton } from 'Pages/Signup/Signup'
 
 export default function CardPopup(props) {
-  const NOT_NUMBER = /[^0-9]/gi
+  const { isShow, message, toast } = useToast()
 
-  //카드 정보 입력 (숫자인지 확인 && 4글자 까지만 입력 가능)
+  const cardInput1 = useRef(null)
+  const cardInput2 = useRef(null)
+  const cardInput3 = useRef(null)
+  const cardInput4 = useRef(null)
+  const cardInputs = [null, cardInput1, cardInput2, cardInput3, cardInput4]
+
   const [inputs, setInputs] = useState({
     card1: '',
     card2: '',
@@ -18,18 +26,35 @@ export default function CardPopup(props) {
 
   const onChange = (event) => {
     const { name, value } = event.target
-
-    if (NOT_NUMBER.test(value)) {
-      alert('숫자만 입력하세요')
+    let currentCardNum = Number(name[name.length - 1])
+    //카드 정보 입력 (숫자인지 확인 && 4글자 까지만 입력 가능)
+    if (!validation.isNumeric(value)) {
+      toast('숫자만 입력하세요')
     } else if (value.length <= 4) {
       setInputs({
         ...inputs,
         [name]: value,
       })
     }
+
+    //4글자를 다 치면 다음 칸 focuss
+    if (value.length === 4) {
+      if (currentCardNum < 4) {
+        cardInputs[currentCardNum + 1].current.focus()
+      }
+    }
   } //onChange
 
+  const resetInput = (event) => {
+    const { name } = event.target
+    setInputs({ ...inputs, [name]: '' })
+  }
+
   const SubmitCardInfo = () => {
+    if (card1 === '' || card2 === '' || card3 === '' || card4 === '') {
+      alert('카드 정보를 모두 입력해주세요!')
+      return
+    }
     const cardNum = card1 + '-' + card2 + '-' + card3 + '-' + card4
     props.onSubmit(cardNum, false)
   }
@@ -42,29 +67,38 @@ export default function CardPopup(props) {
           <CardInput
             type="text"
             name="card1"
+            ref={cardInput1}
             value={card1}
             onChange={onChange}
+            onClick={resetInput}
           />
           <CardInput
             type="text"
             name="card2"
+            ref={cardInput2}
             value={card2}
             onChange={onChange}
+            onClick={resetInput}
           />
           <CardInput
             type="text"
             name="card3"
+            ref={cardInput3}
             value={card3}
             onChange={onChange}
+            onClick={resetInput}
           />
           <CardInput
             type="text"
             name="card4"
+            ref={cardInput4}
             value={card4}
             onChange={onChange}
+            onClick={resetInput}
           />
         </FlexDiv>
-        <LongButton onClick={SubmitCardInfo}>입력하기</LongButton>
+        <LongButton clickHandler={SubmitCardInfo}>입력하기</LongButton>
+        <Toast message={message} isShow={isShow} />
       </Wrapper>
     </>
   )
