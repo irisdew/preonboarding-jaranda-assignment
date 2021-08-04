@@ -1,11 +1,11 @@
 import React from 'react'
-import UserRow from '../UserRow/UserRow'
+import UserRow from './UserRow/UserRow'
 
-export default function UserRows({ usersData }) {
+export default function UserRows({ usersInfo }) {
   return (
     <tbody>
-      {usersData.map((userData) => (
-        <UserRow key={userData.id} userData={userData} />
+      {usersInfo.map((userInfo) => (
+        <UserRow key={userInfo.id} userInfo={userInfo} />
       ))}
     </tbody>
   )

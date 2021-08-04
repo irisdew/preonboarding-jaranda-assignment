@@ -14,6 +14,10 @@ const GlobalStyle = createGlobalStyle`
     font-size: 62.5%;
   }
   
+  html {
+    font-size: 62.5%;
+  }
+  
   body {
     font-family: Circular, -apple-system, BlinkMacSystemFont, Roboto, Helvetica Neue, sans-serif;
     font-size: 14px;
@@ -28,7 +32,13 @@ const GlobalStyle = createGlobalStyle`
     /* cursor: pointer; */
   }
 
-  input, button {
+  input,textarea {
+    outline: none;
+    border: 0;
+    background-color: transparent;
+  }
+
+  button {
     background-color: transparent;
     border: none;
     outline: none;
@@ -41,6 +51,22 @@ const GlobalStyle = createGlobalStyle`
 
   img {
     width: 100%;
+  }
+
+  [tabindex]:focus-visible,
+  label:focus-visible,
+  button:focus-visible{
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0,0,0, 0.65);
+  }
+  
+  .a11y {
+    overflow: hidden;
+    position: absolute;
+    border: 0;
+    width: 1px;
+    height: 1px;
+    clip: rect(1px, 1px, 1px, 1px);
   }
 `
 
