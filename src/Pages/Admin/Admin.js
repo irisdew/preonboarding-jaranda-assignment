@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components/macro'
 import UserTable from './UserTable/UserTable'
-
-import Search from 'Pages/Admin/Search/Search'
+import Search from 'Components/Admin/Search'
+import UserAddForm from './UserTable/UserAddForm/UserAddForm'
 import Pagination from 'Pages/Admin/Pagination/Pagination'
-
 import useDidMountEffect from 'Utils/Hooks/useDidMountEffect'
 import { userListStorage } from 'Utils/Storage'
 
 export default function Admin() {
-  const [userInfo, setUserInfo] = useState([])
+  const [usersInfo, setUsersInfo] = useState([])
+  const [isOpenedUserAddForm, setIsOpenedUserAddForm] = useState(false)
   const [filterInfo, setFilterInfo] = useState([])
   const [pagingData, setPagingData] = useState({
     currentPage: 1,
@@ -18,17 +18,19 @@ export default function Admin() {
   const [searchCheck, setSearchCheck] = useState(false)
   const searchRef = useRef()
 
+  const handleAddUserInfo = (value) => {
+    const newUserInfo = {
+      ...value,
+      id: usersInfo.length,
+      address: { address: value.address },
+    }
+    setUsersInfo([...usersInfo, newUserInfo])
+  }
+
   useEffect(() => {
-    // fetch('http://localhost:3000/data/users.json')
-    //   .then((res) => res.json())
-    //   .then((res) => {
-    //     // localStorage.setItem('data', JSON.stringify(res))
-    //     setUserInfo(res)
-    //     setPagingData({ ...pagingData, fullPage: Math.ceil(res.length / 5) })
-    //   })
     const userList = userListStorage.load()
-    // setUserInfo(userList)
-    setUserInfo(userList.slice(0, 5))
+
+    setUsersInfo(userList.slice(0, 5))
     setPagingData({ currentPage: 1, fullPage: Math.ceil(userList.length / 5) })
   }, [])
 
@@ -55,7 +57,7 @@ export default function Admin() {
       if (selected === '이메일') filtering = 'email'
       if (selected === '이름') filtering = 'name'
       if (selected === '나이') filtering = 'age'
-      const dataFilter = userInfo.filter(
+      const dataFilter = usersInfo.filter(
         (item) => item[filtering].indexOf(inputValue) !== -1
       )
 
@@ -71,16 +73,16 @@ export default function Admin() {
       setPagingData({
         // currentPage: 1,
         ...pagingData,
-        fullPage: Math.ceil(dataFilter.length / 4),
+        fullPage: Math.ceil(dataFilter.length / 5),
       })
     }
     setSearchCheck(true)
   }
 
   const refreshBtn = () => {
-    setFilterInfo(userInfo)
+    setFilterInfo(usersInfo)
     setSearchCheck(false)
-    setPagingData({ currentPage: 1, fullPage: Math.ceil(userInfo.length / 4) })
+    setPagingData({ currentPage: 1, fullPage: Math.ceil(usersInfo.length / 5) })
   }
 
   const changePageNum = (e) => {
@@ -108,24 +110,53 @@ export default function Admin() {
   }
 
   return (
-    <>
+    <AdminWrapper>
       <Search
         filterUserInfo={filterUserInfo}
         searchRef={searchRef}
         refreshBtn={refreshBtn}
       />
       <UserTable
-        usersData={userInfo}
+        usersInfo={usersInfo}
+        setUsersInfo={setUsersInfo}
+        setIsOpenedUserAddForm={setIsOpenedUserAddForm}
         filterData={filterInfo}
         searchCheck={searchCheck}
       />
+      {isOpenedUserAddForm && (
+        <UserAddForm
+          userDataTemplate={getUserDataTemplate()}
+          handleAddUserInfo={handleAddUserInfo}
+          setIsOpenedUserAddForm={setIsOpenedUserAddForm}
+        />
+      )}
       <UserAddButtonWrapper>
-        <UserAddButton>사용자 추가</UserAddButton>
+        <UserAddButton onClick={() => setIsOpenedUserAddForm(true)}>
+          사용자 추가
+        </UserAddButton>
       </UserAddButtonWrapper>
       <Pagination pagingData={pagingData} changePageNum={changePageNum} />
-    </>
+    </AdminWrapper>
   )
 }
+
+function getUserDataTemplate() {
+  const template = {
+    email: 'ex: abcdefg@jaranda.com',
+    name: 'ex: 김학생',
+    age: 'ex: 10',
+    address: 'ex: 경기도 부천시 경인로117번길 27',
+    card_number: 'ex: 0000-0000-0000-0000',
+    auth: 'ex: parent',
+  }
+  return Object.entries(template)
+}
+
+const AdminWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
 
 const UserAddButtonWrapper = styled.div`
   display: flex;
@@ -137,6 +168,13 @@ const UserAddButtonWrapper = styled.div`
 const UserAddButton = styled.button`
   margin-top: 20px;
   width: 100px;
-  height: 50px;
-  border: 1px solid black;
+  height: 40px;
+  background: #4b85fc;
+  color: white;
+  border-radius: 10px;
+
+  :hover {
+    cursor: pointer;
+    opacity: 0.7;
+  }
 `
