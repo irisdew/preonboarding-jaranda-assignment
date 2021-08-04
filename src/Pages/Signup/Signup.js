@@ -16,6 +16,7 @@ import { usePopup } from 'Pages/Signup/usePopup'
 export default function Signup() {
   const { isShow, message, toast } = useToast()
 
+  const [email, , onChangeEmail] = useInput('')
   const [pass, , onChangePass] = useInput('')
   const [passConfirm, , onChangePassConfirm] = useInput('')
   const [passPolicy, setPassPolicy] = useState({
@@ -30,6 +31,10 @@ export default function Signup() {
   const [cardNum, setCardNum] = useState('카드 번호')
   // 카드 입력 모달 창
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
+
+  const checkEmail = (e) => {
+    validation.isEmail(e.target.value) || toast('유효한 이메일을 입력해주세요')
+  }
 
   // 비밀번호와 비밀번호확인이 일치하지 않을 때
   const checkPassWord = () => {
@@ -66,14 +71,15 @@ export default function Signup() {
   }
 
   // 비밀번호 validation
-  const checkPasswordPolicy = (password) => {
+  const checkPasswordPolicy = (e) => {
+    const currentInput = e.target.value
     const { isNumeric, isSpecialCharacter, isAlphabet, isOverEight } =
       validation
     const currentPassPolicy = {
-      numeric: isNumeric(password),
-      special: isSpecialCharacter(password),
-      alphabet: isAlphabet(password),
-      eight: isOverEight(password),
+      numeric: isNumeric(currentInput),
+      special: isSpecialCharacter(currentInput),
+      alphabet: isAlphabet(currentInput),
+      eight: isOverEight(currentInput),
     }
     setPassPolicy(currentPassPolicy)
     const validated = Object.values(currentPassPolicy).every((item) => item)
@@ -108,13 +114,19 @@ export default function Signup() {
           <div>간편하게 회원가입하고</div>
           <div>자란다를 이용해보세요</div>
         </FormTitle>
-        <Input type="text" placeholder="이메일" />
+        <Input
+          type="text"
+          placeholder="이메일"
+          value={email}
+          onChange={onChangeEmail}
+          onBlur={checkEmail}
+        />
         <Input
           type="password"
           placeholder="비밀번호"
           value={pass}
           onChange={onChangePass}
-          onBlur={(e) => checkPasswordPolicy(e.target.value)}
+          onBlur={checkPasswordPolicy}
         />
         <PasswordPolicy passPolicy={passPolicy} />
         <Input
