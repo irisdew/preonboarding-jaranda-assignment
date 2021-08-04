@@ -6,7 +6,6 @@ const GetLoggedAccountData = () => {
     GetDataFromLocalStorage('USER_LIST').find(
       (account) => account.email === auth.getAuth().email
     ) || []
-  console.log(auth.getAuth().email)
   return data
 }
 
