@@ -10,6 +10,7 @@ import Toast from 'Components/Toast/Toast'
 import validation from 'Utils/Validation/Validation'
 import useToast from 'Utils/Hooks/useToast'
 import auth from 'Utils/Auth/Auth'
+import { loginState } from 'Constant'
 import bgImgUrl from 'Assets/Images/bg-sign_in.png'
 import mBgImgUrl from 'Assets/Images/bg-sign_in-m.png'
 
@@ -45,20 +46,20 @@ export default function Login(props) {
       id.focus()
       return
     } else {
-      const result = auth.login(id.value, pw.value)
-      switch (result.state) {
-        case 'success':
+      const state = auth.login(id.value, pw.value)
+      switch (state.name) {
+        case loginState.SUCCESS.name:
           history.push('/')
           return
 
-        case 'fail':
-          if (result.reason === '등록된 계정이 없습니다.') {
-            toast('등록된 계정이 없습니다.')
-            id.focus()
-          } else {
-            toast('패스워드가 일치하지 않습니다.')
-            pw.focus()
-          }
+        case loginState.FAIL.reason.NO_ACCOUNT_REGISTERED.name:
+          toast(state.desc)
+          id.focus()
+          return
+
+        case loginState.FAIL.reason.PASSWORD_MISMATCH.name:
+          toast(state.desc)
+          pw.focus()
           return
 
         default:

@@ -43,13 +43,19 @@ export default function Header() {
         <StyledNav mobileShow={isOpenNav} onClick={handleCloseMobileMenu}>
           <NavList>
             <NavItem>
-              <StyledLink to="/teacher">자란다선생님 메뉴</StyledLink>
+              <StyledLink to="/teacher" active={isActiveLink('/teacher')}>
+                자란다선생님 메뉴
+              </StyledLink>
             </NavItem>
             <NavItem>
-              <StyledLink to="/parent">자란다부모님 메뉴</StyledLink>
+              <StyledLink to="/parent" active={isActiveLink('/parent')}>
+                자란다부모님 메뉴
+              </StyledLink>
             </NavItem>
             <NavItem>
-              <StyledLink to="/student">자란다어린이 메뉴</StyledLink>
+              <StyledLink to="/student" active={isActiveLink('/student')}>
+                자란다어린이 메뉴
+              </StyledLink>
             </NavItem>
             {auth.getAuth() ? (
               <>
