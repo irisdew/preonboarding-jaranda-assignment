@@ -1,6 +1,5 @@
 import React from 'react'
 import { FlexDiv, Input, SmallButton } from 'Pages/Signup/Signup'
-import { useInput } from 'Utils/Hooks/useInput'
 
 const daum = window.daum
 
@@ -62,7 +61,9 @@ export default function Address({
           onClick={setDaumAddr}
           readOnly
         />
-        <SmallButton clickHandler={setDaumAddr}>주소 검색하기</SmallButton>
+        <SmallButton type="button" clickHandler={setDaumAddr}>
+          주소 검색하기
+        </SmallButton>
       </FlexDiv>
       <Input type="text" placeholder="기본 주소" value={addr} disabled />
       <Input

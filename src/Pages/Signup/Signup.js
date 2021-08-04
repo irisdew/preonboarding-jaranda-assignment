@@ -28,11 +28,11 @@ export default function Signup() {
   const [addr, setAddr] = useInput('')
   const [extraAddr, setExtraAddr, onChangeExtraAddr] = useInput('')
   const [cardNum, setCardNum] = useState('카드 번호')
-  //카드 입력 모달 창
+  // 카드 입력 모달 창
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
 
-  //비밀번호와 비밀번호확인이 일치하지 않을 때
-  const CheckPassWord = () => {
+  // 비밀번호와 비밀번호확인이 일치하지 않을 때
+  const checkPassWord = () => {
     if (pass !== passConfirm) {
       toast('비밀번호가 일치하지 않습니다!')
     }
@@ -66,7 +66,7 @@ export default function Signup() {
   }
 
   // 비밀번호 validation
-  const CheckPasswordPolicy = (password) => {
+  const checkPasswordPolicy = (password) => {
     const { isNumeric, isSpecialCharacter, isAlphabet, isOverEight } =
       validation
     setPassPolicy({
@@ -82,6 +82,22 @@ export default function Signup() {
     setPopup(close)
   }
 
+  const onSubmitHandler = (e) => {
+    e.preventDefault()
+
+    const userInfo = {
+      ...inputs,
+      pass,
+      passConfirm,
+      post,
+      addr,
+      extraAddr,
+      cardNum,
+    }
+
+    console.log('userInfo', userInfo)
+  }
+
   return (
     <Layout>
       <FormSection>
@@ -95,13 +111,13 @@ export default function Signup() {
           placeholder="비밀번호"
           value={pass}
           onChange={onChangePass}
-          onBlur={(e) => CheckPasswordPolicy(e.target.value)}
+          onBlur={(e) => checkPasswordPolicy(e.target.value)}
         />
         <PasswordPolicy passPolicy={passPolicy} />
         <Input
           type="password"
           placeholder="비밀번호 확인"
-          onBlur={CheckPassWord}
+          onBlur={checkPassWord}
           value={passConfirm}
           onChange={onChangePassConfirm}
         />
@@ -132,7 +148,9 @@ export default function Signup() {
         <InputTitle>결제 정보</InputTitle>
         <FlexDiv>
           <Input type="text" value={cardNum} placeholder="{cardNum}" disabled />
-          <SmallButton clickHandler={openPopup}>카드 입력하기</SmallButton>
+          <SmallButton clickHandler={openPopup} type="button">
+            카드 입력하기
+          </SmallButton>
         </FlexDiv>
         <InputTitle>회원 유형을 선택해주세요</InputTitle>
         <Radio type="radio" name="role" id="radio_student" />
@@ -141,7 +159,7 @@ export default function Signup() {
         <Label htmlFor="radio_parent">학부모님</Label>
         <Radio type="radio" name="role" id="radio_teacher" />
         <Label htmlFor="radio_teacher">선생님</Label>
-        <LongButton>가입하기</LongButton>
+        <LongButton clickHandler={onSubmitHandler}>가입하기</LongButton>
         {showPopup ? (
           <>
             <CardPopup onSubmit={onCardSubmit} />
