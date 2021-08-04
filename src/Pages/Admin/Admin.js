@@ -6,8 +6,18 @@ import Search from 'Components/Admin/Search'
 import UserAddForm from './UserTable/UserAddForm/UserAddForm'
 
 export default function Admin() {
-  const [userInfo, setUserInfo] = useState([])
+  const [usersInfo, setUsersInfo] = useState([])
+  const [isOpenedUserAddForm, setIsOpenedUserAddForm] = useState(false)
   const searchRef = useRef()
+
+  const handleAddUserInfo = (value) => {
+    const newUserInfo = {
+      ...value,
+      id: usersInfo.length,
+      address: { address: value.address },
+    }
+    setUsersInfo([...usersInfo, newUserInfo])
+  }
 
   useEffect(() => {
     fetchData()
@@ -17,7 +27,7 @@ export default function Admin() {
     fetch('http://localhost:3002/data/users.json')
       .then((res) => res.json())
       .then((res) => {
-        setUserInfo(res)
+        setUsersInfo(res)
       })
   }
 
@@ -35,40 +45,53 @@ export default function Admin() {
       if (selected === '이름') filtering = 'name'
       if (selected === '나이') {
         filtering = 'age'
-        dataFilter = userInfo.filter(
+        dataFilter = usersInfo.filter(
           (item) => String(item[filtering]).indexOf(inputValue) !== -1
         )
       } else {
-        dataFilter = userInfo.filter(
+        dataFilter = usersInfo.filter(
           (item) => item[filtering].indexOf(inputValue) !== -1
         )
       }
       console.log('검색결과', dataFilter)
       console.log(dataFilter)
-      setUserInfo(dataFilter)
+      setUsersInfo(dataFilter)
     }
   }
+
+  console.log(usersInfo)
 
   return (
     <AdminWrapper>
       <Search filterUserInfo={filterUserInfo} searchRef={searchRef} />
-      <UserTable usersData={userInfo} setUsersData={setUserInfo} />
-      <UserAddForm userData={getUserDataTemplate()} />
+      <UserTable
+        usersInfo={usersInfo}
+        setUsersInfo={setUsersInfo}
+        setIsOpenedUserAddForm={setIsOpenedUserAddForm}
+      />
+      {isOpenedUserAddForm && (
+        <UserAddForm
+          userDataTemplate={getUserDataTemplate()}
+          handleAddUserInfo={handleAddUserInfo}
+          setIsOpenedUserAddForm={setIsOpenedUserAddForm}
+        />
+      )}
       <UserAddButtonWrapper>
-        <UserAddButton>사용자 추가</UserAddButton>
+        <UserAddButton onClick={() => setIsOpenedUserAddForm(true)}>
+          사용자 추가
+        </UserAddButton>
       </UserAddButtonWrapper>
     </AdminWrapper>
   )
 }
 
-function getUserDataTemplate(id) {
+function getUserDataTemplate() {
   const template = {
-    // id,
     email: 'ex: abcdefg@jaranda.com',
     name: 'ex: 김학생',
     age: 'ex: 10',
     address: 'ex: 경기도 부천시 경인로117번길 27',
-    card_num: 'ex: 0000-0000-0000-0000',
+    card_number: 'ex: 0000-0000-0000-0000',
     auth: 'ex: parent',
   }
   return Object.entries(template)
@@ -90,6 +113,13 @@ const UserAddButtonWrapper = styled.div`
 const UserAddButton = styled.button`
   margin-top: 20px;
   width: 100px;
-  height: 50px;
-  border: 1px solid black;
+  height: 40px;
+  background: #4b85fc;
+  color: white;
+  border-radius: 10px;
+
+  :hover {
+    cursor: pointer;
+    opacity: 0.7;
+  }
 `
