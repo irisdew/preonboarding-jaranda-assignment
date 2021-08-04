@@ -2,11 +2,12 @@ import React from 'react'
 import styled from 'styled-components/macro'
 
 import footerBgUrl from 'Assets/Images/bg-footer.png'
+import footerBgBlueUrl from 'Assets/Images/bg-footer-blue.png'
 
-export default function Footer(props) {
+export default function Footer({ color }) {
   return (
     <Wrapper>
-      <Container>
+      <Container color={color}>
         <Content>
           <TeamInfoWrap>
             <Title>Team RE4CT</Title>
@@ -48,18 +49,21 @@ const Wrapper = styled.footer`
     height: 69rem;
   }
 `
-const Container = styled.div`
+const Container = styled.div.attrs(({ color }) => ({
+  bgColor: color === 'green' ? '#87bf44' : '#0085fd',
+  bgImg: color === 'green' ? footerBgUrl : footerBgBlueUrl,
+}))`
   position: relative;
   width: 100%;
   height: 100%;
-  background-color: #87bf44;
+  background-color: ${({ bgColor }) => bgColor};
   &::before {
     content: '';
     position: absolute;
     display: block;
     width: 100%;
     height: 15rem;
-    background: center top / 1440px 100% no-repeat url(${footerBgUrl});
+    background: center top / 1440px 100% no-repeat url(${({ bgImg }) => bgImg});
     transform: translateY(-14.9rem);
   }
   @media screen and ${({ theme }) => theme.device.desktop} {

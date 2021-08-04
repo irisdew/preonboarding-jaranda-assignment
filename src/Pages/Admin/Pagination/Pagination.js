@@ -12,15 +12,15 @@ export default function Pagination({ pagingData, changePageNum, arrowBtn }) {
             <FontAwesomeIcon icon={faCaretLeft} />
           </Prev>
         )}
-        {/* {[...Array(pagingData.fullPage)].map((ele, index) => (
-          <a key={index}>
-            <span onClick={changePageNum}>{index + 1}</span>
-          </a>
-        ))} */}
         {[...Array(pagingData.fullPage)].map((ele, index) => (
-          <span onClick={changePageNum} key={index}>
+          <PageNumber
+            onClick={changePageNum}
+            key={index}
+            check={pagingData.currentPage}
+            idx={index}
+          >
             {index + 1}
-          </span>
+          </PageNumber>
         ))}
         {pagingData.fullPage > pagingData.currentPage && (
           <Next onClick={arrowBtn} data-check="next">
@@ -50,11 +50,28 @@ const Paging = styled.div`
     border: 0.1rem solid #aac14f;
     border-radius: 0.3rem;
     background-color: #fafafa;
+    vertical-align: middle;
 
     &:hover {
-      background-color: #dd346c;
+      background-color: #dfeda7;
       color: #fafafa;
+      cursor: pointer;
     }
+  }
+`
+
+const PageNumber = styled.button`
+  margin-right: 1rem;
+  padding: 0.9rem;
+  border: 0.1rem solid #aac14f;
+  border-radius: 0.3rem;
+  background-color: ${(props) => props.check === props.idx + 1 && '#aac14f'};
+  color: ${(props) => props.check === props.idx + 1 && '#fafafa'};
+
+  &:hover {
+    background-color: #dfeda7;
+    color: #fafafa;
+    cursor: pointer;
   }
 `
 
@@ -67,8 +84,9 @@ const Prev = styled.span`
   background-color: #fafafa;
 
   &:hover {
-    background-color: #dd346c;
+    background-color: #dfeda7;
     color: #fafafa;
+    cursor: pointer;
   }
 `
 
@@ -81,7 +99,8 @@ const Next = styled.span`
   background-color: #fafafa;
 
   &:hover {
-    background-color: #dd346c;
+    background-color: #dfeda7;
     color: #fafafa;
+    cursor: pointer;
   }
 `
