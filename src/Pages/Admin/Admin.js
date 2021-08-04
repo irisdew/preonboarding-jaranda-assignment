@@ -2,12 +2,25 @@ import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components/macro'
 import UserTable from './UserTable/UserTable'
 
+<<<<<<< HEAD
 import Search from 'Components/Admin/Search'
 import UserAddForm from './UserTable/UserAddForm/UserAddForm'
 
 export default function Admin() {
   const [usersInfo, setUsersInfo] = useState([])
   const [isOpenedUserAddForm, setIsOpenedUserAddForm] = useState(false)
+=======
+import Search from 'Pages/Admin/Search/Search'
+import Pagination from 'Pages/Admin/Pagination/Pagination'
+
+export default function Admin() {
+  const [userInfo, setUserInfo] = useState([])
+  const [filterInfo, setFilterInfo] = useState([])
+  const [pagingData, setPagingData] = useState({
+    currentPage: 0,
+    fullPage: 0,
+  })
+>>>>>>> develop
   const searchRef = useRef()
 
   const handleAddUserInfo = (value) => {
@@ -20,6 +33,7 @@ export default function Admin() {
   }
 
   useEffect(() => {
+<<<<<<< HEAD
     fetchData()
   }, [])
 
@@ -28,21 +42,29 @@ export default function Admin() {
       .then((res) => res.json())
       .then((res) => {
         setUsersInfo(res)
+=======
+    fetch('http://localhost:3000/data/users.json')
+      .then((res) => res.json())
+      .then((res) => {
+        setUserInfo(res)
+        setPagingData({ currentPage: 1, fullPage: Math.ceil(res.length / 4) })
+>>>>>>> develop
       })
-  }
+  }, [])
 
   const filterUserInfo = (selected) => {
     let inputValue = searchRef.current.value
     let filtering = ''
     let dataFilter = []
+<<<<<<< HEAD
     // fetchData()
+=======
+>>>>>>> develop
 
-    // if (e.target.nextElementSibling) {
     if (inputValue.length > 0 && selected !== '선택') {
-      // const inputValue = e.target.nextElementSibling.value
-
-      if (selected === '아이디') filtering = 'email'
+      if (selected === '이메일') filtering = 'email'
       if (selected === '이름') filtering = 'name'
+<<<<<<< HEAD
       if (selected === '나이') {
         filtering = 'age'
         dataFilter = usersInfo.filter(
@@ -76,12 +98,50 @@ export default function Admin() {
           setIsOpenedUserAddForm={setIsOpenedUserAddForm}
         />
       )}
+=======
+      if (selected === '나이') filtering = 'age'
+      dataFilter = userInfo.filter(
+        (item) => item[filtering].indexOf(inputValue) !== -1
+      )
+
+      console.log('검색결과', dataFilter)
+
+      setFilterInfo(dataFilter)
+      setPagingData({
+        currentPage: 1,
+        fullPage: Math.ceil(dataFilter.length / 4),
+      })
+    }
+  }
+
+  const refreshBtn = () => {
+    setFilterInfo(userInfo)
+    setPagingData({
+      currentPage: 1,
+      fullPage: Math.ceil(userInfo.length / 4),
+    })
+  }
+
+  return (
+    <>
+      <Search
+        filterUserInfo={filterUserInfo}
+        searchRef={searchRef}
+        refreshBtn={refreshBtn}
+      />
+      <UserTable usersData={userInfo} filterData={filterInfo} />
+>>>>>>> develop
       <UserAddButtonWrapper>
         <UserAddButton onClick={() => setIsOpenedUserAddForm(true)}>
           사용자 추가
         </UserAddButton>
       </UserAddButtonWrapper>
+<<<<<<< HEAD
     </AdminWrapper>
+=======
+      <Pagination pagingData={pagingData} />
+    </>
+>>>>>>> develop
   )
 }
 

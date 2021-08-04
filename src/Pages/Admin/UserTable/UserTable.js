@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import UserCategoryRow from './UserCategoryRow/UserCategoryRow'
 import UserRows from './UserRows/UserRows'
 
+<<<<<<< HEAD
 export const EditContext = createContext({
   targetData: {},
   usersInfo: [],
@@ -34,14 +35,27 @@ export default function UserTable({ usersInfo, setUsersInfo }) {
       id: clickedRowData.id,
       index: Number(id),
     })
+=======
+export default function UserTable({ usersData, filterData }) {
+  const handleClickTable = () => {
+    console.log('1')
+>>>>>>> develop
   }
 
   return (
     <Table onClick={handleClickTable}>
       <UserCategoryRow />
+<<<<<<< HEAD
       <EditContext.Provider value={value}>
         <UserRows usersInfo={usersInfo} />
       </EditContext.Provider>
+=======
+      {filterData.length !== 0 ? (
+        <UserRows usersData={filterData} />
+      ) : (
+        <UserRows usersData={usersData} />
+      )}
+>>>>>>> develop
     </Table>
   )
 }

@@ -1,6 +1,6 @@
 [
   {
-    "id": 0,
+    "id": 1,
     "email": "admin@jaranda.com",
     "password": "admin1234",
     "name": "admin",
@@ -12,10 +12,10 @@
     "card_number": "0000-0000-0000-0000",
     "age": "0",
     "auth": "admin",
-    "access": ["/admin"]
+    "access": ["/admin", "/teacher", "/student", "/parent"]
   },
   {
-    "id": 1,
+    "id": 2,
     "email": "kimteacher@jaranda.com",
     "password": "kimteacher1234",
     "name": "김선생",
@@ -30,7 +30,7 @@
     "access": ["/teacher"]
   },
   {
-    "id": 2,
+    "id": 3,
     "email": "leeteacher@jaranda.com",
     "password": "leeteacher1234",
     "name": "이선생",
@@ -45,7 +45,7 @@
     "access": ["/teacher"]
   },
   {
-    "id": 3,
+    "id": 4,
     "email": "parkteacher@jaranda.com",
     "password": "parkteacher1234",
     "name": "박선생",
@@ -60,7 +60,7 @@
     "access": ["/teacher"]
   },
   {
-    "id": 4,
+    "id": 5,
     "email": "kimstudent@jaranda.com",
     "password": "kimstudent1234",
     "name": "김학생",
@@ -75,7 +75,7 @@
     "access": ["/student"]
   },
   {
-    "id": 5,
+    "id": 6,
     "email": "leestudent@jaranda.com",
     "password": "leestudent1234",
     "name": "이학생",
@@ -90,7 +90,7 @@
     "access": ["/student"]
   },
   {
-    "id": 6,
+    "id": 7,
     "email": "parkstudent@jaranda.com",
     "password": "parkstudent1234",
     "name": "박학생",
@@ -102,10 +102,10 @@
     "card_number": "7345-9485-1122-4212",
     "age": "15",
     "auth": "student",
-    "access": []
+    "access": ["/student"]
   },
   {
-    "id": 7,
+    "id": 8,
     "email": "kimparent@jaranda.com",
     "password": "kimparent1234",
     "name": "김부모",
@@ -120,7 +120,7 @@
     "access": ["/parent"]
   },
   {
-    "id": 8,
+    "id": 9,
     "email": "leeparent@jaranda.com",
     "password": "leeparent1234",
     "name": "이부모",
@@ -135,7 +135,7 @@
     "access": ["/parent"]
   },
   {
-    "id": 9,
+    "id": 10,
     "email": "parkparent@jaranda.com",
     "password": "parkparent1234",
     "name": "박부모",
