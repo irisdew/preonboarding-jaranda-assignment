@@ -48,13 +48,13 @@ export default function Signup() {
     const { name, value } = event.target
 
     if (name === 'name') {
-      if (!validation.isKorean(value)) {
+      if (validation.isNotKorean(value)) {
         toast('이름을 한글로 입력해주세요!')
         return
       }
     }
     if (name === 'age') {
-      if (!validation.isNumeric(value)) {
+      if (validation.isNotNumeric(value)) {
         toast('숫자만 입력해주세요!')
         return
       }
@@ -131,7 +131,7 @@ export default function Signup() {
         />
         <InputTitle>결제 정보</InputTitle>
         <FlexDiv>
-          <Input type="text" value={cardNum} placeholder="{cardNum}" disabled />
+          <Input type="text" value={cardNum} placeholder="카드 번호" disabled />
           <SmallButton clickHandler={openPopup}>카드 입력하기</SmallButton>
         </FlexDiv>
         <InputTitle>회원 유형을 선택해주세요</InputTitle>
@@ -194,7 +194,7 @@ const Label = styled.label`
 
 export const LongButton = styled(Button)`
   width: 100%;
-  margin-top: 3rem;
+  margin-top: 5rem;
   background-color: #0085fd;
 `
 
