@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import PasswordPolicy from 'Components/PasswordPolicy/PasswordPolicy'
 import Address from 'Components/Address/Address'
 import CardPopup from 'Pages/Signup/CardPopup'
+import Toast from 'Components/Toast/Toast'
+import useToast from 'Utils/Hooks/useToast'
 // import Button from 'Components/Button/Button'
 import { useInput } from 'Utils/useInput'
 import { usePopup } from 'Pages/Signup/usePopup'
@@ -23,20 +25,13 @@ export default function Signup() {
   //카드 입력 모달 창
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
 
-  //비밀번호와 비밀번호확인이 일치하지 않을 때
-  const CheckPassWord = () => {
-    if (pass !== passConfirm) {
-      console.log('비밀번호가 일치하지 않습니다')
-    }
-  }
+  const { isShow, message, toast } = useToast()
 
   const CheckPasswordPolicy = (password) => {
     console.log('password policy: ', password)
-
     const numeric = /[0-9]/g
     const alphabet = /[a-z]/gi
     const special = /[~!@#$%^&*()_+|<>?:{}]/g
-
     const currentPassword = {}
 
     if (numeric.test(password)) {
@@ -60,16 +55,54 @@ export default function Signup() {
     setPassPolicy(currentPassword)
   }
 
+  //비밀번호와 비밀번호확인이 일치하지 않을 때
+  const CheckPassWord = () => {
+    if (pass !== passConfirm) {
+      toast('비밀번호가 일치하지 않습니다!')
+    }
+  }
+
+  //카드 팝업 창 닫기, 카드정보 input에 value 설정
   const onCardSubmit = (cardData, close) => {
     setCardNum(cardData)
     setPopup(close)
+  }
+
+  // 이름, 나이 validation
+  const [inputs, setInputs] = useState({
+    name: '',
+    age: '',
+  })
+  const { name, age } = inputs
+  const checkValidation = (event) => {
+    const NOT_NUMERIC = /[^0-9]/gi //숫자가 아닌 경우
+    const HANGUL = /[^ㄱ-ㅎㅏ-ㅣ가-힣]/gi //한글이 아닌 경우
+
+    const { name, value } = event.target
+
+    if (name === 'name') {
+      if (HANGUL.test(value)) {
+        toast('한글로 입력해주세요!')
+        return
+      }
+    }
+    if (name === 'age') {
+      if (NOT_NUMERIC.test(value)) {
+        toast('숫자만 입력해주세요!')
+        return
+      }
+    }
+    setInputs({
+      ...inputs,
+      [name]: value,
+    })
   }
 
   return (
     <FormSection>
       <FormTitle>
         <div>간편하게 회원가입하고</div>
-        <div>선생님 정보를 받아보세요</div>
+        <div>자란다를 이용해보세요</div>
       </FormTitle>
       <form action="">
         <ul>
@@ -94,13 +127,25 @@ export default function Signup() {
             />
           </li>
           <li>
-            <Input type="text" placeholder="이름" />
+            <Input
+              type="text"
+              name="name"
+              placeholder="이름"
+              value={name}
+              onChange={checkValidation}
+            />
           </li>
           <li>
-            <Input type="text" placeholder="나이" />
+            <Input
+              type="text"
+              name="age"
+              placeholder="나이"
+              value={age}
+              onChange={checkValidation}
+            />
           </li>
           <li>
-            {/* <InputTitle>주소</InputTitle> */}
+            <InputTitle>주소</InputTitle>
             <Address
               post={post}
               setPost={setPost}
@@ -124,7 +169,9 @@ export default function Signup() {
             </FlexDiv>
           </li>
           <li>
-            <InputTitle>학부모님 이신가요?</InputTitle>
+            <InputTitle>회원 유형을 선택해주세요</InputTitle>
+            <Radio type="radio" name="role" id="radio_student" />
+            <Label htmlFor="radio_student">학생</Label>
             <Radio type="radio" name="role" id="radio_parent" />
             <Label htmlFor="radio_parent">학부모님</Label>
             <Radio type="radio" name="role" id="radio_teacher" />
@@ -139,6 +186,7 @@ export default function Signup() {
           <Background onClick={closePopup} />
         </>
       ) : null}
+      <Toast message={message} isShow={isShow} />
     </FormSection>
   )
 }
