@@ -7,12 +7,15 @@ import Button from 'Components/Form/Button'
 import PasswordPolicy from 'Components/PasswordPolicy/PasswordPolicy'
 import Address from 'Components/Address/Address'
 import CardPopup from 'Pages/Signup/CardPopup'
-// import Toast from 'Components/Toast/Toast'
+import Toast from 'Components/Toast/Toast'
+import useToast from 'Utils/Hooks/useToast'
 import validation from 'Utils/Validation/Validation'
 import { useInput } from 'Utils/Hooks/useInput'
 import { usePopup } from 'Pages/Signup/usePopup'
 
 export default function Signup() {
+  const { isShow, message, toast } = useToast()
+
   const [pass, , onChangePass] = useInput('')
   const [passConfirm, , onChangePassConfirm] = useInput('')
   const [passPolicy, setPassPolicy] = useState({
@@ -31,10 +34,38 @@ export default function Signup() {
   //비밀번호와 비밀번호확인이 일치하지 않을 때
   const CheckPassWord = () => {
     if (pass !== passConfirm) {
-      console.log('비밀번호가 일치하지 않습니다')
+      toast('비밀번호가 일치하지 않습니다!')
     }
   }
 
+  // 이름, 나이 validation
+  const [inputs, setInputs] = useState({
+    name: '',
+    age: '',
+  })
+  const { name, age } = inputs
+  const checkValidation = (event) => {
+    const { name, value } = event.target
+
+    if (name === 'name') {
+      if (!validation.isKorean(value)) {
+        toast('이름을 한글로 입력해주세요!')
+        return
+      }
+    }
+    if (name === 'age') {
+      if (!validation.isNumeric(value)) {
+        toast('숫자만 입력해주세요!')
+        return
+      }
+    }
+    setInputs({
+      ...inputs,
+      [name]: value,
+    })
+  }
+
+  // 비밀번호 validation
   const CheckPasswordPolicy = (password) => {
     const { isNumeric, isSpecialCharacter, isAlphabet, isOverEight } =
       validation
@@ -56,82 +87,74 @@ export default function Signup() {
       <FormSection>
         <FormTitle>
           <div>간편하게 회원가입하고</div>
-          <div>선생님 정보를 받아보세요</div>
+          <div>자란다를 이용해보세요</div>
         </FormTitle>
-        <form action="">
-          <ul>
-            <li>
-              <Input type="text" placeholder="이메일" />
-            </li>
-            <li>
-              <Input
-                type="password"
-                placeholder="비밀번호"
-                value={pass}
-                onChange={onChangePass}
-                onBlur={(e) => CheckPasswordPolicy(e.target.value)}
-              />
-              <PasswordPolicy passPolicy={passPolicy} />
-              <Input
-                type="password"
-                placeholder="비밀번호 확인"
-                onBlur={CheckPassWord}
-                value={passConfirm}
-                onChange={onChangePassConfirm}
-              />
-            </li>
-            <li>
-              <Input type="text" placeholder="이름" />
-            </li>
-            <li>
-              <Input type="text" placeholder="나이" />
-            </li>
-            <li>
-              <InputTitle>주소</InputTitle>
-              <Address
-                post={post}
-                setPost={setPost}
-                addr={addr}
-                setAddr={setAddr}
-                extraAddr={extraAddr}
-                setExtraAddr={setExtraAddr}
-                onChangeExtraAddr={onChangeExtraAddr}
-              />
-            </li>
-            <li>
-              <InputTitle>결제 정보</InputTitle>
-              <FlexDiv>
-                <Input
-                  type="text"
-                  value={cardNum}
-                  placeholder="{cardNum}"
-                  disabled
-                />
-                <SmallButton onClick={openPopup}>카드 입력하기</SmallButton>
-              </FlexDiv>
-            </li>
-            <li>
-              <InputTitle>학부모님 이신가요?</InputTitle>
-              <Radio type="radio" name="role" id="radio_parent" />
-              <Label htmlFor="radio_parent">학부모님</Label>
-              <Radio type="radio" name="role" id="radio_teacher" />
-              <Label htmlFor="radio_teacher">선생님</Label>
-            </li>
-            <LongButton>가입하기</LongButton>
-          </ul>
-        </form>
+        <Input type="text" placeholder="이메일" />
+        <Input
+          type="password"
+          placeholder="비밀번호"
+          value={pass}
+          onChange={onChangePass}
+          onBlur={(e) => CheckPasswordPolicy(e.target.value)}
+        />
+        <PasswordPolicy passPolicy={passPolicy} />
+        <Input
+          type="password"
+          placeholder="비밀번호 확인"
+          onBlur={CheckPassWord}
+          value={passConfirm}
+          onChange={onChangePassConfirm}
+        />
+        <Input
+          type="text"
+          name="name"
+          placeholder="이름"
+          value={name}
+          onChange={checkValidation}
+        />
+        <Input
+          type="text"
+          name="age"
+          placeholder="나이"
+          value={age}
+          onChange={checkValidation}
+        />
+        <InputTitle>주소</InputTitle>
+        <Address
+          post={post}
+          setPost={setPost}
+          addr={addr}
+          setAddr={setAddr}
+          extraAddr={extraAddr}
+          setExtraAddr={setExtraAddr}
+          onChangeExtraAddr={onChangeExtraAddr}
+        />
+        <InputTitle>결제 정보</InputTitle>
+        <FlexDiv>
+          <Input type="text" value={cardNum} placeholder="{cardNum}" disabled />
+          <SmallButton clickHandler={openPopup}>카드 입력하기</SmallButton>
+        </FlexDiv>
+        <InputTitle>회원 유형을 선택해주세요</InputTitle>
+        <Radio type="radio" name="role" id="radio_student" />
+        <Label htmlFor="radio_student">학생</Label>
+        <Radio type="radio" name="role" id="radio_parent" />
+        <Label htmlFor="radio_parent">학부모님</Label>
+        <Radio type="radio" name="role" id="radio_teacher" />
+        <Label htmlFor="radio_teacher">선생님</Label>
+        <LongButton>가입하기</LongButton>
         {showPopup ? (
           <>
             <CardPopup onSubmit={onCardSubmit} />
             <Background onClick={closePopup} />
           </>
         ) : null}
+        <Toast message={message} isShow={isShow} />
       </FormSection>
     </Layout>
   )
 }
 
-const FormSection = styled.div`
+const FormSection = styled.form`
   width: 45rem;
   margin: 0 auto;
 `
