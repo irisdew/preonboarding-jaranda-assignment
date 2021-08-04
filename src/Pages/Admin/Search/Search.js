@@ -86,6 +86,7 @@ const DropBtn = styled.button`
   align-items: center;
   justify-content: space-around;
   color: #aac14f;
+  cursor: pointer;
 
   span {
     color: #65737e;
@@ -101,7 +102,7 @@ const Menu = styled.div`
   width: 8rem;
   height: 6rem;
   box-shadow: 0 0.4rem 1rem 0 rgba(0, 0, 0, 0.2);
-  z-index: 10;
+  z-index: 100;
   margin-top: 0.2rem;
   border: 0.1rem solid #aac14f;
   border-radius: 0.3rem;
@@ -152,6 +153,7 @@ const InputBtn = styled.button`
 
   &:hover {
     color: #dd346c;
+    cursor: pointer;
   }
 `
 
@@ -167,6 +169,7 @@ const InitBox = styled.div`
     border: 1px solid #aac14f;
     border-radius: 0.3rem;
     color: #aac14f;
+    cursor: pointer;
 
     &:hover {
       color: #dd346c;
