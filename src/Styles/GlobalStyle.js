@@ -9,6 +9,10 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     margin: 0;
   }
+
+  html {
+    font-size: 62.5%;
+  }
   
   body {
     font-family: Circular, -apple-system, BlinkMacSystemFont, Roboto, Helvetica Neue, sans-serif;
@@ -21,14 +25,14 @@ const GlobalStyle = createGlobalStyle`
   a, a:hover, a:focus {
     color: inherit;
     text-decoration: none;
-    cursor: pointer;
+    /* cursor: pointer; */
   }
 
   input, button {
     background-color: transparent;
     border: none;
     outline: none;
-    cursor: pointer;
+    /* cursor: pointer; */
   }
 
   ol, ul, li {
