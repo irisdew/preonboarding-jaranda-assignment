@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
-import { useInput } from 'Utils/useInput'
+import { useInput } from 'Utils/Hooks/useInput'
 import { usePopup } from 'Pages/Signup/usePopup'
 import { FlexDiv, Input, InputTitle, LongButton } from 'Pages/Signup/Signup'
 

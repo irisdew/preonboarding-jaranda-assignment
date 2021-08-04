@@ -18,6 +18,7 @@ const Wrapper = styled.button`
   border-radius: 0.6rem;
   color: #fff;
   background-color: #87bf44;
+  cursor: pointer;
   @media screen and ${({ theme }) => theme.device.tablet} {
     height: 4.4rem;
   }
