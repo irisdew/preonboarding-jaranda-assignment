@@ -69,12 +69,15 @@ export default function Signup() {
   const checkPasswordPolicy = (password) => {
     const { isNumeric, isSpecialCharacter, isAlphabet, isOverEight } =
       validation
-    setPassPolicy({
+    const currentPassPolicy = {
       numeric: isNumeric(password),
       special: isSpecialCharacter(password),
       alphabet: isAlphabet(password),
       eight: isOverEight(password),
-    })
+    }
+    setPassPolicy(currentPassPolicy)
+    const validated = Object.values(currentPassPolicy).every((item) => item)
+    validated || toast('비밀번호 규칙에 맞는 비밀번호를 입력해주세요')
   }
 
   const onCardSubmit = (cardData, close) => {
