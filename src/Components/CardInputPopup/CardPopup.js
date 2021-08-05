@@ -28,10 +28,11 @@ export default function CardPopup(props) {
   }
 
   useEffect(setFocus, [])
+
   const onChange = (event) => {
     const { name, value } = event.target
     let currentCardNum = Number(name[name.length - 1])
-    //카드 정보 입력 (숫자인지 확인 && 4글자 까지만 입력 가능)
+
     if (validation.isNotNumeric(value)) {
       toast('숫자만 입력하세요')
     }
