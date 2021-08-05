@@ -226,8 +226,8 @@ const AdminWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 1420px;
-  max-width: 1420px;
+  min-width: 1360px;
+  max-width: 1360px;
   margin-top: 50px;
   padding: 0 50px;
 `
