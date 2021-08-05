@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch } from 'react-router-dom'
 
 import PublicRoute from 'Routes/PublicRoute'
 import PrivateRoute from 'Routes/PrivateRoute'
@@ -30,7 +30,7 @@ export default function Routes() {
         <PrivateRoute exact path="/parent" component={Parent} />
         <PrivateRoute exact path="/teacher" component={Teacher} />
         <PrivateRoute exact path="/student" component={Student} />
-        <PublicRoute exact path="/mypage" component={MyPage} />
+        <PublicRoute path="/mypage" component={MyPage} />
         <PublicRoute component={NotFound} />
       </Switch>
     </Router>
