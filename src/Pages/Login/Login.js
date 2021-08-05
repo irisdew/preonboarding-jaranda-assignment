@@ -11,7 +11,7 @@ import validation from 'Utils/Validation/Validation'
 import useToast from 'Utils/Hooks/useToast'
 import auth from 'Utils/Auth/Auth'
 import { rememberMeStorage } from 'Utils/Storage'
-import { loginState } from 'Constant'
+import { errorState, authType } from 'Constant'
 import bgImgUrl from 'Assets/Images/bg-sign_in.png'
 import mBgImgUrl from 'Assets/Images/bg-sign-m.png'
 
@@ -37,41 +37,46 @@ export default function Login() {
     [isRememberId]
   )
 
-  const handleLogin = useCallback(() => {
+  const handleAfterLogin = (account) => {
+    const { email, auth } = account
+    isRememberId ? rememberMeStorage.save(email) : rememberMeStorage.remove()
+    auth === authType.ADMIN.name ? history.push('/admin') : history.push('/')
+  }
+
+  const handleLogin = useCallback(async () => {
     const id = idInputRef.current
     const pw = pwInputRef.current
     if (!id.value) {
       toast('이메일을 입력해주세요.')
       id.focus()
+      return
     } else if (!pw.value) {
       toast('비밀번호를 입력해주세요.')
       pw.focus()
+      return
     } else if (!validation.isEmail(id.value)) {
       toast('유효하지 않은 이메일입니다.')
       id.value = ''
       id.focus()
-    } else {
-      const state = auth.login(id.value, pw.value)
-      switch (state.name) {
-        case loginState.SUCCESS.name:
-          isRememberId
-            ? rememberMeStorage.save(id.value)
-            : rememberMeStorage.remove()
-          history.push('/')
-          return
+      return
+    }
 
-        case loginState.FAIL.reason.NO_ACCOUNT_REGISTERED.name:
-          toast(state.desc)
+    try {
+      const account = await auth.login(id.value, pw.value)
+      handleAfterLogin(account)
+    } catch (err) {
+      toast(err.message)
+      switch (err.type) {
+        case errorState.NO_ACCOUNT_REGISTERED.name:
           id.focus()
           return
 
-        case loginState.FAIL.reason.PASSWORD_MISMATCH.name:
-          toast(state.desc)
+        case errorState.PASSWORD_MISMATCH.name:
           pw.focus()
           return
 
         default:
-          throw new Error('is not valid state')
+          throw new Error('is not valid error type')
       }
     }
   }, [isRememberId])
@@ -139,7 +144,7 @@ const Container = styled.div`
   margin: 0 auto;
   border-top-right-radius: 6rem;
   padding: 4.8rem 0;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.color.white};
   @media screen and ${({ theme }) => theme.device.tablet} {
     background-color: transparent;
   }
@@ -151,6 +156,7 @@ const LoginContent = styled.div`
   align-items: center;
   max-width: 45rem;
   margin: 0 auto;
+  padding: 0 1rem;
 `
 
 const StyledTitle = styled.span`
@@ -180,7 +186,7 @@ const LoginButton = styled(Button)`
     display: block;
     width: 100%;
     height: 0.1rem;
-    background-color: #e5e5e5;
+    background-color: ${({ theme }) => theme.color.lightGreyB};
   }
   @media screen and ${({ theme }) => theme.device.tablet} {
     margin-bottom: 2.4rem;
@@ -197,11 +203,11 @@ const SignupButton = styled(Link)`
   height: 5.2rem;
   margin-bottom: 3.8rem;
   border-radius: 0.6rem;
-  color: #fff;
-  background-color: #0085fd;
+  color: ${({ theme }) => theme.color.white};
+  background-color: ${({ theme }) => theme.color.secondary};
   cursor: pointer;
   &:hover {
-    color: #fff;
+    color: ${({ theme }) => theme.color.white};
   }
   @media screen and ${({ theme }) => theme.device.tablet} {
     height: 4.4rem;

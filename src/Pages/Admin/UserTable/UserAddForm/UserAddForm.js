@@ -3,15 +3,17 @@ import styled, { keyframes } from 'styled-components'
 import UserAddInput from './UserAddInput/UserAddInput'
 
 export default function UserAddForm({
-  userDataTemplate,
   setIsOpenedUserAddForm,
   handleAddUserInfo,
 }) {
   const [newUserInfo, setNewUserInfo] = useState({
     email: '',
+    password: '',
     name: '',
     age: '',
+    postcode: '',
     address: '',
+    detail: '',
     card_number: '',
     auth: '',
   })
@@ -26,22 +28,23 @@ export default function UserAddForm({
 
     if (name === 'confirm') {
       const itemValue = Object.values(newUserInfo).find((value) => value === '')
-      if (itemValue === '') {
+      if (!itemValue.length) {
         return alert('항목의 값을 입력해주세요')
       }
+
       handleAddUserInfo(newUserInfo)
-      //새로운 유저정보 로컬스토리지 저장해야 함.
     }
     setIsStartAnimation(false)
     setTimeout(() => setIsOpenedUserAddForm(false), 200)
   }
+
   return (
     <Form isStartAnimation={isStartAnimation}>
       <TitleWrapper>
         <h1>사용자 계정 생성</h1>
       </TitleWrapper>
       <BodyWrapper>
-        {userDataTemplate.map((dataTemplate, index) => (
+        {getUserDataTemplate().map((dataTemplate, index) => (
           <UserAddInput
             key={index}
             dataTemplate={dataTemplate}
@@ -59,6 +62,21 @@ export default function UserAddForm({
       </BodyWrapper>
     </Form>
   )
+}
+
+function getUserDataTemplate() {
+  const template = {
+    email: 'ex: abcdefg@jaranda.com',
+    password: '00000000',
+    name: 'ex: 김학생',
+    age: 'ex: 10',
+    card_number: 'ex: 0000-0000-0000-0000',
+    auth: 'ex: parent',
+    postcode: 'ex: 00000',
+    address: 'ex: 경기도 부천시 경인로117번길 27',
+    detail: 'ex: 204호',
+  }
+  return Object.entries(template)
 }
 
 const renderAnimation = keyframes`

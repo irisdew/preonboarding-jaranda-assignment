@@ -7,15 +7,25 @@ export default function UserRow({
     email,
     name,
     age,
-    address: { address },
+    address: { address, postcode, address_detail },
     card_number,
     auth,
   },
 }) {
-  const userInfo = [id + 1, email, name, age, address, card_number, auth]
+  const userInfo = [
+    id,
+    email,
+    name,
+    age,
+    postcode,
+    address,
+    address_detail,
+    card_number,
+    auth,
+  ]
 
   return (
-    <tr id={`${id}`}>
+    <tr id={id}>
       {userInfo.map((info, index) => (
         <UserCell key={index} info={info} id={id} index={index} />
       ))}

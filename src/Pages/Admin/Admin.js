@@ -1,13 +1,25 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  createContext,
+  useMemo,
+} from 'react'
 import styled from 'styled-components/macro'
-import UserTable from './UserTable/UserTable'
+import UserTable from 'Pages/Admin/UserTable/UserTable'
 import Search from 'Pages/Admin/Search/Search'
-import UserAddForm from './UserTable/UserAddForm/UserAddForm'
+import UserAddForm from 'Pages/Admin/UserTable/UserAddForm/UserAddForm'
 import Pagination from 'Pages/Admin/Pagination/Pagination'
 import Toast from 'Components/Toast/Toast'
 import useToast from 'Utils/Hooks/useToast'
 import useDidMountEffect from 'Utils/Hooks/useDidMountEffect'
 import { userListStorage } from 'Utils/Storage'
+import Layout from 'Layout/Layout'
+
+export const FilterInfoContext = createContext({
+  filterInfo: [],
+  setFilterInfo: () => {},
+})
 
 export default function Admin() {
   const [usersInfo, setUsersInfo] = useState([])
@@ -17,17 +29,41 @@ export default function Admin() {
     currentPage: 1,
     fullPage: 0,
   })
-  const [searchCheck, setSearchCheck] = useState(false)
   const { isShow, message, toast } = useToast()
   const searchRef = useRef()
+  const value = useMemo(
+    () => ({
+      filterInfo,
+      setFilterInfo,
+    }),
+    [filterInfo, setFilterInfo]
+  )
 
   const handleAddUserInfo = (value) => {
+    const usersInfo = userListStorage.load()
     const newUserInfo = {
       ...value,
-      id: usersInfo.length,
-      address: { address: value.address },
+      id: usersInfo.length + 1,
+      address: {
+        address: value.address,
+        postcode: value.postcode,
+        address_detail: value.detail,
+      },
     }
+
+    if ('detail' in newUserInfo) {
+      delete newUserInfo.detail
+    }
+    if ('postcode' in newUserInfo) {
+      delete newUserInfo.postcode
+    }
+
+    userListStorage.save([...usersInfo, newUserInfo])
     setUsersInfo([...usersInfo, newUserInfo])
+    setPagingData({
+      currentPage: Math.ceil(userListStorage.load().length / 5),
+      fullPage: Math.ceil(userListStorage.load().length / 5),
+    })
   }
 
   useEffect(() => {
@@ -49,7 +85,6 @@ export default function Admin() {
           pagingData.currentPage * 5
         )
       )
-      // setSearchCheck(true)
     }
     // 검색하지 않고 페이지 변경하는 경우
     if (usersInfo.length === userListStorage.load().length) {
@@ -59,7 +94,6 @@ export default function Admin() {
           pagingData.currentPage * 5
         )
       )
-      // setSearchCheck(true)
     }
   }, [pagingData.currentPage])
 
@@ -78,7 +112,7 @@ export default function Admin() {
       // 검색 결과 없음
       if (dataFilter.length === 0) toast('일치하는 검색결과가 없습니다')
 
-      console.log('검색결과', dataFilter)
+      // console.log('검색결과', dataFilter)
 
       setUsersInfo(dataFilter)
       // setFilterInfo(filterSlice)
@@ -92,7 +126,6 @@ export default function Admin() {
         currentPage: 1,
         fullPage: Math.ceil(dataFilter.length / 5),
       })
-      // setSearchCheck(true)
     }
 
     // 메뉴 선택하고 검색하는 경우
@@ -108,7 +141,7 @@ export default function Admin() {
       // 검색 결과 없음
       if (dataFilter.length === 0) toast('일치하는 검색결과가 없습니다')
 
-      console.log('검색결과', dataFilter)
+      // console.log('검색결과', dataFilter)
 
       setUsersInfo(dataFilter)
       setFilterInfo(
@@ -157,57 +190,46 @@ export default function Admin() {
   }
 
   return (
-    <AdminWrapper>
-      <Search
-        filterUserInfo={filterUserInfo}
-        searchRef={searchRef}
-        refreshBtn={refreshBtn}
-      />
-      <UserTable
-        usersInfo={usersInfo}
-        setUsersInfo={setUsersInfo}
-        setIsOpenedUserAddForm={setIsOpenedUserAddForm}
-        filterData={filterInfo}
-        searchCheck={searchCheck}
-      />
-      {isOpenedUserAddForm && (
-        <UserAddForm
-          userDataTemplate={getUserDataTemplate()}
-          handleAddUserInfo={handleAddUserInfo}
-          setIsOpenedUserAddForm={setIsOpenedUserAddForm}
+    <Layout>
+      <AdminWrapper>
+        <Search
+          filterUserInfo={filterUserInfo}
+          searchRef={searchRef}
+          refreshBtn={refreshBtn}
         />
-      )}
-      <UserAddButtonWrapper>
-        <UserAddButton onClick={() => setIsOpenedUserAddForm(true)}>
-          사용자 추가
-        </UserAddButton>
-      </UserAddButtonWrapper>
-      <Pagination
-        pagingData={pagingData}
-        changePageNum={changePageNum}
-        arrowBtn={arrowBtn}
-      />
-      <Toast message={message} isShow={isShow} />
-    </AdminWrapper>
+        <FilterInfoContext.Provider value={value}>
+          <UserTable setIsOpenedUserAddForm={setIsOpenedUserAddForm} />
+        </FilterInfoContext.Provider>
+        {isOpenedUserAddForm && (
+          <UserAddForm
+            handleAddUserInfo={handleAddUserInfo}
+            setIsOpenedUserAddForm={setIsOpenedUserAddForm}
+          />
+        )}
+        <UserAddButtonWrapper>
+          <UserAddButton onClick={() => setIsOpenedUserAddForm(true)}>
+            사용자 추가
+          </UserAddButton>
+        </UserAddButtonWrapper>
+        <Pagination
+          pagingData={pagingData}
+          changePageNum={changePageNum}
+          arrowBtn={arrowBtn}
+        />
+        <Toast message={message} isShow={isShow} />
+      </AdminWrapper>
+    </Layout>
   )
-}
-
-function getUserDataTemplate() {
-  const template = {
-    email: 'ex: abcdefg@jaranda.com',
-    name: 'ex: 김학생',
-    age: 'ex: 10',
-    address: 'ex: 경기도 부천시 경인로117번길 27',
-    card_number: 'ex: 0000-0000-0000-0000',
-    auth: 'ex: parent',
-  }
-  return Object.entries(template)
 }
 
 const AdminWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
+  align-items: center;
+  min-width: 1420px;
+  max-width: 1420px;
+  margin-top: 50px;
+  padding: 0 50px;
 `
 
 const UserAddButtonWrapper = styled.div`

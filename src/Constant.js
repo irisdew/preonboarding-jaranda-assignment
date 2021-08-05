@@ -7,21 +7,26 @@ export const storageKeys = Object.freeze({
   REMEMBER_ME: { name: 'REMEMBER_ME', desc: '아이디 기억하기' },
 })
 
-export const loginState = Object.freeze({
-  SUCCESS: { name: 'SUCCESS', desc: '로그인 성공' },
-  FAIL: {
-    name: 'FAIL',
-    reason: {
-      NO_ACCOUNT_REGISTERED: {
-        name: 'NO_ACCOUNT_REGISTERED',
-        desc: '등록된 계정이 없습니다.',
-      },
-      PASSWORD_MISMATCH: {
-        name: 'PASSWORD_MISMATCH',
-        desc: '패스워드가 일치하지 않습니다.',
-      },
-    },
-  },
+export const authType = Object.freeze({
+  ADMIN: { name: 'admin', desc: '관리자' },
+  TEACHER: { name: 'teacher', desc: '선생님' },
+  PARENT: { name: 'parent', desc: '학부모' },
+  STUDENT: { name: 'student', desc: '학생' },
 })
 
 // TODO error state
+
+export const errorState = Object.freeze({
+  NO_ACCOUNT_REGISTERED: {
+    name: 'NO_ACCOUNT_REGISTERED',
+    desc: '등록된 계정이 없습니다.',
+  },
+  PASSWORD_MISMATCH: {
+    name: 'PASSWORD_MISMATCH',
+    desc: '패스워드가 일치하지 않습니다.',
+  },
+})
+
+export const fetchDataType = Object.freeze({
+  USERS: { name: 'users', decs: '유저 목록' },
+})
