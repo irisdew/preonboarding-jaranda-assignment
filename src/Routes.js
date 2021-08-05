@@ -5,6 +5,7 @@ import PublicRoute from 'Routes/PublicRoute'
 import PrivateRoute from 'Routes/PrivateRoute'
 import Main from 'Pages/Main/Main'
 import Admin from 'Pages/Admin/Admin'
+import AdminLogin from 'Pages/Admin/Login/AdminLogin'
 import Login from 'Pages/Login/Login'
 import Signup from 'Pages/Signup/Signup'
 import Parent from 'Pages/Parent/Parent'
@@ -27,13 +28,21 @@ export default function Routes() {
     <Router>
       <Switch>
         <PublicRoute exact path={['/', '/main']} component={Main} />
-        <PrivateRoute exact path="/admin" component={Admin} />
         <PublicRoute exact restricted path="/login" component={Login} />
         <PublicRoute restricted exact path="/signup" component={Signup} />
         <PrivateRoute exact path="/parent" component={Parent} />
         <PrivateRoute exact path="/teacher" component={Teacher} />
         <PrivateRoute exact path="/student" component={Student} />
-        <PublicRoute component={NotFound} />
+        <Switch>
+          <PrivateRoute exact path="/admin" component={Admin} />
+          <PublicRoute
+            exact
+            restricted
+            path="/admin/login"
+            component={AdminLogin}
+          />
+          <PublicRoute component={NotFound} />
+        </Switch>
       </Switch>
     </Router>
   )

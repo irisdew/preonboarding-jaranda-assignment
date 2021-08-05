@@ -13,8 +13,10 @@ const PrivateRoute = ({ component: Component, path, ...rest }) => {
           .getAuth()
           .access.find((accessiblePath) => accessiblePath === path) ? (
           <Component {...props} />
+        ) : path.startsWith('/admin') ? (
+          <Redirect to="/admin/login" />
         ) : (
-          <Redirect to="/" />
+          <Redirect to="/login" />
         )
       }
     />
