@@ -9,7 +9,7 @@ export const EditContext = createContext({
   setTargetData: () => {},
 })
 
-export default function UserTable({ searchCheck }) {
+export default function UserTable() {
   const [targetData, setTargetData] = useState({
     id: '',
     index: '',
