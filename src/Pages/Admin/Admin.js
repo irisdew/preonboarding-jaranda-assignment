@@ -1,11 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  createContext,
+  useMemo,
+} from 'react'
 import styled from 'styled-components/macro'
-import UserTable from './UserTable/UserTable'
+import UserTable from 'Pages/Admin/UserTable/UserTable'
 import Search from 'Pages/Admin/Search/Search'
-import UserAddForm from './UserTable/UserAddForm/UserAddForm'
+import UserAddForm from 'Pages/Admin/UserTable/UserAddForm/UserAddForm'
 import Pagination from 'Pages/Admin/Pagination/Pagination'
 import useDidMountEffect from 'Utils/Hooks/useDidMountEffect'
 import { userListStorage } from 'Utils/Storage'
+import Layout from 'Layout/Layout'
+
+export const UsersInfoContext = createContext({
+  usersInfo: [],
+  setUsersInfo: () => {},
+})
 
 export default function Admin() {
   const [usersInfo, setUsersInfo] = useState([])
@@ -17,6 +29,13 @@ export default function Admin() {
   })
   const [searchCheck, setSearchCheck] = useState(false)
   const searchRef = useRef()
+  const value = useMemo(
+    () => ({
+      usersInfo,
+      setUsersInfo,
+    }),
+    [usersInfo, setUsersInfo]
+  )
 
   const handleAddUserInfo = (value) => {
     const usersInfo = userListStorage.load()
@@ -26,6 +45,10 @@ export default function Admin() {
       address: { address: value.address },
     }
     userListStorage.save([...usersInfo, newUserInfo])
+    setPagingData({
+      currentPage: Math.ceil(userListStorage.load().length / 5),
+      fullPage: Math.ceil(userListStorage.load().length / 5),
+    })
   }
 
   useEffect(() => {
@@ -43,8 +66,10 @@ export default function Admin() {
       pagingData.currentPage * 5
     )
 
-    setFilterInfo(temp)
-    setSearchCheck(true)
+    // setFilterInfo(temp)
+    setUsersInfo(temp)
+    // setPagingData({ ...pagingData, fullPage: Math.ceil(userList.length / 5) })
+    // setSearchCheck(true)
     console.log('페이지 변경', pagingData.currentPage)
   }, [pagingData.currentPage])
 
@@ -111,52 +136,45 @@ export default function Admin() {
   }
 
   return (
-    <AdminWrapper>
-      <Search
-        filterUserInfo={filterUserInfo}
-        searchRef={searchRef}
-        refreshBtn={refreshBtn}
-      />
-      <UserTable
-        usersInfo={usersInfo}
-        setUsersInfo={setUsersInfo}
-        setIsOpenedUserAddForm={setIsOpenedUserAddForm}
-        filterData={filterInfo}
-        searchCheck={searchCheck}
-      />
-      {isOpenedUserAddForm && (
-        <UserAddForm
-          userDataTemplate={getUserDataTemplate()}
-          handleAddUserInfo={handleAddUserInfo}
-          setIsOpenedUserAddForm={setIsOpenedUserAddForm}
+    <Layout>
+      <AdminWrapper>
+        <Search
+          filterUserInfo={filterUserInfo}
+          searchRef={searchRef}
+          refreshBtn={refreshBtn}
         />
-      )}
-      <UserAddButtonWrapper>
-        <UserAddButton onClick={() => setIsOpenedUserAddForm(true)}>
-          사용자 추가
-        </UserAddButton>
-      </UserAddButtonWrapper>
-      <Pagination pagingData={pagingData} changePageNum={changePageNum} />
-    </AdminWrapper>
+        <UsersInfoContext.Provider value={value}>
+          <UserTable
+            setIsOpenedUserAddForm={setIsOpenedUserAddForm}
+            filterData={filterInfo}
+            searchCheck={searchCheck}
+          />
+        </UsersInfoContext.Provider>
+        {isOpenedUserAddForm && (
+          <UserAddForm
+            handleAddUserInfo={handleAddUserInfo}
+            setIsOpenedUserAddForm={setIsOpenedUserAddForm}
+          />
+        )}
+        <UserAddButtonWrapper>
+          <UserAddButton onClick={() => setIsOpenedUserAddForm(true)}>
+            사용자 추가
+          </UserAddButton>
+        </UserAddButtonWrapper>
+        <Pagination pagingData={pagingData} changePageNum={changePageNum} />
+      </AdminWrapper>
+    </Layout>
   )
-}
-
-function getUserDataTemplate() {
-  const template = {
-    email: 'ex: abcdefg@jaranda.com',
-    name: 'ex: 김학생',
-    age: 'ex: 10',
-    address: 'ex: 경기도 부천시 경인로117번길 27',
-    card_number: 'ex: 0000-0000-0000-0000',
-    auth: 'ex: parent',
-  }
-  return Object.entries(template)
 }
 
 const AdminWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  min-width: 1000px;
+  max-width: 1100px;
+  padding: 0 50px;
 `
 
 const UserAddButtonWrapper = styled.div`

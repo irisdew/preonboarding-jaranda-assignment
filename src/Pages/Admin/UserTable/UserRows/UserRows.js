@@ -1,7 +1,9 @@
-import React from 'react'
+import { UsersInfoContext } from 'Pages/Admin/Admin'
+import React, { useContext } from 'react'
 import UserRow from './UserRow/UserRow'
 
-export default function UserRows({ usersInfo }) {
+export default function UserRows() {
+  const { usersInfo } = useContext(UsersInfoContext)
   return (
     <tbody>
       {usersInfo.map((userInfo) => (
