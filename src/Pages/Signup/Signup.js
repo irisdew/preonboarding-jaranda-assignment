@@ -117,19 +117,19 @@ export default function Signup() {
 
   // 비밀번호 === 비밀번호 확인 일치 검사
   const checkPassword = () => {
-    if (pass !== passConfirm) {
-      toast(ALERT_PASSWORD)
-    }
+    pass !== passConfirm && toast(ALERT_PASSWORD)
   }
 
   const checkName = (e) => {
-    isNotKorean(e.target.value) || toast(ALERT_ISNOT_KOREAN)
-    setName(e.target.value)
+    isNotKorean(e.target.value)
+      ? toast(ALERT_ISNOT_KOREAN)
+      : setName(e.target.value)
   }
 
   const checkAge = (e) => {
-    isNotNumeric(e.target.value) || toast(ALERT_ISNOT_NUMERIC)
-    setAge(e.target.value)
+    isNotNumeric(e.target.value)
+      ? toast(ALERT_ISNOT_NUMERIC)
+      : setAge(e.target.value)
   }
 
   const onCardSubmit = (cardData, close) => {
