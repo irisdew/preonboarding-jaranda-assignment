@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Switch } from 'react-router-dom'
+
 import PublicRoute from 'Routes/PublicRoute'
 import PrivateRoute from 'Routes/PrivateRoute'
 import Main from 'Pages/Main/Main'
@@ -11,6 +12,7 @@ import Teacher from 'Pages/Teacher/Teacher'
 import Student from 'Pages/Student/Student'
 import Mypage from 'Pages/Mypage/Mypage'
 import NotFound from 'Pages/NotFound/NotFound'
+import MyPage from 'Pages/MyPage/MyPage'
 import { fetchData } from 'Utils/fetch'
 import { userListStorage } from 'Utils/Storage'
 
@@ -31,6 +33,7 @@ export default function Routes() {
         <PrivateRoute exact path="/parent" component={Parent} />
         <PrivateRoute exact path="/teacher" component={Teacher} />
         <PrivateRoute exact path="/student" component={Student} />
+        <PublicRoute path="/mypage" component={MyPage} />
         <PrivateRoute exact path="/mypage" component={Mypage} />
         <PublicRoute component={NotFound} />
       </Switch>

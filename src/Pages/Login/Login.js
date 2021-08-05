@@ -37,6 +37,12 @@ export default function Login() {
     [isRememberId]
   )
 
+  const onKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleLogin()
+    }
+  }
+
   const handleLogin = useCallback(() => {
     const id = idInputRef.current
     const pw = pwInputRef.current
@@ -85,11 +91,17 @@ export default function Login() {
             <StyledTitle aria-hidden="true">
               WELCOME<span className="a11y">welcome</span>
             </StyledTitle>
-            <StyledInput ref={idInputRef} type="text" placeholder="이메일" />
+            <StyledInput
+              ref={idInputRef}
+              type="text"
+              placeholder="이메일"
+              onKeyPress={onKeyPress}
+            />
             <StyledInput
               ref={pwInputRef}
               type="password"
               placeholder="비밀번호"
+              onKeyPress={onKeyPress}
             />
             <StyledCustomCheckBox
               checked={isRememberId}
