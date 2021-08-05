@@ -7,7 +7,12 @@ import {
   faSyncAlt,
 } from '@fortawesome/free-solid-svg-icons'
 
-export default function Search({ filterUserInfo, searchRef, refreshBtn }) {
+export default function Search({
+  filterUserInfo,
+  searchRef,
+  refreshBtn,
+  title,
+}) {
   const [selected, setSelected] = useState('선택')
   const [checkSelect, setCheckSelect] = useState(false)
 
@@ -32,7 +37,8 @@ export default function Search({ filterUserInfo, searchRef, refreshBtn }) {
 
   return (
     <Container>
-      <h1>사용자 계정 조회</h1>
+      {!title ? <h1>사용자 계정 조회</h1> : <h1>학생 조회</h1>}
+
       <Wrapper>
         <Dropdown>
           <DropBtn onClick={selectBtn}>
