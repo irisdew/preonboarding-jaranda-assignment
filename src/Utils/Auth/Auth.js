@@ -24,6 +24,7 @@ class Auth {
         access: account.access,
         auth: account.auth,
         email: account.email,
+        id: account.id,
       }
       this.currentAccountStorage.save(protectedAccountInfo)
       this.auth = protectedAccountInfo

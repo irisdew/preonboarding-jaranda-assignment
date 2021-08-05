@@ -4,7 +4,7 @@ import auth from 'Utils/Auth/Auth'
 const GetLoggedAccountData = () => {
   const data =
     GetDataFromLocalStorage('USER_LIST').find(
-      (account) => account.email === auth.getAuth().email
+      (account) => account.id === auth.getAuth().id
     ) || []
   return data
 }

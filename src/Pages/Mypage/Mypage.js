@@ -1,5 +1,5 @@
-import React, { useState, useRef, useCallback } from 'react'
-import styled, { css } from 'styled-components/macro'
+import React, { useState, useRef } from 'react'
+import styled from 'styled-components/macro'
 import Layout from 'Layout/Layout'
 import userImg from 'Assets/Images/profile-user.png'
 import auth from 'Utils/Auth/Auth'
@@ -9,28 +9,29 @@ import { usePopup } from 'Pages/Signup/usePopup'
 import useToast from 'Utils/Hooks/useToast'
 import validation from 'Utils/Validation/Validation'
 import GetLoggedAccountData from 'Utils/Storage/GetLoggedAccountData'
+import SaveDataToLocalStorage from 'Utils/Storage/SaveDataToLocalStorage copy'
 import CustomInput from 'Components/Form/CustomInput'
 import Button from 'Components/Form/Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { useInput } from 'Utils/useInput'
+import GetDataFromLocalStorage from 'Utils/Storage/GetDataFromLocalStorage'
 
 const daum = window.daum
 
 export default function Mypage() {
   const emailInputRef = useRef(null)
-  const addressInputRef = useRef(null)
-  const cardNumInputRef = useRef(null)
   const { isShow, message, toast } = useToast()
-  // const [daumAddr, setDaumAddr] = useState(false)
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
   const [cardNum, setCardNum] = useState('')
-  const [addr, setAddr] = useState(false)
+  const [addr, setAddr] = useState('')
+  const [post, setPost] = useState('')
+  const [extraAddr, setExtraAddr, onChangeExtraAddr] = useInput('')
   const [editEmail, setEditEmail] = useState(false)
   const [editAddress, setEditAddress] = useState(false)
   const [editCardNum, setEditCardNum] = useState(false)
 
   const handleEditClick = (editItem) => {
-    // setEditMode((prev) => !prev)
     switch (editItem) {
       case 'email':
         setEditEmail((prev) => !prev)
@@ -40,11 +41,13 @@ export default function Mypage() {
       case 'address':
         setEditAddress((prev) => !prev)
         setAddr('')
+        setExtraAddr('')
         console.log('edit address')
 
         return
 
       case 'cardNum':
+        setCardNum('')
         setEditCardNum((prev) => !prev)
         console.log('edit cardNum')
 
@@ -56,19 +59,37 @@ export default function Mypage() {
   }
 
   const handleModify = (editItem) => {
-    const email = emailInputRef.current
-    const cardNum = cardNumInputRef.current
+    const emailRef = emailInputRef.current
+    const data = GetDataFromLocalStorage('USER_LIST')
+
+    const currentAccount = data.find(
+      (account) => account.id === GetLoggedAccountData().id
+    )
+
+    const currentAccountIdx = data.indexOf(currentAccount)
 
     switch (editItem) {
       case 'email':
-        if (!validation.isEmail(email.value)) {
-          toast('유효하지 않은 이메일입니다.')
-          email.value = ''
-          email.focus()
+        if (!emailRef.value) {
+          setEditEmail((prev) => !prev)
           return
         }
+
+        if (!validation.isEmail(emailRef.value)) {
+          toast('유효하지 않은 이메일입니다.')
+          emailRef.value = ''
+          emailRef.focus()
+          return
+        }
+
         // 이메일 변경 로직 추가
-        // CURRENT_ACCOUNT와 USER_LIST 모두에서 바꿔야함
+        // CURRENT_ACCOUNT와 USER_LIST 모두 수정
+        data[currentAccountIdx].email = emailRef.value
+        SaveDataToLocalStorage('USER_LIST', data)
+
+        const emailModifiedObj = GetDataFromLocalStorage('CURRENT_ACCOUNT')
+        emailModifiedObj.email = emailRef.value
+        SaveDataToLocalStorage('CURRENT_ACCOUNT', emailModifiedObj)
         setEditEmail((prev) => !prev)
         return
 
@@ -80,18 +101,28 @@ export default function Mypage() {
         }
 
         // 주소 변경 로직 추가
-        // CURRENT_ACCOUNT와 USER_LIST 모두에서 바꿔야함
-
+        // USER_LIST만 바꿔야함
+        const currentAccountAddress = data[currentAccountIdx].address
+        currentAccountAddress.address = addr
+        currentAccountAddress.postcode = post
+        currentAccountAddress.address_detail = extraAddr
+        SaveDataToLocalStorage('USER_LIST', data)
         setEditAddress((prev) => !prev)
         console.log('edit address')
 
         return
 
       case 'cardNum':
-        setEditCardNum((prev) => !prev)
-        console.log('edit cardNum')
+        if (!cardNum) {
+          console.log('nothing')
+          setEditCardNum((prev) => !prev)
+          return
+        }
         // 카드 번호 변경 로직 추가
-        // CURRENT_ACCOUNT와 USER_LIST 모두에서 바꿔야함
+        // USER_LIST만 바꿔야함
+        data[currentAccountIdx].card_number = cardNum
+        SaveDataToLocalStorage('USER_LIST', data)
+        setEditCardNum((prev) => !prev)
 
         return
 
@@ -111,7 +142,7 @@ export default function Mypage() {
       new daum.Postcode({
         oncomplete: function (data) {
           // 우편번호 입력
-          // setPost(data.zonecode)
+          setPost(data.zonecode)
 
           // 기본 주소 입력
           if (data.userSelectedType === 'R') {
@@ -120,6 +151,26 @@ export default function Mypage() {
           } else {
             // 사용자가 지번 주소를 선택했을 경우
             setAddr(data.jibunAddress)
+          }
+
+          // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 상세주소에 입력
+          if (data.userSelectedType === 'R') {
+            let tempExtraAddr = ''
+            // 법정동명이 있을 경우 추가 (법정리는 제외)
+            // 법정동의 경우 마지막 문자가 "동/로/가"
+            if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+              tempExtraAddr += data.bname
+            }
+            // 건물명이 있고, 공동주택일 경우 추가한다.
+            if (data.buildingName !== '' && data.apartment === 'Y') {
+              tempExtraAddr +=
+                tempExtraAddr !== ''
+                  ? ', ' + data.buildingName
+                  : data.buildingName
+            }
+            // 상세주소 최종 문자열 조합
+            setExtraAddr('(' + tempExtraAddr + ')')
+            console.log(post, addr, extraAddr)
           }
         },
       }).open({
@@ -153,7 +204,9 @@ export default function Mypage() {
         <InfoContainer>
           {!editEmail ? (
             <InfoBox>
-              이메일 : {GetLoggedAccountData().email}{' '}
+              이메일 :{' '}
+              {GetDataFromLocalStorage('USER_LIST') &&
+                GetLoggedAccountData().email}
               <EditIcon
                 icon={faEdit}
                 onClick={() => handleEditClick('email')}
@@ -168,7 +221,9 @@ export default function Mypage() {
           )}
           {!editAddress ? (
             <InfoBox>
-              주소 : {GetLoggedAccountData().address.address}
+              주소 :{' '}
+              {GetDataFromLocalStorage('USER_LIST') &&
+                GetLoggedAccountData().address.address}
               <EditIcon
                 icon={faEdit}
                 onClick={() => handleEditClick('address')}
@@ -177,12 +232,22 @@ export default function Mypage() {
           ) : (
             <EditBox>
               <Label>주소 :</Label>
-              <Input
-                onClick={(e) => setDaumAddr(e)}
-                placeholder="Address"
-                value={addr}
-                readOnly
-              />
+              <AddressInputBox>
+                <Input
+                  onClick={(e) => setDaumAddr(e)}
+                  placeholder="Address"
+                  value={addr}
+                  readOnly
+                />
+                <Input
+                  placeholder="Detail Address"
+                  value={extraAddr}
+                  onChange={onChangeExtraAddr}
+                />
+                <EditButton clickHandler={(e) => setDaumAddr(e)}>
+                  주소 검색
+                </EditButton>
+              </AddressInputBox>
               <EditIcon
                 icon={faCheck}
                 onClick={() => handleModify('address')}
@@ -191,7 +256,9 @@ export default function Mypage() {
           )}
           {!editCardNum ? (
             <InfoBox>
-              결제수단 : {GetLoggedAccountData().card_number}
+              결제수단 :
+              {GetDataFromLocalStorage('USER_LIST') &&
+                GetLoggedAccountData().card_number}
               <EditIcon
                 icon={faEdit}
                 onClick={() => handleEditClick('cardNum')}
@@ -201,7 +268,6 @@ export default function Mypage() {
             <EditBox>
               <Label>결제수단 :</Label>
               <Input
-                ref={cardNumInputRef}
                 placeholder="Card Number"
                 onClick={openPopup}
                 value={cardNum}
@@ -213,7 +279,6 @@ export default function Mypage() {
               />
             </EditBox>
           )}
-          {/* <EditButton clickHandler={handleEditClick}>정보 수정</EditButton> */}
         </InfoContainer>
       </Container>
       <Toast message={message} isShow={isShow} />
@@ -257,7 +322,7 @@ const InfoContainer = styled(UserContainer)`
   @media screen and ${({ theme }) => theme.device.tablet} {
     min-width: 230px;
     height: 22vw;
-    min-height: 200px;
+    min-height: 250px;
   }
 `
 
@@ -267,13 +332,8 @@ const ProfileImgBox = styled.div`
 `
 const ProfileImg = styled.img`
   max-width: 70px;
-  /* margin-top: 8px; */
 `
 
-const UserInfoBox = styled.div`
-  text-align: center;
-  margin: 30px 0 70px;
-`
 const Name = styled.div`
   margin-top: 20px;
   font-size: 20px;
@@ -284,8 +344,6 @@ const Role = styled.div`
   font-size: 15px;
   font-weight: 600;
 `
-
-const ModifiableInfoBox = styled.div``
 
 const InfoBox = styled.div`
   display: flex;
@@ -299,6 +357,13 @@ const InfoBox = styled.div`
     margin-top: 2vw;
   }
 `
+const AddressInputBox = styled.div`
+  width: 100%;
+  @media screen and ${({ theme }) => theme.device.tablet} {
+    max-width: 100%;
+    min-width: 10px;
+  }
+`
 
 const EditButton = styled(Button)`
   background-color: #fff;
@@ -306,21 +371,16 @@ const EditButton = styled(Button)`
   border: 2px solid;
   cursor: pointer;
   font-size: 14px;
-  margin-top: 30px;
+  margin-top: 10px;
   font-weight: 600;
-  height: 3vw;
-
+  height: 3.5rem;
+  width: 15rem;
   @media screen and ${({ theme }) => theme.device.tablet} {
     font-size: 12.5px;
     margin-top: 2vw;
-    height: 6vw;
+    height: 4.5vw;
+    width: 12vw;
   }
-`
-
-const SaveButton = styled(EditButton)`
-  margin-top: 23px;
-  height: 35px;
-  /* width: 10vw; */
 `
 
 const EditBox = styled.div`
@@ -336,6 +396,7 @@ const Input = styled(CustomInput)`
     min-width: 10px;
   }
 `
+
 const Label = styled.div`
   display: inline-block;
   min-width: 74px;
