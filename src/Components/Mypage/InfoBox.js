@@ -9,10 +9,8 @@ export function InfoBox({
   infoType,
   setEditEmail,
   setEditAddress,
-  setAddr,
-  setExtraAddr,
-  setCardNum,
   setEditCardNum,
+  setEditPassword,
 }) {
   const handleEditClick = (editItem) => {
     switch (editItem) {
@@ -35,6 +33,12 @@ export function InfoBox({
         console.log('edit cardNum')
 
         return
+      case 'password':
+        // setCardNum('')
+        setEditPassword((prev) => !prev)
+        console.log('edit password')
+
+        return
 
       default:
         throw new Error("Error! Edit button doesn't work properly.")
@@ -44,9 +48,12 @@ export function InfoBox({
     <>
       <Info>
         {infoTitle} :{' '}
-        {GetDataFromLocalStorage('USER_LIST') && infoType !== 'address'
+        {GetDataFromLocalStorage('USER_LIST') &&
+        infoType !== 'address' &&
+        infoType !== 'password'
           ? GetLoggedAccountData()[infoType]
           : GetLoggedAccountData()[infoType][infoType]}
+        {infoType === 'password' && '********'}
         <EditIcon icon={faEdit} onClick={() => handleEditClick(infoType)} />
       </Info>
     </>
@@ -61,8 +68,8 @@ const Info = styled.div`
   font-size: 16px;
   font-weight: 600;
   @media screen and ${({ theme }) => theme.device.tablet} {
-    font-size: 14px;
-    margin-top: 2vw;
+    font-size: 16px;
+    /* margin-top: px; */
   }
 `
 export const EditIcon = styled(FontAwesomeIcon)`

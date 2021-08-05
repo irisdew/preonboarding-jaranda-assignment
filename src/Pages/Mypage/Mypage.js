@@ -9,6 +9,7 @@ export default function Mypage() {
   const [editEmail, setEditEmail] = useState(false)
   const [editAddress, setEditAddress] = useState(false)
   const [editCardNum, setEditCardNum] = useState(false)
+  const [editPassword, setEditPassword] = useState(false)
 
   return (
     <Layout>
@@ -54,6 +55,19 @@ export default function Mypage() {
               setEditCardNum={setEditCardNum}
             />
           )}
+          {!editPassword ? (
+            <InfoBox
+              infoTitle="비밀번호"
+              infoType="password"
+              setEditPassword={setEditPassword}
+            />
+          ) : (
+            <EditBox
+              inputTitle="비밀번호"
+              inputType="password"
+              setEditPassword={setEditPassword}
+            />
+          )}
         </InfoContainer>
       </Container>
     </Layout>
@@ -71,10 +85,19 @@ const Container = styled.div`
 const InfoContainer = styled(UserContainer)`
   min-width: 500px;
   text-align: left;
+  padding-top: 35px;
   @media screen and ${({ theme }) => theme.device.tablet} {
     min-width: 230px;
     height: 22vw;
     min-height: 250px;
-    padding: 10px;
+    padding: 25px 15px;
+  }
+  @media screen and ${({ theme }) => theme.device.mobile} {
+    /* min-width: 230px;
+    height: 22vw;
+    min-height: 250px; */
+    /* font-size: 2px; */
+    min-width: 230px;
+    padding: 0 10px;
   }
 `

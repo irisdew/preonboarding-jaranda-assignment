@@ -14,6 +14,7 @@ import { usePopup } from 'Pages/Signup/usePopup'
 import Button from 'Components/Form/Button'
 import CardPopup from 'Pages/Signup/CardPopup'
 import Toast from 'Components/Toast/Toast'
+import PasswordPolicy from 'Components/PasswordPolicy/PasswordPolicy'
 
 export function EditBox({
   inputTitle,
@@ -21,24 +22,38 @@ export function EditBox({
   setEditEmail,
   setEditAddress,
   setEditCardNum,
+  setEditPassword,
 }) {
   const { isShow, message, toast } = useToast()
   const emailInputRef = useRef(null)
+  const prevPasswordInputRef = useRef(null)
+  const newPasswordInputRef = useRef(null)
   const [cardNum, setCardNum] = useState('')
   const [addr, setAddr] = useState('')
   const [post, setPost] = useState('')
+  const [passPolicy, setPassPolicy] = useState({
+    numeric: false,
+    special: false,
+    alphabet: false,
+    eight: false,
+  })
+  const [isPassPolicy, setIsPassPolicy] = useState(false)
+
   const [extraAddr, setExtraAddr, onChangeExtraAddr] = useInput('')
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
+  const { isNumeric, isSpecialCharacter, isAlphabet, isOverEight } = validation
 
   const handleModify = (editItem) => {
     const emailRef = emailInputRef.current
+    const prevPasswordRef = prevPasswordInputRef.current
+    const newPasswordRef = newPasswordInputRef.current
     const data = GetDataFromLocalStorage('USER_LIST')
 
-    const currentAccount = data.find(
+    const currentAccountData = data.find(
       (account) => account.id === GetLoggedAccountData().id
     )
 
-    const currentAccountIdx = data.indexOf(currentAccount)
+    const currentAccountIdx = data.indexOf(currentAccountData)
 
     switch (editItem) {
       case 'email':
@@ -62,6 +77,7 @@ export function EditBox({
         const emailModifiedObj = GetDataFromLocalStorage('CURRENT_ACCOUNT')
         emailModifiedObj.email = emailRef.value
         SaveDataToLocalStorage('CURRENT_ACCOUNT', emailModifiedObj)
+
         setEditEmail((prev) => !prev)
         return
 
@@ -83,8 +99,6 @@ export function EditBox({
         data[currentAccountIdx].address = newAddress
         SaveDataToLocalStorage('USER_LIST', data)
         setEditAddress((prev) => !prev)
-        console.log('edit address')
-
         return
 
       case 'card_number':
@@ -101,9 +115,53 @@ export function EditBox({
 
         return
 
+      case 'password':
+        if (!newPasswordRef.value) {
+          console.log('nothing')
+          setEditPassword((prev) => !prev)
+          return
+        }
+        // 비밀 번호 변경 로직 추가
+        // 이전 비밀번호 체크 후
+        // USER_LIST만 바꿔야함
+        if (!prevPasswordRef.value) {
+          toast('이전 비밀번호를 입력해주세요.')
+          prevPasswordRef.focus()
+          return
+        }
+
+        if (prevPasswordRef.value !== currentAccountData.password) {
+          toast('이전 비밀번호를 확인해주세요.')
+          prevPasswordRef.focus()
+          return
+        }
+
+        if (!isPassPolicy) {
+          toast('비밀번호를 규칙에 맞게 입력해주세요.')
+          newPasswordRef.focus()
+          return
+        }
+        data[currentAccountIdx].password = newPasswordRef.value
+        SaveDataToLocalStorage('USER_LIST', data)
+        setEditPassword((prev) => !prev)
+        return
+
       default:
         throw new Error("Error! Edit button doesn't work properly.")
     }
+  }
+
+  function checkPasswordPolicy(e) {
+    const currentInput = e.target.value
+    const currentPassPolicy = {
+      numeric: isNumeric(currentInput),
+      special: isSpecialCharacter(currentInput),
+      alphabet: isAlphabet(currentInput),
+      eight: isOverEight(currentInput),
+    }
+    setPassPolicy(currentPassPolicy)
+    const validated = Object.values(currentPassPolicy).every((item) => item)
+    setIsPassPolicy(validated)
   }
 
   function handleSearchAddress(e) {
@@ -125,7 +183,7 @@ export function EditBox({
         )}
 
         {inputType === 'address' && (
-          <AddressInputBox>
+          <InputBox>
             <Input
               onClick={(e) => handleSearchAddress(e)}
               placeholder="Address"
@@ -140,7 +198,7 @@ export function EditBox({
             <EditButton clickHandler={(e) => handleSearchAddress(e)}>
               주소 검색
             </EditButton>
-          </AddressInputBox>
+          </InputBox>
         )}
         {inputType === 'card_number' && (
           <Input
@@ -149,6 +207,22 @@ export function EditBox({
             value={cardNum}
             readOnly
           />
+        )}
+        {inputType === 'password' && (
+          <InputBox>
+            <Input
+              placeholder="이전 비밀번호"
+              type="password"
+              ref={prevPasswordInputRef}
+            />
+            <Input
+              placeholder="새 비밀번호"
+              type="password"
+              ref={newPasswordInputRef}
+              onBlur={checkPasswordPolicy}
+            />
+            <PasswordPolicy passPolicy={passPolicy} />
+          </InputBox>
         )}
 
         <EditIcon icon={faCheck} onClick={() => handleModify(inputType)} />
@@ -170,13 +244,17 @@ const Edit = styled.div`
   align-items: center;
   margin: 10px 0;
   @media screen and ${({ theme }) => theme.device.tablet} {
-    /* margin: 10px 0; */
+    margin: 7px 0;
+  }
+  @media screen and ${({ theme }) => theme.device.mobile} {
+    margin: 17px 0;
   }
 `
 const Input = styled(CustomInput)`
   display: flex;
   min-width: 170px;
   height: 3.5rem;
+  margin-top: 5px;
   @media screen and ${({ theme }) => theme.device.tablet} {
     min-width: 10px;
   }
@@ -188,15 +266,13 @@ const Label = styled.div`
   margin-right: 10px;
   font-weight: 600;
   font-size: 16px;
-  @media screen and ${({ theme }) => theme.device.tablet} {
-    font-size: 12.5px;
-  }
 `
-const AddressInputBox = styled.div`
+const InputBox = styled.div`
   width: 100%;
   @media screen and ${({ theme }) => theme.device.tablet} {
     max-width: 100%;
     min-width: 10px;
+    display: none;
   }
 `
 const EditButton = styled(Button)`
@@ -210,9 +286,9 @@ const EditButton = styled(Button)`
   height: 3.5rem;
   width: 15rem;
   @media screen and ${({ theme }) => theme.device.tablet} {
-    font-size: 12px;
+    font-size: 11px;
     margin-top: 2vw;
-    height: 4.2vw;
+    height: 4vw;
     width: 12vw;
   }
 `
