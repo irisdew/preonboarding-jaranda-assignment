@@ -54,7 +54,7 @@ export default function Header() {
             {auth.getAuth() ? (
               <>
                 <NavItem>
-                  <StyledLink to="/">마이페이지</StyledLink>
+                  <StyledLink to="/mypage">마이페이지</StyledLink>
                 </NavItem>
                 <NavItem>
                   <LogoutBtn onClick={handleLogout}>로그아웃</LogoutBtn>

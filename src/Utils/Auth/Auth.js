@@ -39,6 +39,10 @@ class Auth {
   getAuth() {
     return this.auth
   }
+
+  getList() {
+    return this.userList
+  }
 }
 
 export default new Auth()

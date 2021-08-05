@@ -5,7 +5,7 @@ const Timer = () => {
     const loginAccount = auth.getAuth()
     if (loginAccount) {
       const currentTime = new Date().getTime()
-      if (currentTime > loginAccount.loginTime + 30 * 1000) {
+      if (currentTime > loginAccount.loginTime + 30000 * 1000) {
         auth.logout()
       }
     }

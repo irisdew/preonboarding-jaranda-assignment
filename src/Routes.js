@@ -11,6 +11,7 @@ import Parent from 'Pages/Parent/Parent'
 import Teacher from 'Pages/Teacher/Teacher'
 import Student from 'Pages/Student/Student'
 import NotFound from 'Pages/NotFound/NotFound'
+import MyPage from 'Pages/MyPage/MyPage'
 import { fetchData } from 'Utils/fetch'
 import { userListStorage } from 'Utils/Storage'
 
@@ -29,6 +30,7 @@ export default function Routes() {
         <PrivateRoute exact path="/parent" component={Parent} />
         <PrivateRoute exact path="/teacher" component={Teacher} />
         <PrivateRoute exact path="/student" component={Student} />
+        <PublicRoute exact path="/mypage" component={MyPage} />
         <PublicRoute component={NotFound} />
       </Switch>
     </Router>

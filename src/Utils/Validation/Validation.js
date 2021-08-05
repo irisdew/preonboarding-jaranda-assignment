@@ -1,4 +1,4 @@
-export default {
+const validation = {
   isEmail(data) {
     if (!data) {
       return false
@@ -16,3 +16,5 @@ export default {
     return reg.test(data)
   },
 }
+
+export default validation
