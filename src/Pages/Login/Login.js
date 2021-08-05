@@ -1,5 +1,5 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import React from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import Layout from 'Layout/Layout'
@@ -7,79 +7,19 @@ import CustomInput from 'Components/Form/CustomInput'
 import CustomCheckBox from 'Components/Form/CustomCheckBox'
 import Button from 'Components/Form/Button'
 import Toast from 'Components/Toast/Toast'
-import validation from 'Utils/Validation/Validation'
-import useToast from 'Utils/Hooks/useToast'
-import auth from 'Utils/Auth/Auth'
-import { rememberMeStorage } from 'Utils/Storage'
-import { errorState, authType } from 'Constant'
+import useLogin from 'Utils/Hooks/useLogin'
 import bgImgUrl from 'Assets/Images/bg-sign_in.png'
 import mBgImgUrl from 'Assets/Images/bg-sign-m.png'
 
 export default function Login() {
-  const history = useHistory()
-  const [isRememberId, setIsRememberId] = useState(false)
-  const idInputRef = useRef(null)
-  const pwInputRef = useRef(null)
-  const { isShow, message, toast } = useToast()
-
-  useEffect(() => {
-    const rememberId = rememberMeStorage.load()
-    if (rememberId) {
-      setIsRememberId(true)
-      idInputRef.current.value = rememberId
-    }
-  }, [])
-
-  const handleRememberMe = useCallback(
-    ({ target: { checked } }) => {
-      checked ? setIsRememberId(true) : setIsRememberId(false)
-    },
-    [isRememberId]
-  )
-
-  const handleAfterLogin = (account) => {
-    const { email, auth } = account
-    isRememberId ? rememberMeStorage.save(email) : rememberMeStorage.remove()
-    auth === authType.ADMIN.name ? history.push('/admin') : history.push('/')
-  }
-
-  const handleLogin = useCallback(async () => {
-    const id = idInputRef.current
-    const pw = pwInputRef.current
-    if (!id.value) {
-      toast('이메일을 입력해주세요.')
-      id.focus()
-      return
-    } else if (!pw.value) {
-      toast('비밀번호를 입력해주세요.')
-      pw.focus()
-      return
-    } else if (!validation.isEmail(id.value)) {
-      toast('유효하지 않은 이메일입니다.')
-      id.value = ''
-      id.focus()
-      return
-    }
-
-    try {
-      const account = await auth.login(id.value, pw.value)
-      handleAfterLogin(account)
-    } catch (err) {
-      toast(err.message)
-      switch (err.type) {
-        case errorState.NO_ACCOUNT_REGISTERED.name:
-          id.focus()
-          return
-
-        case errorState.PASSWORD_MISMATCH.name:
-          pw.focus()
-          return
-
-        default:
-          throw new Error('is not valid error type')
-      }
-    }
-  }, [isRememberId])
+  const {
+    isRememberId,
+    handleRememberMe,
+    handleLogin,
+    idInputRef,
+    pwInputRef,
+    toast: { isShow, message },
+  } = useLogin()
 
   return (
     <Layout>
@@ -87,9 +27,8 @@ export default function Login() {
         <h2 className="a11y">로그인 페이지</h2>
         <Container>
           <LoginContent>
-            <StyledTitle aria-hidden="true">
-              WELCOME<span className="a11y">welcome</span>
-            </StyledTitle>
+            <StyledTitle aria-hidden="true">WELCOME</StyledTitle>
+            <span className="a11y">welcome</span>
             <StyledInput ref={idInputRef} type="text" placeholder="이메일" />
             <StyledInput
               ref={pwInputRef}
@@ -105,7 +44,7 @@ export default function Login() {
             </StyledCustomCheckBox>
             <LoginButton clickHandler={handleLogin}>로그인</LoginButton>
             <SignupButton to="/signup">회원가입</SignupButton>
-            <StyledLink to="/">관리자 로그인</StyledLink>
+            <StyledLink to="/admin/login">관리자 로그인</StyledLink>
           </LoginContent>
         </Container>
       </StyledSection>
