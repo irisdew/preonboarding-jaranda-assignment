@@ -29,6 +29,20 @@ export default function Mypage() {
               setEditEmail={setEditEmail}
             />
           )}
+          {!editPassword ? (
+            <InfoBox
+              infoTitle="비밀번호"
+              infoType="password"
+              setEditPassword={setEditPassword}
+            />
+          ) : (
+            <EditBox
+              inputTitle="비밀번호"
+              inputType="password"
+              setEditPassword={setEditPassword}
+            />
+          )}
+
           {!editAddress ? (
             <InfoBox
               infoTitle="주소"
@@ -55,19 +69,6 @@ export default function Mypage() {
               setEditCardNum={setEditCardNum}
             />
           )}
-          {!editPassword ? (
-            <InfoBox
-              infoTitle="비밀번호"
-              infoType="password"
-              setEditPassword={setEditPassword}
-            />
-          ) : (
-            <EditBox
-              inputTitle="비밀번호"
-              inputType="password"
-              setEditPassword={setEditPassword}
-            />
-          )}
         </InfoContainer>
       </Container>
     </Layout>
@@ -78,14 +79,14 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme }) => theme.color.primary};
+  /* background-color: ${({ theme }) => theme.color.primary}; */
   width: auto;
 `
 
 const InfoContainer = styled(UserContainer)`
   min-width: 500px;
   text-align: left;
-  padding-top: 35px;
+  padding-top: 15px;
   @media screen and ${({ theme }) => theme.device.tablet} {
     min-width: 230px;
     height: 22vw;
@@ -93,10 +94,6 @@ const InfoContainer = styled(UserContainer)`
     padding: 25px 15px;
   }
   @media screen and ${({ theme }) => theme.device.mobile} {
-    /* min-width: 230px;
-    height: 22vw;
-    min-height: 250px; */
-    /* font-size: 2px; */
     min-width: 230px;
     padding: 0 10px;
   }

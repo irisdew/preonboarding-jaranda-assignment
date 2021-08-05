@@ -83,7 +83,6 @@ export function EditBox({
 
       case 'address':
         if (!addr) {
-          console.log('nothing')
           setEditAddress((prev) => !prev)
           return
         }
@@ -103,7 +102,6 @@ export function EditBox({
 
       case 'card_number':
         if (!cardNum) {
-          console.log('nothing')
           setEditCardNum((prev) => !prev)
           return
         }
@@ -117,7 +115,6 @@ export function EditBox({
 
       case 'password':
         if (!newPasswordRef.value) {
-          console.log('nothing')
           setEditPassword((prev) => !prev)
           return
         }
@@ -169,7 +166,6 @@ export function EditBox({
     setDaumAddr({ setPost, setAddr, setExtraAddr })
   }
   const onCardSubmit = (cardData, close) => {
-    console.log('gi')
     setCardNum(cardData)
     setPopup(close)
   }
@@ -180,6 +176,22 @@ export function EditBox({
         <Label>{inputTitle} :</Label>
         {inputType === 'email' && (
           <Input ref={emailInputRef} placeholder="Email" />
+        )}
+        {inputType === 'password' && (
+          <InputBox>
+            <Input
+              placeholder="이전 비밀번호"
+              type="password"
+              ref={prevPasswordInputRef}
+            />
+            <Input
+              placeholder="새 비밀번호"
+              type="password"
+              ref={newPasswordInputRef}
+              onBlur={checkPasswordPolicy}
+            />
+            <PasswordPolicy passPolicy={passPolicy} />
+          </InputBox>
         )}
 
         {inputType === 'address' && (
@@ -207,22 +219,6 @@ export function EditBox({
             value={cardNum}
             readOnly
           />
-        )}
-        {inputType === 'password' && (
-          <InputBox>
-            <Input
-              placeholder="이전 비밀번호"
-              type="password"
-              ref={prevPasswordInputRef}
-            />
-            <Input
-              placeholder="새 비밀번호"
-              type="password"
-              ref={newPasswordInputRef}
-              onBlur={checkPasswordPolicy}
-            />
-            <PasswordPolicy passPolicy={passPolicy} />
-          </InputBox>
         )}
 
         <EditIcon icon={faCheck} onClick={() => handleModify(inputType)} />
