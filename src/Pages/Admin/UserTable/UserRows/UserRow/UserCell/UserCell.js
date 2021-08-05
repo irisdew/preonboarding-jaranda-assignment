@@ -34,9 +34,9 @@ export default function UserCell({ info, id, index }) {
     const modifyCallback = (userInfo) => {
       if (userInfo.id === targetData.id) {
         if (
-          DATA_TABLE[index] === DATA_TABLE[4] ||
           DATA_TABLE[index] === DATA_TABLE[5] ||
-          DATA_TABLE[index] === DATA_TABLE[6]
+          DATA_TABLE[index] === DATA_TABLE[6] ||
+          DATA_TABLE[index] === DATA_TABLE[7]
         ) {
           return {
             ...modifiedItem,
@@ -86,35 +86,38 @@ export default function UserCell({ info, id, index }) {
 const DATA_TABLE = {
   0: 'id',
   1: 'email',
-  2: 'name',
-  3: 'age',
-  4: 'postcode',
-  5: 'address',
-  6: 'address_detail',
-  7: 'card_number',
-  8: 'auth',
+  2: 'password',
+  3: 'name',
+  4: 'age',
+  5: 'postcode',
+  6: 'address',
+  7: 'address_detail',
+  8: 'card_number',
+  9: 'auth',
 }
 
 const setElementWidth = (index) => {
   switch (index) {
     case 0:
-      return '60px'
+      return '50px'
     case 1:
-      return '220px'
+      return '200px'
     case 2:
-      return '80px'
+      return '130px'
     case 3:
-      return '60px'
+      return '70px'
     case 4:
-      return '90px'
+      return '50px'
     case 5:
-      return '230px'
+      return '70px'
     case 6:
       return '230px'
     case 7:
-      return '200px'
+      return '230px'
     case 8:
-      return '90px'
+      return '180px'
+    case 9:
+      return '80px'
     default:
       return
   }
@@ -131,7 +134,7 @@ const EditInput = styled.input`
 `
 
 const Td = styled.td`
-  padding: 0 20px;
+  padding: 0 5px;
   min-width: ${(props) => setElementWidth(props.index)};
   max-width: ${(props) => setElementWidth(props.index)};
   height: 50px;

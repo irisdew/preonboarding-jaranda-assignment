@@ -5,6 +5,7 @@ export default function UserRow({
   userInfo: {
     id,
     email,
+    password,
     name,
     age,
     address: { address, postcode, address_detail },
@@ -15,6 +16,7 @@ export default function UserRow({
   const userInfo = [
     id,
     email,
+    password,
     name,
     age,
     postcode,
