@@ -23,6 +23,13 @@ export default function Search({ filterUserInfo, searchRef, refreshBtn }) {
     filterUserInfo(e.target.innerText)
   }
 
+  // 엔터
+  const EnterBtn = () => {
+    if (window.event.keyCode === 13) {
+      filterUserInfo(selected)
+    }
+  }
+
   return (
     <Container>
       <h1>사용자 계정 조회</h1>
@@ -47,7 +54,7 @@ export default function Search({ filterUserInfo, searchRef, refreshBtn }) {
           <InputBtn onClick={() => filterUserInfo(selected)}>
             <FontAwesomeIcon icon={faSearch} size="lg" />
           </InputBtn>
-          <input placeholder="검색..." ref={searchRef} />
+          <input placeholder="검색..." ref={searchRef} onKeyUp={EnterBtn} />
         </InputBox>
       </Wrapper>
     </Container>
