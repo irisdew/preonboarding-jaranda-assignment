@@ -46,7 +46,7 @@ const MyInfo = () => {
 
 const Wrap = styled.div`
   display: flex;
-  width: 930px;
+  max-width: 96rem;
   margin: 0 auto;
 `
 const MypageHeaderWrap = styled.div`
@@ -75,6 +75,6 @@ const AsideItem = styled.li`
 const MainContent = styled.main`
   width: 100%;
   height: 500px;
-  padding: 3rem 2rem;
+  padding: 0 2rem;
 `
 export default MyInfo

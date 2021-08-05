@@ -49,8 +49,8 @@ const Wrapper = styled.footer`
     height: 69rem;
   }
 `
-const Container = styled.div.attrs(({ color, theme }) => ({
-  bgColor: color === 'green' ? theme.color.primary : theme.color.secondary,
+const Container = styled.div.attrs(({ color }) => ({
+  bgColor: color === 'green' ? '#87bf44' : '#0085fd',
   bgImg: color === 'green' ? footerBgUrl : footerBgBlueUrl,
 }))`
   position: relative;
@@ -78,7 +78,7 @@ const Content = styled.div`
   max-width: 96rem;
   height: 100%;
   margin: 0 auto;
-  color: ${({ theme }) => theme.color.white};
+  color: #fff;
   font-size: 1.4rem;
   @media screen and ${({ theme }) => theme.device.mobile} {
     flex-direction: column;
@@ -122,7 +122,7 @@ const DefinitionTitle = styled.dt`
     right: -0.7rem;
     width: 0.1rem;
     height: 60%;
-    background-color: ${({ theme }) => theme.color.white};
+    background-color: #fff;
     transform: translateY(35%);
   }
 `

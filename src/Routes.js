@@ -17,6 +17,8 @@ import { userListStorage } from 'Utils/Storage'
 
 export default function Routes() {
   useEffect(() => {
+    if (userListStorage.load()) return
+
     fetchData().then((res) => userListStorage.save(res))
   }, [])
 
