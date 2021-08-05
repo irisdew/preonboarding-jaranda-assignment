@@ -16,10 +16,9 @@ import useDidMountEffect from 'Utils/Hooks/useDidMountEffect'
 import { userListStorage } from 'Utils/Storage'
 import Layout from 'Layout/Layout'
 
-export const UsersInfoContext = createContext({
-  usersInfo: [],
+export const FilterInfoContext = createContext({
   filterInfo: [],
-  setUsersInfo: () => {},
+  setFilterInfo: () => {},
 })
 
 export default function Admin() {
@@ -34,11 +33,10 @@ export default function Admin() {
   const searchRef = useRef()
   const value = useMemo(
     () => ({
-      usersInfo,
       filterInfo,
-      setUsersInfo,
+      setFilterInfo,
     }),
-    [usersInfo, filterInfo, setUsersInfo]
+    [filterInfo, setFilterInfo]
   )
 
   const handleAddUserInfo = (value) => {
@@ -46,9 +44,22 @@ export default function Admin() {
     const newUserInfo = {
       ...value,
       id: usersInfo.length + 1,
-      address: { address: value.address },
+      address: {
+        address: value.address,
+        postcode: value.postcode,
+        address_detail: value.detail,
+      },
     }
+
+    if ('detail' in newUserInfo) {
+      delete newUserInfo.detail
+    }
+    if ('postcode' in newUserInfo) {
+      delete newUserInfo.postcode
+    }
+
     userListStorage.save([...usersInfo, newUserInfo])
+    setUsersInfo([...usersInfo, newUserInfo])
     setPagingData({
       currentPage: Math.ceil(userListStorage.load().length / 5),
       fullPage: Math.ceil(userListStorage.load().length / 5),
@@ -186,12 +197,9 @@ export default function Admin() {
           searchRef={searchRef}
           refreshBtn={refreshBtn}
         />
-        <UsersInfoContext.Provider value={value}>
-          <UserTable
-            setIsOpenedUserAddForm={setIsOpenedUserAddForm}
-            filterData={filterInfo}
-          />
-        </UsersInfoContext.Provider>
+        <FilterInfoContext.Provider value={value}>
+          <UserTable setIsOpenedUserAddForm={setIsOpenedUserAddForm} />
+        </FilterInfoContext.Provider>
         {isOpenedUserAddForm && (
           <UserAddForm
             handleAddUserInfo={handleAddUserInfo}
@@ -218,9 +226,9 @@ const AdminWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  min-width: 1000px;
-  max-width: 1100px;
+  min-width: 1420px;
+  max-width: 1420px;
+  margin-top: 50px;
   padding: 0 50px;
 `
 
