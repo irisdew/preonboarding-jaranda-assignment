@@ -120,7 +120,7 @@ export default function Signup() {
   }
 
   return (
-    <Layout footerColor="blue">
+    <Layout header footer footerColor="blue">
       <StyledSection>
         <h2 className="a11y">회원가입 페이지</h2>
         <FormSection>

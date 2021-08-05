@@ -12,66 +12,64 @@ export default function MyInfo() {
   const [editPassword, setEditPassword] = useState(false)
 
   return (
-    <Layout>
-      <Container>
-        <UserProfile />
-        <InfoContainer>
-          {!editEmail ? (
-            <InfoBox
-              infoTitle="이메일"
-              infoType="email"
-              setEditEmail={setEditEmail}
-            />
-          ) : (
-            <EditBox
-              inputTitle="이메일"
-              inputType="email"
-              setEditEmail={setEditEmail}
-            />
-          )}
-          {!editPassword ? (
-            <InfoBox
-              infoTitle="비밀번호"
-              infoType="password"
-              setEditPassword={setEditPassword}
-            />
-          ) : (
-            <EditBox
-              inputTitle="비밀번호"
-              inputType="password"
-              setEditPassword={setEditPassword}
-            />
-          )}
+    <Container>
+      <UserProfile />
+      <InfoContainer>
+        {!editEmail ? (
+          <InfoBox
+            infoTitle="이메일"
+            infoType="email"
+            setEditEmail={setEditEmail}
+          />
+        ) : (
+          <EditBox
+            inputTitle="이메일"
+            inputType="email"
+            setEditEmail={setEditEmail}
+          />
+        )}
+        {!editPassword ? (
+          <InfoBox
+            infoTitle="비밀번호"
+            infoType="password"
+            setEditPassword={setEditPassword}
+          />
+        ) : (
+          <EditBox
+            inputTitle="비밀번호"
+            inputType="password"
+            setEditPassword={setEditPassword}
+          />
+        )}
 
-          {!editAddress ? (
-            <InfoBox
-              infoTitle="주소"
-              infoType="address"
-              setEditAddress={setEditAddress}
-            />
-          ) : (
-            <EditBox
-              inputTitle="주소"
-              inputType="address"
-              setEditAddress={setEditAddress}
-            />
-          )}
-          {!editCardNum ? (
-            <InfoBox
-              infoTitle="결제 수단"
-              infoType="card_number"
-              setEditCardNum={setEditCardNum}
-            />
-          ) : (
-            <EditBox
-              inputTitle="결제 수단"
-              inputType="card_number"
-              setEditCardNum={setEditCardNum}
-            />
-          )}
-        </InfoContainer>
-      </Container>
-    </Layout>
+        {!editAddress ? (
+          <InfoBox
+            infoTitle="주소"
+            infoType="address"
+            setEditAddress={setEditAddress}
+          />
+        ) : (
+          <EditBox
+            inputTitle="주소"
+            inputType="address"
+            setEditAddress={setEditAddress}
+          />
+        )}
+        {!editCardNum ? (
+          <InfoBox
+            infoTitle="결제 수단"
+            infoType="card_number"
+            setEditCardNum={setEditCardNum}
+          />
+        ) : (
+          <EditBox
+            inputTitle="결제 수단"
+            inputType="card_number"
+            setEditCardNum={setEditCardNum}
+          />
+        )}
+      </InfoContainer>
+    </Container>
   )
 }
 

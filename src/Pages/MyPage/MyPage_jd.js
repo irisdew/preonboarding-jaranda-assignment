@@ -5,9 +5,10 @@ import styled from 'styled-components'
 import auth from 'Utils/Auth/Auth'
 import Routes from 'Pages/Mypage/Routes'
 import Layout from 'Layout/Layout'
+
 const MyInfo = () => {
   return (
-    <Layout>
+    <Layout header>
       <Router>
         <Route
           render={(props) => (

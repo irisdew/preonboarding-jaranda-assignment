@@ -28,7 +28,7 @@ export default function Login() {
   }
 
   return (
-    <Layout>
+    <Layout header footer>
       <StyledSection>
         <h2 className="a11y">로그인 페이지</h2>
         <Container>
