@@ -5,12 +5,12 @@ import Header from 'Layout/Header'
 import Footer from 'Layout/Footer'
 import { theme } from 'Styles/Theme'
 
-export default function Layout({ children, footerColor }) {
+export default function Layout({ children, footerColor, header, footer }) {
   return (
     <ThemeProvider theme={theme}>
-      <Header />
+      {header && <Header />}
       <StyledMain>{children}</StyledMain>
-      <Footer color={footerColor} />
+      {footer && <Footer color={footerColor} />}
     </ThemeProvider>
   )
 }

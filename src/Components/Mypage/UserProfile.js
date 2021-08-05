@@ -22,10 +22,10 @@ export function UserProfile() {
 
 export const UserContainer = styled.div`
   background-color: #fff;
-  margin: 10vw 2vw;
+  margin: 50px 10px;
   border: solid 1.5px;
   border-radius: 10px;
-  min-width: 270px;
+  min-width: 200px;
   min-height: 220px;
   padding: 35px;
   text-align: center;
