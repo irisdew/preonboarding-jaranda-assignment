@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, forwardRef } from 'react'
 import styled from 'styled-components/macro'
 
 import Layout from 'Layout/Layout'
@@ -6,13 +6,13 @@ import CustomInput from 'Components/Form/CustomInput'
 import Button from 'Components/Form/Button'
 import PasswordPolicy from 'Components/PasswordPolicy/PasswordPolicy'
 import Address from 'Components/Address/Address'
-import CardPopup from 'Pages/Signup/CardPopup'
+import CardPopup from 'Components/CardInputPopup/CardPopup'
 import CustomCheckBox from 'Components/Form/CustomCheckBox'
 import Toast from 'Components/Toast/Toast'
 import useToast from 'Utils/Hooks/useToast'
 import validation from 'Utils/Validation/Validation'
 import { useInput } from 'Utils/Hooks/useInput'
-import { usePopup } from 'Pages/Signup/usePopup'
+import { usePopup } from 'Components/CardInputPopup/usePopup'
 import { userListStorage } from 'Utils/Storage'
 
 import bgImgUrl from 'Assets/Images/bg-sign_up.png'
@@ -50,10 +50,50 @@ export default function Signup() {
     isOverEight,
   } = validation
 
+  const inputEmail = useRef(null)
+  const inputPassword = useRef(null)
+  const inputPasswordConfirm = useRef(null)
+  const inputName = useRef(null)
+  const inputAge = useRef(null)
+  const inputCard = useRef(null)
+  const inputPostCode = useRef(null)
+
+  const ALERT_EMAIL_BLANK = '이메일을 입력해주세요'
+  const ALERT_EMAIL_INVALID = '유효한 이메일을 입력해주세요.'
+  const ALERT_EMAIL_DUPLICATE = '이미 가입된 이메일 입니다.'
+
+  const ALERT_PASSWORD_BLANK = '비밀번호를 입력해주세요'
+  const ALERT_PASSWORD_INVALID = '비밀번호 규칙에 맞는 비밀번호를 입력해주세요'
+  const ALERT_PASSWORD = '비밀번호가 일치하지 않습니다.'
+
+  const ALERT_NAME_BLANK = '이름을 입력해주세요.'
+  const ALERT_NAME_INVALID = '유효한 이름을 입력해주세요.'
+
+  const ALERT_AGE_BLANK = '나이를 입력해주세요.'
+  const ALERT_ADDRESS_BLANK = '주소를 입력해주세요.'
+  const ALERT_CARD_BLANK = '카드번호를 입력해주세요.'
+  const ALERT_AUTH_BLANK = '회원 유형을 선택해주세요.'
+
+  const ALERT_ISNOT_KOREAN = '한글만 입력하실 수 있습니다.'
+  const ALERT_ISNOT_NUMERIC = '숫자만 입력하실 수 있습니다.'
+
+  //이메일 유효성 검사, 이메일 중복 검사
   const checkEmail = (e) => {
-    isEmail(e.target.value) || toast('유효한 이메일을 입력해주세요')
+    isEmail(e.target.value) || toast(ALERT_EMAIL_INVALID)
+    checkEmailDuplication(e.target.value)
   }
 
+  // 이메일 중복 확인
+  const checkEmailDuplication = (currentValue) => {
+    const usersInfo = userListStorage.load()
+    for (const info of usersInfo) {
+      if (currentValue === info.email) {
+        toast(ALERT_EMAIL_DUPLICATE)
+      }
+    }
+  }
+
+  // 비밀번호 검사
   const validatePassword = (password) => {
     return (
       isNumeric(password) &&
@@ -72,23 +112,23 @@ export default function Signup() {
       eight: isOverEight(currentInput),
     }
     setPassPolicy(currentPassPolicy)
-    validatePassword(currentInput) ||
-      toast('비밀번호 규칙에 맞는 비밀번호를 입력해주세요')
+    validatePassword(currentInput) || toast(ALERT_PASSWORD_INVALID)
   }
 
+  // 비밀번호 === 비밀번호 확인 일치 검사
   const checkPassword = () => {
     if (pass !== passConfirm) {
-      toast('비밀번호가 일치하지 않습니다!')
+      toast(ALERT_PASSWORD)
     }
   }
 
   const checkName = (e) => {
-    isNotKorean(e.target.value) || toast('이름을 한글로 입력해주세요!')
+    isNotKorean(e.target.value) || toast(ALERT_ISNOT_KOREAN)
     setName(e.target.value)
   }
 
   const checkAge = (e) => {
-    isNotNumeric(e.target.value) || toast('숫자만 입력해주세요!')
+    isNotNumeric(e.target.value) || toast(ALERT_ISNOT_NUMERIC)
     setAge(e.target.value)
   }
 
@@ -97,36 +137,71 @@ export default function Signup() {
     setPopup(close)
   }
 
+  // checkBox 선택 시 값 변경
   const handleOption = (e) => {
     const currentSelectedOption = e.target.id
     setSelectedOption(currentSelectedOption)
   }
 
+  //빈 칸 있는지 확인 후 toast, focus
+  const checkBlank = (newUserInfo) => {
+    const userInfoInputs = [
+      '',
+      inputEmail,
+      inputPassword,
+      inputName,
+      inputAge,
+      inputPostCode,
+      inputCard,
+    ]
+
+    const alerts = [
+      '',
+      ALERT_EMAIL_BLANK,
+      ALERT_PASSWORD_BLANK,
+      ALERT_NAME_BLANK,
+      ALERT_AGE_BLANK,
+      ALERT_ADDRESS_BLANK,
+      ALERT_CARD_BLANK,
+    ]
+
+    let index = 0
+    for (let key in newUserInfo && index < userInfoInputs.length) {
+      console.log(key)
+      console.log(index)
+      if (newUserInfo[key] === '') {
+        userInfoInputs[index].current.focus()
+        toast(alerts[index])
+        return
+      }
+      index++
+    }
+  }
+
   const onSubmitHandler = (e) => {
     e.preventDefault()
-
     // 체크체크!
-    !email && toast('이메일을 입력해주세요')
-    !isEmail(email) && toast('유효한 이메일을 입력해주세요')
-    !pass && toast('비밀번호를 입력해주세요')
+    !email && toast(ALERT_EMAIL_BLANK)
+    !isEmail(email) && toast(ALERT_EMAIL_INVALID)
+    !pass && toast(ALERT_PASSWORD_BLANK)
     checkPasswordPolicy()
-    pass !== passConfirm && toast('비밀번호가 서로 일치하지 않습니다')
-    !name && toast('이름을 입력해주세요')
-    !isName(name) && toast('유효한 이름을 입력해주세요')
-    !age && toast('나이를 입력해주세요')
+    pass !== passConfirm && toast(ALERT_PASSWORD)
+    !name && toast(ALERT_NAME_BLANK)
+    !isName(name) && toast(ALERT_NAME_INVALID)
+    !age && toast(ALERT_AGE_BLANK)
     // !isNotNumeric(age) && toast('유효한 나이를 입력해주세요')
-    !post && toast('주소를 입력해주세요')
-    !cardNum && toast('카드번호를 입력해주세요')
-    !selectedOption && toast('회원 유형을 선택해주세요')
+    !post && toast(ALERT_ADDRESS_BLANK)
+    !cardNum && toast(ALERT_CARD_BLANK)
+    !selectedOption && toast(ALERT_AUTH_BLANK)
 
     const usersInfo = userListStorage.load()
     const currentIndex = usersInfo.length
     const newUserInfo = {
       id: currentIndex + 1,
       email: isEmail(email) ? email : '',
+      password: validatePassword(pass) ? pass : '',
       name: isName(name) ? name : '',
       age: !isNotNumeric(age) ? age : '',
-      password: validatePassword(pass) ? pass : '',
       address:
         post.length > 0
           ? { postcode: post, address: addr, address_detail: extraAddr }
@@ -140,10 +215,7 @@ export default function Signup() {
       Boolean(item)
     )
 
-    console.log(
-      Object.values(newUserInfo),
-      Object.values(newUserInfo).map((item) => Boolean(item))
-    )
+    checkBlank(newUserInfo)
 
     checkUserInfo && userListStorage.save([...usersInfo, newUserInfo])
   }
@@ -163,6 +235,7 @@ export default function Signup() {
             value={email}
             onChange={onChangeEmail}
             onBlur={checkEmail}
+            ref={inputEmail}
           />
           <Input
             type="password"
@@ -170,6 +243,7 @@ export default function Signup() {
             value={pass}
             onChange={onChangePass}
             onBlur={checkPasswordPolicy}
+            ref={inputPassword}
           />
           <PasswordPolicy passPolicy={passPolicy} />
           <Input
@@ -178,6 +252,7 @@ export default function Signup() {
             onBlur={checkPassword}
             value={passConfirm}
             onChange={onChangePassConfirm}
+            ref={inputPasswordConfirm}
           />
           <Input
             type="text"
@@ -185,6 +260,7 @@ export default function Signup() {
             placeholder="이름"
             value={name}
             onChange={checkName}
+            ref={inputName}
           />
           <Input
             type="text"
@@ -192,6 +268,7 @@ export default function Signup() {
             placeholder="나이"
             value={age}
             onChange={checkAge}
+            ref={inputAge}
           />
           <InputTitle>주소</InputTitle>
           <Address
@@ -202,6 +279,7 @@ export default function Signup() {
             extraAddr={extraAddr}
             setExtraAddr={setExtraAddr}
             onChangeExtraAddr={onChangeExtraAddr}
+            ref={inputPostCode}
           />
           <InputTitle>결제 정보</InputTitle>
           <FlexDiv>
@@ -209,40 +287,14 @@ export default function Signup() {
               type="text"
               value={cardNum}
               placeholder="카드 번호"
-              disabled
+              ref={inputCard}
+              readOnly
             />
             <SmallButton clickHandler={openPopup} type="button">
               카드 입력하기
             </SmallButton>
           </FlexDiv>
           <InputTitle>회원 유형을 선택해주세요</InputTitle>
-          {/* <Radio	
-            type="radio"	
-            name="role"	
-            id="radio_student"	
-            value="student"	
-            checked={selectedOption === 'student'}	
-            onChange={handleOption}	
-          />	
-          <Label htmlFor="radio_student">자란다어린이</Label>	
-          <Radio	
-            type="radio"	
-            name="role"	
-            id="radio_parent"	
-            value="parent"	
-            checked={selectedOption === 'parent'}	
-            onChange={handleOption}	
-          />	
-          <Label htmlFor="radio_parent">자란다부모님</Label>	
-          <Radio	
-            type="radio"	
-            name="role"	
-            id="radio_teacher"	
-            value="teacher"	
-            checked={selectedOption === 'teacher'}	
-            onChange={handleOption}	
-          />	
-          <Label htmlFor="radio_teacher">자란다선생님</Label> */}
           <FlexDiv>
             <StyledCustomCheckBox
               checked={selectedOption === 'student'}

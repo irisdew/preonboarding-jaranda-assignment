@@ -1,17 +1,12 @@
-import React from 'react'
+import React, { forwardRef, useRef } from 'react'
 import { FlexDiv, Input, SmallButton } from 'Pages/Signup/Signup'
 
 const daum = window.daum
 
-export default function Address({
-  post,
-  setPost,
-  addr,
-  setAddr,
-  extraAddr,
-  setExtraAddr,
-  onChangeExtraAddr,
-}) {
+const Address = (
+  { post, setPost, addr, setAddr, extraAddr, setExtraAddr, onChangeExtraAddr },
+  ref
+) => {
   const setDaumAddr = (e) => {
     e.preventDefault()
 
@@ -51,6 +46,7 @@ export default function Address({
       })
     })
   }
+
   return (
     <>
       <FlexDiv>
@@ -59,6 +55,7 @@ export default function Address({
           value={post}
           placeholder="우편번호"
           onClick={setDaumAddr}
+          ref={ref}
           readOnly
         />
         <SmallButton type="button" clickHandler={setDaumAddr}>
@@ -75,3 +72,5 @@ export default function Address({
     </>
   )
 }
+
+export default forwardRef(Address)
