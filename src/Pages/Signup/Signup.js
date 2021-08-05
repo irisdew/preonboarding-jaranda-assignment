@@ -40,8 +40,18 @@ export default function Signup() {
 
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
 
+  const {
+    isEmail,
+    isNotKorean,
+    isNotNumeric,
+    isNumeric,
+    isSpecialCharacter,
+    isAlphabet,
+    isOverEight,
+  } = validation
+
   const checkEmail = (e) => {
-    validation.isEmail(e.target.value) || toast('유효한 이메일을 입력해주세요')
+    isEmail(e.target.value) || toast('유효한 이메일을 입력해주세요')
   }
 
   const checkPassWord = () => {
@@ -51,7 +61,7 @@ export default function Signup() {
   }
 
   const checkName = (event) => {
-    if (validation.isNotKorean(event.target.value)) {
+    if (isNotKorean(event.target.value)) {
       toast('이름을 한글로 입력해주세요!')
       return
     }
@@ -59,7 +69,7 @@ export default function Signup() {
   }
 
   const checkAge = (event) => {
-    if (validation.isNotNumeric(event.target.value)) {
+    if (isNotNumeric(event.target.value)) {
       toast('숫자만 입력해주세요!')
       return
     }
@@ -68,8 +78,6 @@ export default function Signup() {
 
   const checkPasswordPolicy = (e) => {
     const currentInput = e.target.value
-    const { isNumeric, isSpecialCharacter, isAlphabet, isOverEight } =
-      validation
     const currentPassPolicy = {
       numeric: isNumeric(currentInput),
       special: isSpecialCharacter(currentInput),
