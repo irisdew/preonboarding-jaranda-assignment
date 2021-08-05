@@ -49,8 +49,8 @@ const Wrapper = styled.footer`
     height: 69rem;
   }
 `
-const Container = styled.div.attrs(({ color }) => ({
-  bgColor: color === 'green' ? '#87bf44' : '#0085fd',
+const Container = styled.div.attrs(({ color, theme }) => ({
+  bgColor: color === 'green' ? theme.color.primary : theme.color.secondary,
   bgImg: color === 'green' ? footerBgUrl : footerBgBlueUrl,
 }))`
   position: relative;

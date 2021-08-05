@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Switch } from 'react-router-dom'
+
 import PublicRoute from 'Routes/PublicRoute'
 import PrivateRoute from 'Routes/PrivateRoute'
 import Main from 'Pages/Main/Main'
@@ -12,12 +13,14 @@ import Student from 'Pages/Student/Student'
 import NotFound from 'Pages/NotFound/NotFound'
 import { fetchData } from 'Utils/fetch'
 import { userListStorage } from 'Utils/Storage'
+import { fetchDataType } from 'Constant'
 
 export default function Routes() {
   useEffect(() => {
     if (userListStorage.load()) return
 
-    fetchData().then((res) => userListStorage.save(res))
+    // TODO REFACTORING
+    fetchData(fetchDataType.USERS.name).then((res) => userListStorage.save(res))
   }, [])
 
   return (
