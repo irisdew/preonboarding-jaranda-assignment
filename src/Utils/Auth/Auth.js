@@ -1,5 +1,6 @@
 import { userListStorage, currentAccountStorage } from 'Utils/Storage'
-import { loginState } from 'Constant'
+import { authType, errorState } from 'Constant'
+import CustomError from 'Utils/Error/CustomError'
 
 class Auth {
   constructor() {
@@ -8,35 +9,39 @@ class Auth {
     this.currentAccountStorage = currentAccountStorage
   }
 
-  login(id, pw) {
-    const account = this.userList.find((account) => account.email === id)
-    const isRegisteredAccount = this.userList.some(
-      (account) => account.email === id
+  async login(loginData, isAdminRestrict = false) {
+    const database = isAdminRestrict
+      ? this.userList.filter((account) => account.auth === authType.ADMIN.name)
+      : this.userList
+
+    const account = database.find((account) => account.email === loginData.id)
+    const isRegisteredAccount = database.some(
+      (account) => account.email === loginData.id
     )
-    const isPasswordMatch = isRegisteredAccount && account.password === pw
+    const isPasswordMatch =
+      isRegisteredAccount && account.password === loginData.pw
     if (!isRegisteredAccount) {
-      return loginState.FAIL.reason.NO_ACCOUNT_REGISTERED
+      throw new CustomError(errorState.NO_ACCOUNT_REGISTERED)
     } else if (!isPasswordMatch) {
-      return loginState.FAIL.reason.PASSWORD_MISMATCH
+      throw new CustomError(errorState.PASSWORD_MISMATCH)
     } else {
       const protectedAccountInfo = {
         loginTime: new Date().getTime(),
         name: account.name,
         access: account.access,
         auth: account.auth,
-        email: account.email,
         id: account.id,
+        email: account.email,
       }
       this.currentAccountStorage.save(protectedAccountInfo)
       this.auth = protectedAccountInfo
-      return loginState.SUCCESS
+      return protectedAccountInfo
     }
   }
 
-  logout(cb) {
+  logout() {
     this.auth = null
     this.currentAccountStorage.remove()
-    typeof cb === 'function' && cb()
   }
 
   getAuth() {

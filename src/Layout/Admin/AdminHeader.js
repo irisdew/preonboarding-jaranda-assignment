@@ -6,7 +6,7 @@ import auth from 'Utils/Auth/Auth'
 import { ReactComponent as Hamburger } from 'Assets/Icon/ic_hamburger.svg'
 import logoImgUrl from 'Assets/Images/logo.png'
 
-export default function Header() {
+export default function AdminHeader() {
   const history = useHistory()
   const [isOpenNav, setIsOpenNav] = useState(false)
 
@@ -65,7 +65,7 @@ export default function Header() {
             {auth.getAuth() ? (
               <>
                 <NavItem>
-                  <StyledLink to="/mypage">마이페이지</StyledLink>
+                  <StyledLink to="/">마이페이지</StyledLink>
                 </NavItem>
                 <NavItem>
                   <LogoutBtn onClick={handleLogout}>로그아웃</LogoutBtn>

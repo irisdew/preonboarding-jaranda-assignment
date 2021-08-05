@@ -2,32 +2,29 @@ import React from 'react'
 import styled, { ThemeProvider } from 'styled-components/macro'
 
 import Header from 'Layout/Header'
-import Footer from 'Layout/Footer'
 import { theme } from 'Styles/Theme'
 
-export default function Layout({ children, footerColor }) {
+export default function AdminLayout({ children, header }) {
   return (
     <ThemeProvider theme={theme}>
-      <Header />
-      <StyledMain>{children}</StyledMain>
-      <Footer color={footerColor} />
+      {header && <Header />}
+      <StyledMain header={header}>{children}</StyledMain>
     </ThemeProvider>
   )
 }
 
-Layout.defaultProps = {
-  footerColor: 'green',
-}
-
-const StyledMain = styled.main`
+const StyledMain = styled.main.attrs(({ header }) => ({
+  padding: header ? '6.3rem' : null,
+  tabletPadding: header ? '4.8rem' : null,
+}))`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  min-height: calc(100vh - 49.3rem);
-  padding-top: 6.3rem;
+  min-height: 100vh;
+  padding-top: ${({ padding }) => padding};
   background-color: ${({ theme }) => theme.color.white};
   @media screen and ${({ theme }) => theme.device.tablet} {
-    padding-top: 4.8rem;
+    padding-top: ${({ tabletPadding }) => tabletPadding};
   }
 `
