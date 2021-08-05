@@ -1,8 +1,11 @@
-import { EditContext } from 'Pages/Admin/UserTable/UserTable'
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { EditContext } from 'Pages/Admin/UserTable/UserTable'
+import { UsersInfoContext } from 'Pages/Admin/Admin'
+import { userListStorage } from 'Utils/Storage'
+import useValidateCell from 'Utils/Hooks/useValidateCell'
 
-const TABLE = {
+const DATA_TABLE_KEY_VALUE = {
   0: 'id',
   1: 'email',
   2: 'name',
@@ -14,44 +17,50 @@ const TABLE = {
 
 export default function UserCell({ info, id, index }) {
   const [editInputData, setEditInputData] = useState('')
-  const [isOpenedEditInput, setIsOpenedEditInput] = useState(false)
-  const { targetData, usersInfo, setUsersInfo } = useContext(EditContext)
-
-  useEffect(() => {
-    if (
-      index !== targetData.index ||
-      id !== targetData.id ||
-      targetData.index === 0
-    )
-      return
-
-    setIsOpenedEditInput(true)
-  }, [index, id, targetData])
+  // const [isOpenedEditInput, setIsOpenedEditInput] = useState(false)
+  const { targetData, setTargetData } = useContext(EditContext)
+  const { usersInfo, filterInfo, setUsersInfo } = useContext(UsersInfoContext)
+  const { isOpenedEditInput, setIsOpenedEditInput } = useValidateCell(
+    index,
+    id,
+    targetData
+  )
 
   const handleBlurInput = () => {
     if (editInputData.length) {
+      const originalUsersInfo = userListStorage.load()
       const [modifiedItem] = usersInfo.filter(
         (userInfo) => userInfo.id === targetData.id
       )
-      const modifiedItems = usersInfo.map((userInfo) => {
+
+      const modifyCallback = (userInfo) => {
         if (userInfo.id === targetData.id) {
-          if (TABLE[index] === 'address') {
-            console.log(1)
+          if (DATA_TABLE_KEY_VALUE[index] === 'address') {
             return {
               ...modifiedItem,
-              [TABLE[index]]: { [TABLE[index]]: editInputData },
+              [DATA_TABLE_KEY_VALUE[index]]: {
+                [DATA_TABLE_KEY_VALUE[index]]: editInputData,
+              },
             }
           } else {
-            return { ...modifiedItem, [TABLE[index]]: editInputData }
+            return {
+              ...modifiedItem,
+              [DATA_TABLE_KEY_VALUE[index]]: editInputData,
+            }
           }
         } else {
           return userInfo
         }
-      })
+      }
 
-      setUsersInfo(modifiedItems)
+      const modifiedStates = usersInfo.map(modifyCallback)
+      const modifiedItems = originalUsersInfo.map(modifyCallback)
+
+      setUsersInfo(modifiedStates)
+      userListStorage.save(modifiedItems)
     }
     setIsOpenedEditInput(false)
+    setTargetData({ id: '', index: '' })
   }
 
   return isOpenedEditInput ? (
@@ -71,7 +80,7 @@ export default function UserCell({ info, id, index }) {
 }
 
 const EditTd = styled.td`
-  border: 3px solid #4b85fc;
+  border: 2px solid #4b85fc;
 `
 
 const EditInput = styled.input`
@@ -85,6 +94,7 @@ const Td = styled.td`
   padding: 0 20px;
   height: 50px;
   border: 1px solid #cbcbcb;
+  font-size: 13.5px;
   text-align: center;
   line-height: 50px;
 `

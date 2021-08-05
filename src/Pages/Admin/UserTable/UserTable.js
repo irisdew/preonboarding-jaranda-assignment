@@ -1,37 +1,32 @@
-import React, { createContext, useMemo, useState } from 'react'
+import React, { createContext, useContext, useMemo, useState } from 'react'
 import styled from 'styled-components'
+import { UsersInfoContext } from '../Admin'
 import UserCategoryRow from './UserCategoryRow/UserCategoryRow'
 import UserRows from './UserRows/UserRows'
 
 export const EditContext = createContext({
   targetData: {},
-  usersInfo: [],
-  setUsersInfo: () => {},
+  setTargetData: () => {},
 })
 
-export default function UserTable({
-  usersInfo,
-  setUsersInfo,
-  filterData,
-  searchCheck,
-}) {
+export default function UserTable({ filterData, searchCheck }) {
   const [targetData, setTargetData] = useState({
     id: '',
     index: '',
   })
+  const { usersInfo, filterInfo } = useContext(UsersInfoContext)
   const value = useMemo(
     () => ({
       targetData,
-      usersInfo,
-      setUsersInfo,
+      setTargetData,
     }),
-    [targetData, usersInfo, setUsersInfo]
+    [targetData, setTargetData]
   )
 
   const handleClickTable = ({ target: { parentNode, id, nodeName } }) => {
     if (nodeName === 'INPUT') return
 
-    const [clickedRowData] = usersInfo.filter((data) => {
+    const clickedRowData = usersInfo.find((data) => {
       return data.id === Number(parentNode.id)
     })
 
@@ -39,27 +34,22 @@ export default function UserTable({
       id: clickedRowData.id,
       index: Number(id),
     })
-
-    return (
-      <Table onClick={handleClickTable}>
-        <UserCategoryRow />
-        <EditContext.Provider value={value}>
-          {searchCheck ? (
-            <UserRows usersInfo={filterData} />
-          ) : (
-            <UserRows usersInfo={usersInfo} />
-          )}
-          {/* <UserRows usersInfo={usersInfo} /> */}
-        </EditContext.Provider>
-      </Table>
-    )
   }
+
+  return (
+    <Table onClick={handleClickTable}>
+      <UserCategoryRow />
+      <EditContext.Provider value={value}>
+        <UserRows />
+      </EditContext.Provider>
+    </Table>
+  )
 }
 
 const Table = styled.table`
   width: 100%;
   min-width: 1000px;
-  max-width: 1200px;
+  max-width: 1100px;
   background: white;
   z-index: 10;
 

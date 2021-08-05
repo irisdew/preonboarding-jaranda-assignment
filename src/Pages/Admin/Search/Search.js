@@ -58,6 +58,8 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+  margin: 30px 0;
 
   h1 {
     font-size: 2.5rem;
