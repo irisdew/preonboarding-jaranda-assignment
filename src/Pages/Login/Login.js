@@ -21,6 +21,12 @@ export default function Login() {
     toast: { isShow, message },
   } = useLogin()
 
+  const onKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleLogin()
+    }
+  }
+
   return (
     <Layout>
       <StyledSection>

@@ -20,7 +20,7 @@ Layout.defaultProps = {
 }
 
 const StyledMain = styled.main`
-  display: flex;
+  /* display: flex; */
   justify-content: center;
   align-items: center;
   width: 100%;
