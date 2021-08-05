@@ -30,7 +30,6 @@ export default function Admin() {
     currentPage: 1,
     fullPage: 0,
   })
-  const [searchCheck, setSearchCheck] = useState(false)
   const { isShow, message, toast } = useToast()
   const searchRef = useRef()
   const value = useMemo(
@@ -67,18 +66,6 @@ export default function Admin() {
 
   // 페이지 변경
   useDidMountEffect(() => {
-    // const userList = userListStorage.load()
-    // const temp = userList.slice(
-    //   pagingData.currentPage * 5 - 5,
-    //   pagingData.currentPage * 5
-    // )
-
-    // // setFilterInfo(temp)
-    // setUsersInfo(temp)
-    // // setPagingData({ ...pagingData, fullPage: Math.ceil(userList.length / 5) })
-    // // setSearchCheck(true)
-    // console.log('페이지 변경', pagingData.currentPage)
-
     // 검색하고 페이지 변경하는 경우
     if (usersInfo.length < userListStorage.load().length) {
       setFilterInfo(
@@ -87,7 +74,6 @@ export default function Admin() {
           pagingData.currentPage * 5
         )
       )
-      // setSearchCheck(true)
     }
     // 검색하지 않고 페이지 변경하는 경우
     if (usersInfo.length === userListStorage.load().length) {
@@ -97,7 +83,6 @@ export default function Admin() {
           pagingData.currentPage * 5
         )
       )
-      // setSearchCheck(true)
     }
   }, [pagingData.currentPage])
 
@@ -116,7 +101,7 @@ export default function Admin() {
       // 검색 결과 없음
       if (dataFilter.length === 0) toast('일치하는 검색결과가 없습니다')
 
-      console.log('검색결과', dataFilter)
+      // console.log('검색결과', dataFilter)
 
       setUsersInfo(dataFilter)
       // setFilterInfo(filterSlice)
@@ -130,7 +115,6 @@ export default function Admin() {
         currentPage: 1,
         fullPage: Math.ceil(dataFilter.length / 5),
       })
-      // setSearchCheck(true)
     }
 
     // 메뉴 선택하고 검색하는 경우
@@ -146,7 +130,7 @@ export default function Admin() {
       // 검색 결과 없음
       if (dataFilter.length === 0) toast('일치하는 검색결과가 없습니다')
 
-      console.log('검색결과', dataFilter)
+      // console.log('검색결과', dataFilter)
 
       setUsersInfo(dataFilter)
       setFilterInfo(
@@ -206,7 +190,6 @@ export default function Admin() {
           <UserTable
             setIsOpenedUserAddForm={setIsOpenedUserAddForm}
             filterData={filterInfo}
-            searchCheck={searchCheck}
           />
         </UsersInfoContext.Provider>
         {isOpenedUserAddForm && (
