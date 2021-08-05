@@ -17,7 +17,8 @@ import { save, load } from 'Utils/Storage/Generator'
 
 export default function Signup() {
   const { isShow, message, toast } = useToast()
-
+  
+  const [email, , onChangeEmail] = useInput('')
   const [name, setName] = useState('')
   const [age, setAge] = useState('')
   const [pass, , onChangePass] = useInput('')
@@ -33,23 +34,20 @@ export default function Signup() {
   const [extraAddr, setExtraAddr, onChangeExtraAddr] = useInput('')
   const [cardNum, setCardNum] = useState('')
   const [selectedOption, setSelectedOption] = useState('')
-  // 카드 입력 모달 창
+
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
 
-  // let savedId = null
-  // useEffect(() => {
-  //   savedId = userListStorage.load()
-  //   console.log(savedId)
-  // }, [])
 
-  // 비밀번호와 비밀번호확인이 일치하지 않을 때
+  const checkEmail = (e) => {
+    validation.isEmail(e.target.value) || toast('유효한 이메일을 입력해주세요')
+  }
+
   const checkPassWord = () => {
     if (pass !== passConfirm) {
       toast('비밀번호가 일치하지 않습니다!')
     }
   }
 
-  // 이름 validation
   const checkName = (event) => {
     if (validation.isNotKorean(event.target.value)) {
       toast('이름을 한글로 입력해주세요!')
@@ -58,7 +56,6 @@ export default function Signup() {
     setName(event.target.value)
   }
 
-  // 나이 validation
   const checkAge = (event) => {
     if (validation.isNotNumeric(event.target.value)) {
       toast('숫자만 입력해주세요!')
@@ -67,16 +64,19 @@ export default function Signup() {
     setAge(event.target.value)
   }
 
-  // 비밀번호 validation
-  const checkPasswordPolicy = (password) => {
+  const checkPasswordPolicy = (e) => {
+    const currentInput = e.target.value
     const { isNumeric, isSpecialCharacter, isAlphabet, isOverEight } =
       validation
-    setPassPolicy({
-      numeric: isNumeric(password),
-      special: isSpecialCharacter(password),
-      alphabet: isAlphabet(password),
-      eight: isOverEight(password),
-    })
+    const currentPassPolicy = {
+      numeric: isNumeric(currentInput),
+      special: isSpecialCharacter(currentInput),
+      alphabet: isAlphabet(currentInput),
+      eight: isOverEight(currentInput),
+    }
+    setPassPolicy(currentPassPolicy)
+    const validated = Object.values(currentPassPolicy).every((item) => item)
+    validated || toast('비밀번호 규칙에 맞는 비밀번호를 입력해주세요')
   }
 
   const onCardSubmit = (cardData, close) => {
@@ -84,7 +84,6 @@ export default function Signup() {
     setPopup(close)
   }
 
-  // radio value handler
   const handleOption = (event) => {
     const currentSelectedOption = event.target.value
     setSelectedOption(currentSelectedOption)
@@ -117,13 +116,19 @@ export default function Signup() {
           <div>간편하게 회원가입하고</div>
           <div>자란다를 이용해보세요</div>
         </FormTitle>
-        <Input type="text" placeholder="이메일" />
+        <Input
+          type="text"
+          placeholder="이메일"
+          value={email}
+          onChange={onChangeEmail}
+          onBlur={checkEmail}
+        />
         <Input
           type="password"
           placeholder="비밀번호"
           value={pass}
           onChange={onChangePass}
-          onBlur={(e) => checkPasswordPolicy(e.target.value)}
+          onBlur={checkPasswordPolicy}
         />
         <PasswordPolicy passPolicy={passPolicy} />
         <Input
