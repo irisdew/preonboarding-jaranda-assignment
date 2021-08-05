@@ -139,7 +139,7 @@ const Container = styled.div`
   margin: 0 auto;
   border-top-right-radius: 6rem;
   padding: 4.8rem 0;
-  background-color: ${({ theme }) => theme.color.white};
+  background-color: #fff;
   @media screen and ${({ theme }) => theme.device.tablet} {
     background-color: transparent;
   }
@@ -180,7 +180,7 @@ const LoginButton = styled(Button)`
     display: block;
     width: 100%;
     height: 0.1rem;
-    background-color: ${({ theme }) => theme.color.lightGreyB};
+    background-color: #e5e5e5;
   }
   @media screen and ${({ theme }) => theme.device.tablet} {
     margin-bottom: 2.4rem;
@@ -197,11 +197,11 @@ const SignupButton = styled(Link)`
   height: 5.2rem;
   margin-bottom: 3.8rem;
   border-radius: 0.6rem;
-  color: ${({ theme }) => theme.color.white};
-  background-color: ${({ theme }) => theme.color.secondary};
+  color: #fff;
+  background-color: #0085fd;
   cursor: pointer;
   &:hover {
-    color: ${({ theme }) => theme.color.white};
+    color: #fff;
   }
   @media screen and ${({ theme }) => theme.device.tablet} {
     height: 4.4rem;

@@ -24,6 +24,14 @@ const validation = {
     return reg.test(data)
   },
 
+  isNotNumeric(data) {
+    if (!data) {
+      return false
+    }
+    const reg = /[a-z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g
+    return reg.test(data)
+  },
+
   isAlphabet(data) {
     if (!data) {
       return false
@@ -42,6 +50,14 @@ const validation = {
 
   isOverEight(data) {
     return data.length >= 8
+  },
+
+  isNotKorean(data) {
+    if (!data) {
+      return false
+    }
+    const reg = /[a-z0-9]|[ \[\]{}()<>?|`~!@#$%^&*-_+=,.;:\"'\\]/g
+    return reg.test(data)
   },
 }
 
