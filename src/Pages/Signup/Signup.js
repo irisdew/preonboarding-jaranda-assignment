@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components/macro'
 
 import Layout from 'Layout/Layout'
@@ -12,10 +12,14 @@ import useToast from 'Utils/Hooks/useToast'
 import validation from 'Utils/Validation/Validation'
 import { useInput } from 'Utils/Hooks/useInput'
 import { usePopup } from 'Pages/Signup/usePopup'
+import { userListStorage } from 'Utils/Storage'
+import { save, load } from 'Utils/Storage/Generator'
 
 export default function Signup() {
   const { isShow, message, toast } = useToast()
 
+  const [name, setName] = useState('')
+  const [age, setAge] = useState('')
   const [pass, , onChangePass] = useInput('')
   const [passConfirm, , onChangePassConfirm] = useInput('')
   const [passPolicy, setPassPolicy] = useState({
@@ -27,9 +31,16 @@ export default function Signup() {
   const [post, setPost] = useInput('')
   const [addr, setAddr] = useInput('')
   const [extraAddr, setExtraAddr, onChangeExtraAddr] = useInput('')
-  const [cardNum, setCardNum] = useState('카드 번호')
+  const [cardNum, setCardNum] = useState('')
+  const [selectedOption, setSelectedOption] = useState('')
   // 카드 입력 모달 창
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
+
+  // let savedId = null
+  // useEffect(() => {
+  //   savedId = userListStorage.load()
+  //   console.log(savedId)
+  // }, [])
 
   // 비밀번호와 비밀번호확인이 일치하지 않을 때
   const checkPassWord = () => {
@@ -38,31 +49,22 @@ export default function Signup() {
     }
   }
 
-  // 이름, 나이 validation
-  const [inputs, setInputs] = useState({
-    name: '',
-    age: '',
-  })
-  const { name, age } = inputs
-  const checkValidation = (event) => {
-    const { name, value } = event.target
+  // 이름 validation
+  const checkName = (event) => {
+    if (validation.isNotKorean(event.target.value)) {
+      toast('이름을 한글로 입력해주세요!')
+      return
+    }
+    setName(event.target.value)
+  }
 
-    if (name === 'name') {
-      if (validation.isNotKorean(value)) {
-        toast('이름을 한글로 입력해주세요!')
-        return
-      }
+  // 나이 validation
+  const checkAge = (event) => {
+    if (validation.isNotNumeric(event.target.value)) {
+      toast('숫자만 입력해주세요!')
+      return
     }
-    if (name === 'age') {
-      if (validation.isNotNumeric(value)) {
-        toast('숫자만 입력해주세요!')
-        return
-      }
-    }
-    setInputs({
-      ...inputs,
-      [name]: value,
-    })
+    setAge(event.target.value)
   }
 
   // 비밀번호 validation
@@ -82,20 +84,30 @@ export default function Signup() {
     setPopup(close)
   }
 
+  // radio value handler
+  const handleOption = (event) => {
+    const currentSelectedOption = event.target.value
+    setSelectedOption(currentSelectedOption)
+  }
+
   const onSubmitHandler = (e) => {
     e.preventDefault()
 
+    const savedId = userListStorage.load()
+    const currentIndex = savedId.length
+
     const userInfo = {
-      ...inputs,
-      pass,
-      passConfirm,
-      post,
-      addr,
-      extraAddr,
-      cardNum,
+      id: currentIndex + 1,
+      name: name,
+      age: age,
+      password: pass,
+      address: { postcode: post, address: addr, address_detail: extraAddr },
+      card_number: cardNum,
+      auth: selectedOption,
     }
 
-    console.log('userInfo', userInfo)
+    savedId.push(userInfo)
+    userListStorage.save(savedId)
   }
 
   return (
@@ -126,14 +138,14 @@ export default function Signup() {
           name="name"
           placeholder="이름"
           value={name}
-          onChange={checkValidation}
+          onChange={checkName}
         />
         <Input
           type="text"
           name="age"
           placeholder="나이"
           value={age}
-          onChange={checkValidation}
+          onChange={checkAge}
         />
         <InputTitle>주소</InputTitle>
         <Address
@@ -147,17 +159,38 @@ export default function Signup() {
         />
         <InputTitle>결제 정보</InputTitle>
         <FlexDiv>
-          <Input type="text" value={cardNum} placeholder="{cardNum}" disabled />
+          <Input type="text" value={cardNum} placeholder="카드 번호" disabled />
           <SmallButton clickHandler={openPopup} type="button">
             카드 입력하기
           </SmallButton>
         </FlexDiv>
         <InputTitle>회원 유형을 선택해주세요</InputTitle>
-        <Radio type="radio" name="role" id="radio_student" />
+        <Radio
+          type="radio"
+          name="role"
+          id="radio_student"
+          value="student"
+          checked={selectedOption === 'student'}
+          onChange={handleOption}
+        />
         <Label htmlFor="radio_student">학생</Label>
-        <Radio type="radio" name="role" id="radio_parent" />
+        <Radio
+          type="radio"
+          name="role"
+          id="radio_parent"
+          value="parent"
+          checked={selectedOption === 'parent'}
+          onChange={handleOption}
+        />
         <Label htmlFor="radio_parent">학부모님</Label>
-        <Radio type="radio" name="role" id="radio_teacher" />
+        <Radio
+          type="radio"
+          name="role"
+          id="radio_teacher"
+          value="teacher"
+          checked={selectedOption === 'teacher'}
+          onChange={handleOption}
+        />
         <Label htmlFor="radio_teacher">선생님</Label>
         <LongButton clickHandler={onSubmitHandler}>가입하기</LongButton>
         {showPopup ? (
