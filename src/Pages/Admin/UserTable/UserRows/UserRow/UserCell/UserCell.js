@@ -19,7 +19,7 @@ export default function UserCell({ info, id, index }) {
   const [editInputData, setEditInputData] = useState('')
   // const [isOpenedEditInput, setIsOpenedEditInput] = useState(false)
   const { targetData, setTargetData } = useContext(EditContext)
-  const { usersInfo, setUsersInfo } = useContext(UsersInfoContext)
+  const { usersInfo, filterInfo, setUsersInfo } = useContext(UsersInfoContext)
   const { isOpenedEditInput, setIsOpenedEditInput } = useValidateCell(
     index,
     id,

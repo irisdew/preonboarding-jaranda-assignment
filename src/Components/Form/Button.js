@@ -1,9 +1,14 @@
 import React from 'react'
 import styled from 'styled-components/macro'
 
-export default function Button({ className, children, clickHandler }) {
+export default function Button({
+  className,
+  children,
+  clickHandler,
+  ...restProps
+}) {
   return (
-    <Wrapper className={className} onClick={clickHandler}>
+    <Wrapper className={className} onClick={clickHandler} {...restProps}>
       {children}
     </Wrapper>
   )

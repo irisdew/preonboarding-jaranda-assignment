@@ -3,10 +3,10 @@ import React, { useContext } from 'react'
 import UserRow from './UserRow/UserRow'
 
 export default function UserRows() {
-  const { usersInfo } = useContext(UsersInfoContext)
+  const { usersInfo, filterInfo } = useContext(UsersInfoContext)
   return (
     <tbody>
-      {usersInfo.map((userInfo) => (
+      {filterInfo.map((userInfo) => (
         <UserRow key={userInfo.id} userInfo={userInfo} />
       ))}
     </tbody>

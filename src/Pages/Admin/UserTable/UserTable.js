@@ -14,7 +14,7 @@ export default function UserTable({ filterData, searchCheck }) {
     id: '',
     index: '',
   })
-  const { usersInfo } = useContext(UsersInfoContext)
+  const { usersInfo, filterInfo } = useContext(UsersInfoContext)
   const value = useMemo(
     () => ({
       targetData,
@@ -40,7 +40,7 @@ export default function UserTable({ filterData, searchCheck }) {
     <Table onClick={handleClickTable}>
       <UserCategoryRow />
       <EditContext.Provider value={value}>
-        {searchCheck ? <UserRows usersInfo={filterData} /> : <UserRows />}
+        <UserRows />
       </EditContext.Provider>
     </Table>
   )

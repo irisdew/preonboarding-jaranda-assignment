@@ -1,5 +1,7 @@
 import React from 'react'
 
+import Layout from 'Layout/Layout'
+
 export default function Parent() {
-  return <div>Parent Page</div>
+  return <Layout>Parent Page</Layout>
 }
