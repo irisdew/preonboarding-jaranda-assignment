@@ -13,16 +13,24 @@ const Wrapper = styled.input`
   padding: 0 1.5rem;
   font-size: 1.4rem;
   line-height: 3.71428;
-  color: #0b0b0b;
-  background-color: #fff;
+  color: ${({ theme }) => theme.color.black};
+  background-color: ${({ theme }) => theme.color.white};
   ::placeholder {
-    color: #ccc;
+    color: ${({ theme }) => theme.color.lightGreyA};
   }
   :hover,
   :focus {
-    border: solid 0.1rem #a5d25f;
-    color: #6dc043;
-    background-color: rgba(165, 210, 95, 0.1);
+    border: solid 0.1rem ${({ theme }) => theme.color.primary};
+    color: ${({ theme }) => theme.color.primary};
+    background-color: ${({ theme }) => theme.color.primaryAlpha};
+  }
+  @media screen and ${({ theme }) => theme.device.tablet} {
+    height: 4.4rem;
+    margin-bottom: 0.8rem;
+  }
+  @media screen and ${({ theme }) => theme.device.tablet} {
+    height: 4.4rem;
+    margin-bottom: 0.8rem;
   }
 `
 

@@ -14,7 +14,11 @@ export default function Header() {
     const {
       location: { pathname },
     } = history
-    return path === pathname.toLowerCase() ? 1 : 0
+    if (Array.isArray(path)) {
+      return path.indexOf(pathname.toLowerCase()) !== -1 ? 1 : 0
+    } else {
+      return path === pathname.toLowerCase() ? 1 : 0
+    }
   }
 
   const handleOpenMobileMenu = () => {
@@ -43,13 +47,19 @@ export default function Header() {
         <StyledNav mobileShow={isOpenNav} onClick={handleCloseMobileMenu}>
           <NavList>
             <NavItem>
-              <StyledLink to="/teacher">자란다선생님 메뉴</StyledLink>
+              <StyledLink to="/teacher" active={isActiveLink('/teacher')}>
+                자란다선생님 메뉴
+              </StyledLink>
             </NavItem>
             <NavItem>
-              <StyledLink to="/parent">자란다부모님 메뉴</StyledLink>
+              <StyledLink to="/parent" active={isActiveLink('/parent')}>
+                자란다부모님 메뉴
+              </StyledLink>
             </NavItem>
             <NavItem>
-              <StyledLink to="/student">자란다어린이 메뉴</StyledLink>
+              <StyledLink to="/student" active={isActiveLink('/student')}>
+                자란다어린이 메뉴
+              </StyledLink>
             </NavItem>
             {auth.getAuth() ? (
               <>
@@ -62,7 +72,10 @@ export default function Header() {
               </>
             ) : (
               <NavItem>
-                <StyledLink to="/login" active={isActiveLink('/login')}>
+                <StyledLink
+                  to="/login"
+                  active={isActiveLink(['/login', '/signup'])}
+                >
                   로그인/회원가입
                 </StyledLink>
               </NavItem>
@@ -83,7 +96,7 @@ const Wrapper = styled.header`
   left: 0;
   width: 100%;
   height: 6.3rem;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.color.white};
   z-index: 300;
   @media screen and ${({ theme }) => theme.device.tablet} {
     height: 4.8rem;
@@ -124,7 +137,7 @@ const StyledNav = styled.nav.attrs(({ mobileShow }) => ({
     right: 0;
     width: 25rem;
     height: 100vh;
-    background-color: #fff;
+    background-color: ${({ theme }) => theme.color.white};
     visibility: ${({ visibility }) => visibility};
     transform: ${({ transform }) => transform};
     transition: ${({ transition }) => transition};
@@ -151,7 +164,7 @@ const NavList = styled.ul`
     position: relative;
     flex-direction: column;
     padding: 1.7rem;
-    background-color: #fff;
+    background-color: ${({ theme }) => theme.color.white};
   }
 `
 const NavItem = styled.li`
@@ -168,7 +181,7 @@ const navButtonMixin = css`
   align-items: center;
   height: 100%;
   font-weight: 400;
-  color: #4a4a4a;
+  color: ${({ theme }) => theme.color.deepGrey};
 
   &:hover {
     font-weight: 600;
@@ -176,8 +189,8 @@ const navButtonMixin = css`
   }
 `
 
-const StyledLink = styled(Link).attrs(({ active }) => ({
-  color: active ? '#87bf44' : '#4a4a4a',
+const StyledLink = styled(Link).attrs(({ active, theme }) => ({
+  color: active ? theme.color.primary : theme.color.deepGrey,
   weight: active ? '600' : '400',
 }))`
   ${navButtonMixin};

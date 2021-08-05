@@ -3,21 +3,30 @@ import styled from 'styled-components/macro'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons'
 
-export default function Pagination({ pagingData }) {
+export default function Pagination({ pagingData, changePageNum, arrowBtn }) {
   return (
     <Container>
       <Paging>
-        <Prev>
-          <FontAwesomeIcon icon={faCaretLeft} />
-        </Prev>
+        {pagingData.currentPage > 1 && (
+          <Prev onClick={arrowBtn} data-check="prev">
+            <FontAwesomeIcon icon={faCaretLeft} />
+          </Prev>
+        )}
         {[...Array(pagingData.fullPage)].map((ele, index) => (
-          <a key={index}>
-            <span>{index + 1}</span>
-          </a>
+          <PageNumber
+            onClick={changePageNum}
+            key={index}
+            check={pagingData.currentPage}
+            idx={index}
+          >
+            {index + 1}
+          </PageNumber>
         ))}
-        <Next>
-          <FontAwesomeIcon icon={faCaretRight} />
-        </Next>
+        {pagingData.fullPage > pagingData.currentPage && (
+          <Next onClick={arrowBtn} data-check="next">
+            <FontAwesomeIcon icon={faCaretRight} />
+          </Next>
+        )}
       </Paging>
     </Container>
   )
@@ -31,45 +40,43 @@ const Container = styled.div`
 `
 
 const Paging = styled.div`
-  a {
+  button {
     margin-right: 1rem;
-  }
-
-  span {
-    padding: 0.8rem;
+    padding: 0.9rem;
     border: 0.1rem solid #aac14f;
     border-radius: 0.3rem;
-    background-color: #fafafa;
+  }
+`
 
-    &:hover {
-      background-color: #dd346c;
-      color: #fafafa;
-    }
+const PageNumber = styled.button`
+  background-color: ${(props) => props.check === props.idx + 1 && '#aac14f'};
+  color: ${(props) => props.check === props.idx + 1 && '#fafafa'};
+
+  &:hover {
+    background-color: #dfeda7;
+    color: #fafafa;
+    cursor: pointer;
   }
 `
 
 // 이전
-const Prev = styled.a`
-  padding: 0.8rem;
-  border: 0.1rem solid #aac14f;
-  border-radius: 0.3rem;
+const Prev = styled.button`
   background-color: #fafafa;
 
   &:hover {
-    background-color: #dd346c;
+    background-color: #dfeda7;
     color: #fafafa;
+    cursor: pointer;
   }
 `
 
 // 이후
-const Next = styled.a`
-  padding: 0.8rem;
-  border: 0.1rem solid #aac14f;
-  border-radius: 0.3rem;
+const Next = styled.button`
   background-color: #fafafa;
 
   &:hover {
-    background-color: #dd346c;
+    background-color: #dfeda7;
     color: #fafafa;
+    cursor: pointer;
   }
 `
