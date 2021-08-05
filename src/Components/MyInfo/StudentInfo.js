@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 import auth from 'Utils/Auth/Auth'
+import Search from 'Pages/Admin/Search/Search'
+import { userListStorage } from 'Utils/Storage'
 
 const StudentInfo = () => {
   const [students, setStudents] = useState([])
   useEffect(() => {
     setStudents(
-      auth
-        .getList()
+      userListStorage
+        .load()
         .filter((user) => user.access.find((access) => access === '/student'))
         .filter((user) => user.access[0] !== '/admin')
     )
@@ -16,6 +18,11 @@ const StudentInfo = () => {
   console.log(students)
   return (
     <>
+      {/* <Search
+        filterUserInfo={filterUserInfo}
+        searchRef={searchRef}
+        refreshBtn={refreshBtn}
+      /> */}
       <Table>
         <thead>
           <tr>
