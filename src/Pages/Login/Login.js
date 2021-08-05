@@ -34,6 +34,7 @@ export default function Login() {
               ref={pwInputRef}
               type="password"
               placeholder="비밀번호"
+              onKeyPress={onKeyPress}
             />
             <StyledCustomCheckBox
               checked={isRememberId}
