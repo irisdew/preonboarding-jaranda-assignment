@@ -7,10 +7,10 @@ import Button from 'Components/Form/Button'
 import PasswordPolicy from 'Components/PasswordPolicy/PasswordPolicy'
 import Address from 'Components/Address/Address'
 import CardPopup from 'Pages/Signup/CardPopup'
+import CustomCheckBox from 'Components/Form/CustomCheckBox'
 import Toast from 'Components/Toast/Toast'
 import useToast from 'Utils/Hooks/useToast'
 import validation from 'Utils/Validation/Validation'
-import CustomCheckBox from 'Components/Form/CustomCheckBox'
 import { useInput } from 'Utils/Hooks/useInput'
 import { usePopup } from 'Pages/Signup/usePopup'
 import { userListStorage } from 'Utils/Storage'
@@ -97,15 +97,15 @@ export default function Signup() {
     setPopup(close)
   }
 
-
   const handleOption = (e) => {
-    const currentSelectedOption = e.target.value
+    const currentSelectedOption = e.target.id
     setSelectedOption(currentSelectedOption)
   }
 
   const onSubmitHandler = (e) => {
     e.preventDefault()
 
+    // 체크체크!
     !email && toast('이메일을 입력해주세요')
     !isEmail(email) && toast('유효한 이메일을 입력해주세요')
     !pass && toast('비밀번호를 입력해주세요')
@@ -140,10 +140,10 @@ export default function Signup() {
       Boolean(item)
     )
 
-//     console.log(
-//       Object.values(newUserInfo),
-//       Object.values(newUserInfo).map((item) => Boolean(item))
-//     )
+    console.log(
+      Object.values(newUserInfo),
+      Object.values(newUserInfo).map((item) => Boolean(item))
+    )
 
     checkUserInfo && userListStorage.save([...usersInfo, newUserInfo])
   }
@@ -216,32 +216,32 @@ export default function Signup() {
             </SmallButton>
           </FlexDiv>
           <InputTitle>회원 유형을 선택해주세요</InputTitle>
-          {/* <Radio
-            type="radio"
-            name="role"
-            id="radio_student"
-            value="student"
-            checked={selectedOption === 'student'}
-            onChange={handleOption}
-          />
-          <Label htmlFor="radio_student">자란다어린이</Label>
-          <Radio
-            type="radio"
-            name="role"
-            id="radio_parent"
-            value="parent"
-            checked={selectedOption === 'parent'}
-            onChange={handleOption}
-          />
-          <Label htmlFor="radio_parent">자란다부모님</Label>
-          <Radio
-            type="radio"
-            name="role"
-            id="radio_teacher"
-            value="teacher"
-            checked={selectedOption === 'teacher'}
-            onChange={handleOption}
-          />
+          {/* <Radio	
+            type="radio"	
+            name="role"	
+            id="radio_student"	
+            value="student"	
+            checked={selectedOption === 'student'}	
+            onChange={handleOption}	
+          />	
+          <Label htmlFor="radio_student">자란다어린이</Label>	
+          <Radio	
+            type="radio"	
+            name="role"	
+            id="radio_parent"	
+            value="parent"	
+            checked={selectedOption === 'parent'}	
+            onChange={handleOption}	
+          />	
+          <Label htmlFor="radio_parent">자란다부모님</Label>	
+          <Radio	
+            type="radio"	
+            name="role"	
+            id="radio_teacher"	
+            value="teacher"	
+            checked={selectedOption === 'teacher'}	
+            onChange={handleOption}	
+          />	
           <Label htmlFor="radio_teacher">자란다선생님</Label> */}
           <FlexDiv>
             <StyledCustomCheckBox
@@ -266,7 +266,6 @@ export default function Signup() {
               자란다선생님
             </StyledCustomCheckBox>
           </FlexDiv>
-
           <LongButton clickHandler={onSubmitHandler}>가입하기</LongButton>
           {showPopup ? (
             <>
@@ -360,6 +359,7 @@ export const SmallButton = styled(Button)`
   background-color: ${({ theme }) => theme.color.secondary};
   border-radius: 0.2rem;
 `
+
 const Background = styled.div`
   width: 100vw;
   height: 100vh;
@@ -369,6 +369,7 @@ const Background = styled.div`
   background-color: rgba(0, 0, 0, 0.15);
   z-index: 1;
 `
+
 const StyledCustomCheckBox = styled(CustomCheckBox)`
   align-self: flex-start;
   margin-top: 1rem;
