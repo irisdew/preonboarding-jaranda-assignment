@@ -45,7 +45,6 @@ export default function Signup() {
     isName,
     isNotNumeric,
     isNumeric,
-    isAge,
     isSpecialCharacter,
     isAlphabet,
     isOverEight,
@@ -64,22 +63,17 @@ export default function Signup() {
     )
   }
 
-  const createPasswordPolicyState = (currentInput) => {
-    return {
+  const checkPasswordPolicy = (e) => {
+    const currentInput = e?.targetValue || pass
+    const currentPassPolicy = {
       numeric: isNumeric(currentInput),
       special: isSpecialCharacter(currentInput),
       alphabet: isAlphabet(currentInput),
       eight: isOverEight(currentInput),
     }
-  }
-
-  const checkPasswordPolicy = (e) => {
-    const currentInput = e?.targetValue || pass
-    const currentPassPolicy = createPasswordPolicyState(currentInput)
     setPassPolicy(currentPassPolicy)
-    const validated = Object.values(currentPassPolicy).every((item) => item)
-    validated || toast('비밀번호 규칙에 맞는 비밀번호를 입력해주세요')
-    return validated
+    validatePassword(currentInput) ||
+      toast('비밀번호 규칙에 맞는 비밀번호를 입력해주세요')
   }
 
   const checkPassword = () => {
