@@ -11,9 +11,8 @@ import Signup from 'Pages/Signup/Signup'
 import Parent from 'Pages/Parent/Parent'
 import Teacher from 'Pages/Teacher/Teacher'
 import Student from 'Pages/Student/Student'
-import MyPage_jd from 'Pages/Mypage/MyPage_jd'
+import Mypage from 'Pages/Mypage/Mypage'
 import NotFound from 'Pages/NotFound/NotFound'
-import MyPage_yj from 'Pages/Mypage/MyPage_yj'
 import { fetchData } from 'Utils/fetch'
 import { userListStorage } from 'Utils/Storage'
 import { fetchDataType } from 'Constant'
@@ -36,7 +35,7 @@ export default function Routes() {
         <PrivateRoute exact path="/teacher" component={Teacher} />
         <PrivateRoute exact path="/student" component={Student} />
         {/* <PrivateRoute exact path="/mypage_yj" component={MyPage_yj} /> */}
-        <PublicRoute path="/mypage" component={MyPage_jd} />
+        <PublicRoute path="/mypage" component={Mypage} />
         <Switch>
           <PrivateRoute exact path="/admin" component={Admin} />
           <PublicRoute

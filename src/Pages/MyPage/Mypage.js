@@ -6,7 +6,7 @@ import auth from 'Utils/Auth/Auth'
 import Routes from 'Pages/Mypage/Routes'
 import Layout from 'Layout/Layout'
 
-const MyInfo = () => {
+const MyPage = () => {
   return (
     <Layout header>
       <Router>
@@ -78,4 +78,4 @@ const MainContent = styled.main`
   height: 500px;
   padding: 0 2rem;
 `
-export default MyInfo
+export default MyPage
