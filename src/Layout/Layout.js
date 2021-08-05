@@ -5,14 +5,18 @@ import Header from 'Layout/Header'
 import Footer from 'Layout/Footer'
 import { theme } from 'Styles/Theme'
 
-export default function Layout({ children }) {
+export default function Layout({ children, footerColor }) {
   return (
     <ThemeProvider theme={theme}>
       <Header />
       <StyledMain>{children}</StyledMain>
-      <Footer />
+      <Footer color={footerColor} />
     </ThemeProvider>
   )
+}
+
+Layout.defaultProps = {
+  footerColor: 'green',
 }
 
 const StyledMain = styled.main`

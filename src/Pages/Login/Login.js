@@ -13,7 +13,7 @@ import auth from 'Utils/Auth/Auth'
 import { rememberMeStorage } from 'Utils/Storage'
 import { loginState } from 'Constant'
 import bgImgUrl from 'Assets/Images/bg-sign_in.png'
-import mBgImgUrl from 'Assets/Images/bg-sign_in-m.png'
+import mBgImgUrl from 'Assets/Images/bg-sign-m.png'
 
 export default function Login() {
   const history = useHistory()
@@ -79,6 +79,7 @@ export default function Login() {
   return (
     <Layout>
       <StyledSection>
+        <h2 className="a11y">로그인 페이지</h2>
         <Container>
           <LoginContent>
             <StyledTitle aria-hidden="true">
@@ -152,7 +153,8 @@ const LoginContent = styled.div`
   margin: 0 auto;
 `
 
-const StyledTitle = styled.h2`
+const StyledTitle = styled.span`
+  display: block;
   margin-bottom: 4.8rem;
   font-size: 2.4rem;
   font-weight: 600;
@@ -161,10 +163,6 @@ const StyledTitle = styled.h2`
 
 const StyledInput = styled(CustomInput)`
   margin-bottom: 1.6rem;
-  @media screen and ${({ theme }) => theme.device.tablet} {
-    height: 4.4rem;
-    margin-bottom: 0.8rem;
-  }
 `
 
 const StyledCustomCheckBox = styled(CustomCheckBox)`
