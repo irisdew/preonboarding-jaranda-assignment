@@ -7,6 +7,7 @@ import validation from 'Utils/Validation/Validation'
 import SaveDataToLocalStorage from 'Utils/Storage/SaveDataToLocalStorage'
 import { useInput } from 'Utils/Hooks/useInput'
 import setDaumAddr from 'Utils/SetDaumAddr'
+import auth from 'Utils/Auth/Auth'
 import { EditIcon } from './InfoBox'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import CustomInput from 'Components/Form/CustomInput'
@@ -72,11 +73,12 @@ export function EditBox({
         // 이메일 변경 로직 추가
         // CURRENT_ACCOUNT와 USER_LIST 모두 수정
         data[currentAccountIdx].email = emailRef.value
-        SaveDataToLocalStorage('USER_LIST', data)
+        auth.update(data[currentAccountIdx])
+        // SaveDataToLocalStorage('USER_LIST', data)
 
-        const emailModifiedObj = GetDataFromLocalStorage('CURRENT_ACCOUNT')
-        emailModifiedObj.email = emailRef.value
-        SaveDataToLocalStorage('CURRENT_ACCOUNT', emailModifiedObj)
+        // const emailModifiedObj = GetDataFromLocalStorage('CURRENT_ACCOUNT')
+        // emailModifiedObj.email = emailRef.value
+        // SaveDataToLocalStorage('CURRENT_ACCOUNT', emailModifiedObj)
 
         setEditEmail((prev) => !prev)
         return
@@ -96,7 +98,7 @@ export function EditBox({
         }
         // USER_LIST의 현재 로그인 한 계정의 address를 newAddress로 대체
         data[currentAccountIdx].address = newAddress
-        SaveDataToLocalStorage('USER_LIST', data)
+        auth.update(data[currentAccountIdx])
         setEditAddress((prev) => !prev)
         return
 
@@ -108,7 +110,7 @@ export function EditBox({
         // 카드 번호 변경 로직 추가
         // USER_LIST만 바꿔야함
         data[currentAccountIdx].card_number = cardNum
-        SaveDataToLocalStorage('USER_LIST', data)
+        auth.update(data[currentAccountIdx])
         setEditCardNum((prev) => !prev)
 
         return
@@ -139,7 +141,7 @@ export function EditBox({
           return
         }
         data[currentAccountIdx].password = newPasswordRef.value
-        SaveDataToLocalStorage('USER_LIST', data)
+        auth.update(data[currentAccountIdx])
         setEditPassword((prev) => !prev)
         return
 
