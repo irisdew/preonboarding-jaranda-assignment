@@ -1,9 +1,10 @@
-import { UsersInfoContext } from 'Pages/Admin/Admin'
+import { FilterInfoContext } from 'Pages/Admin/Admin'
 import React, { useContext } from 'react'
 import UserRow from './UserRow/UserRow'
 
 export default function UserRows() {
-  const { usersInfo, filterInfo } = useContext(UsersInfoContext)
+  const { filterInfo } = useContext(FilterInfoContext)
+
   return (
     <tbody>
       {filterInfo.map((userInfo) => (
