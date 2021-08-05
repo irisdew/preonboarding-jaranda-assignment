@@ -40,31 +40,15 @@ const Container = styled.div`
 `
 
 const Paging = styled.div`
-  /* a {
+  button {
     margin-right: 1rem;
-  } */
-
-  span {
-    margin-right: 1rem;
-    padding: 0.8rem;
+    padding: 0.9rem;
     border: 0.1rem solid #aac14f;
     border-radius: 0.3rem;
-    background-color: #fafafa;
-    vertical-align: middle;
-
-    &:hover {
-      background-color: #dfeda7;
-      color: #fafafa;
-      cursor: pointer;
-    }
   }
 `
 
 const PageNumber = styled.button`
-  margin-right: 1rem;
-  padding: 0.9rem;
-  border: 0.1rem solid #aac14f;
-  border-radius: 0.3rem;
   background-color: ${(props) => props.check === props.idx + 1 && '#aac14f'};
   color: ${(props) => props.check === props.idx + 1 && '#fafafa'};
 
@@ -76,11 +60,7 @@ const PageNumber = styled.button`
 `
 
 // 이전
-// const Prev = styled.a`
-const Prev = styled.span`
-  padding: 0.8rem;
-  border: 0.1rem solid #aac14f;
-  border-radius: 0.3rem;
+const Prev = styled.button`
   background-color: #fafafa;
 
   &:hover {
@@ -91,11 +71,7 @@ const Prev = styled.span`
 `
 
 // 이후
-// const Next = styled.a`
-const Next = styled.span`
-  padding: 0.8rem;
-  border: 0.1rem solid #aac14f;
-  border-radius: 0.3rem;
+const Next = styled.button`
   background-color: #fafafa;
 
   &:hover {

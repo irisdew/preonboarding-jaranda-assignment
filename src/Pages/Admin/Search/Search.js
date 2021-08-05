@@ -20,6 +20,7 @@ export default function Search({ filterUserInfo, searchRef, refreshBtn }) {
   const selectValue = (e) => {
     setCheckSelect(false)
     setSelected(e.target.innerText)
+    filterUserInfo(e.target.innerText)
   }
 
   return (
