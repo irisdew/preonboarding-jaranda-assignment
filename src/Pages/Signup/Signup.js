@@ -79,8 +79,8 @@ export default function Signup() {
 
   //이메일 유효성 검사, 이메일 중복 검사
   const checkEmail = (e) => {
-    isEmail(e.target.value) || toast(ALERT_EMAIL_INVALID)
     checkEmailDuplication(e.target.value)
+    isEmail(e.target.value) || toast(ALERT_EMAIL_INVALID)
   }
 
   // 이메일 중복 확인
@@ -143,46 +143,11 @@ export default function Signup() {
     setSelectedOption(currentSelectedOption)
   }
 
-  //빈 칸 있는지 확인 후 toast, focus
-  const checkBlank = (newUserInfo) => {
-    const userInfoInputs = [
-      '',
-      inputEmail,
-      inputPassword,
-      inputName,
-      inputAge,
-      inputPostCode,
-      inputCard,
-    ]
-
-    const alerts = [
-      '',
-      ALERT_EMAIL_BLANK,
-      ALERT_PASSWORD_BLANK,
-      ALERT_NAME_BLANK,
-      ALERT_AGE_BLANK,
-      ALERT_ADDRESS_BLANK,
-      ALERT_CARD_BLANK,
-    ]
-
-    let index = 0
-    for (let key in newUserInfo && index < userInfoInputs.length) {
-      console.log(key)
-      console.log(index)
-      if (newUserInfo[key] === '') {
-        userInfoInputs[index].current.focus()
-        toast(alerts[index])
-        return
-      }
-      index++
-    }
-  }
-
   const onSubmitHandler = (e) => {
     e.preventDefault()
     // 체크체크!
     !email && toast(ALERT_EMAIL_BLANK)
-    !isEmail(email) && toast(ALERT_EMAIL_INVALID)
+    // !isEmail(email) && toast(ALERT_EMAIL_INVALID)
     !pass && toast(ALERT_PASSWORD_BLANK)
     checkPasswordPolicy()
     pass !== passConfirm && toast(ALERT_PASSWORD)
@@ -218,6 +183,38 @@ export default function Signup() {
     checkBlank(newUserInfo)
 
     checkUserInfo && userListStorage.save([...usersInfo, newUserInfo])
+  }
+
+  //빈 칸 있는지 확인 후 toast, focus
+  const checkBlank = (newUserInfo) => {
+    const userInfoInputs = [
+      '',
+      inputEmail,
+      inputPassword,
+      inputName,
+      inputAge,
+      inputPostCode,
+      inputCard,
+    ]
+
+    const alerts = [
+      '',
+      ALERT_EMAIL_BLANK,
+      ALERT_PASSWORD_BLANK,
+      ALERT_NAME_BLANK,
+      ALERT_AGE_BLANK,
+      ALERT_ADDRESS_BLANK,
+      ALERT_CARD_BLANK,
+    ]
+    let index = 0
+    for (let key in newUserInfo) {
+      if (index < userInfoInputs.length && newUserInfo[key] == '') {
+        userInfoInputs[index].current.focus()
+        toast(alerts[index])
+        return
+      }
+      index++
+    }
   }
 
   return (
