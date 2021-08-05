@@ -24,6 +24,10 @@ const Wrapper = styled.input`
     color: #6dc043;
     background-color: rgba(165, 210, 95, 0.1);
   }
+  @media screen and ${({ theme }) => theme.device.tablet} {
+    height: 4.4rem;
+    margin-bottom: 0.8rem;
+  }
 `
 
 export default CustomInput

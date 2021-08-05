@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
@@ -10,16 +10,25 @@ import Toast from 'Components/Toast/Toast'
 import validation from 'Utils/Validation/Validation'
 import useToast from 'Utils/Hooks/useToast'
 import auth from 'Utils/Auth/Auth'
+import { rememberMeStorage } from 'Utils/Storage'
+import { loginState } from 'Constant'
 import bgImgUrl from 'Assets/Images/bg-sign_in.png'
-import mBgImgUrl from 'Assets/Images/bg-sign_in-m.png'
+import mBgImgUrl from 'Assets/Images/bg-sign-m.png'
 
-export default function Login(props) {
+export default function Login() {
   const history = useHistory()
   const [isRememberId, setIsRememberId] = useState(false)
   const idInputRef = useRef(null)
   const pwInputRef = useRef(null)
-  const rememberRef = useRef(null)
   const { isShow, message, toast } = useToast()
+
+  useEffect(() => {
+    const rememberId = rememberMeStorage.load()
+    if (rememberId) {
+      setIsRememberId(true)
+      idInputRef.current.value = rememberId
+    }
+  }, [])
 
   const handleRememberMe = useCallback(
     ({ target: { checked } }) => {
@@ -34,46 +43,43 @@ export default function Login(props) {
     if (!id.value) {
       toast('이메일을 입력해주세요.')
       id.focus()
-      return
     } else if (!pw.value) {
       toast('비밀번호를 입력해주세요.')
       pw.focus()
-      return
     } else if (!validation.isEmail(id.value)) {
       toast('유효하지 않은 이메일입니다.')
       id.value = ''
       id.focus()
-      return
     } else {
-      const result = auth.login(id.value, pw.value)
-      switch (result.state) {
-        case 'success':
+      const state = auth.login(id.value, pw.value)
+      switch (state.name) {
+        case loginState.SUCCESS.name:
+          isRememberId
+            ? rememberMeStorage.save(id.value)
+            : rememberMeStorage.remove()
           history.push('/')
           return
 
-        case 'fail':
-          if (result.reason === '등록된 계정이 없습니다.') {
-            toast('등록된 계정이 없습니다.')
-            id.focus()
-          } else {
-            toast('패스워드가 일치하지 않습니다.')
-            pw.focus()
-          }
+        case loginState.FAIL.reason.NO_ACCOUNT_REGISTERED.name:
+          toast(state.desc)
+          id.focus()
+          return
+
+        case loginState.FAIL.reason.PASSWORD_MISMATCH.name:
+          toast(state.desc)
+          pw.focus()
           return
 
         default:
           throw new Error('is not valid state')
       }
     }
-  }, [])
-
-  const handleSignup = useCallback(() => {
-    toast('Test')
-  }, [])
+  }, [isRememberId])
 
   return (
     <Layout>
       <StyledSection>
+        <h2 className="a11y">로그인 페이지</h2>
         <Container>
           <LoginContent>
             <StyledTitle aria-hidden="true">
@@ -86,15 +92,14 @@ export default function Login(props) {
               placeholder="비밀번호"
             />
             <StyledCustomCheckBox
-              ref={rememberRef}
-              cehcekd={isRememberId}
+              checked={isRememberId}
               id="rememberId"
               checkHandler={handleRememberMe}
             >
               아이디 기억하기
             </StyledCustomCheckBox>
             <LoginButton clickHandler={handleLogin}>로그인</LoginButton>
-            <SingupButton clickHandler={handleSignup}>회원가입</SingupButton>
+            <SignupButton to="/signup">회원가입</SignupButton>
             <StyledLink to="/">관리자 로그인</StyledLink>
           </LoginContent>
         </Container>
@@ -148,7 +153,8 @@ const LoginContent = styled.div`
   margin: 0 auto;
 `
 
-const StyledTitle = styled.h2`
+const StyledTitle = styled.span`
+  display: block;
   margin-bottom: 4.8rem;
   font-size: 2.4rem;
   font-weight: 600;
@@ -157,10 +163,6 @@ const StyledTitle = styled.h2`
 
 const StyledInput = styled(CustomInput)`
   margin-bottom: 1.6rem;
-  @media screen and ${({ theme }) => theme.device.tablet} {
-    height: 4.4rem;
-    margin-bottom: 0.8rem;
-  }
 `
 
 const StyledCustomCheckBox = styled(CustomCheckBox)`
@@ -187,9 +189,23 @@ const LoginButton = styled(Button)`
     }
   }
 `
-const SingupButton = styled(Button)`
+const SignupButton = styled(Link)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 5.2rem;
   margin-bottom: 3.8rem;
+  border-radius: 0.6rem;
+  color: #fff;
   background-color: #0085fd;
+  cursor: pointer;
+  &:hover {
+    color: #fff;
+  }
+  @media screen and ${({ theme }) => theme.device.tablet} {
+    height: 4.4rem;
+  }
 `
 
 const StyledLink = styled(Link)`

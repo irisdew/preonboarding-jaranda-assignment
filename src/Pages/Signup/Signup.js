@@ -1,13 +1,29 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
+import React, { useState, useEffect } from 'react'
+import styled from 'styled-components/macro'
+
+import Layout from 'Layout/Layout'
+import CustomInput from 'Components/Form/CustomInput'
+import Button from 'Components/Form/Button'
 import PasswordPolicy from 'Components/PasswordPolicy/PasswordPolicy'
 import Address from 'Components/Address/Address'
 import CardPopup from 'Pages/Signup/CardPopup'
-// import Button from 'Components/Button/Button'
-import { useInput } from 'Utils/useInput'
+import Toast from 'Components/Toast/Toast'
+import useToast from 'Utils/Hooks/useToast'
+import validation from 'Utils/Validation/Validation'
+import { useInput } from 'Utils/Hooks/useInput'
 import { usePopup } from 'Pages/Signup/usePopup'
+import { userListStorage } from 'Utils/Storage'
+import { save, load } from 'Utils/Storage/Generator'
+
+import bgImgUrl from 'Assets/Images/bg-sign_up.png'
+import mBgImgUrl from 'Assets/Images/bg-sign-m.png'
 
 export default function Signup() {
+  const { isShow, message, toast } = useToast()
+
+  const [email, , onChangeEmail] = useInput('')
+  const [name, setName] = useState('')
+  const [age, setAge] = useState('')
   const [pass, , onChangePass] = useInput('')
   const [passConfirm, , onChangePassConfirm] = useInput('')
   const [passPolicy, setPassPolicy] = useState({
@@ -19,45 +35,58 @@ export default function Signup() {
   const [post, setPost] = useInput('')
   const [addr, setAddr] = useInput('')
   const [extraAddr, setExtraAddr, onChangeExtraAddr] = useInput('')
-  const [cardNum, setCardNum] = useState('카드 번호')
-  //카드 입력 모달 창
+  const [cardNum, setCardNum] = useState('')
+  const [selectedOption, setSelectedOption] = useState('')
+
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
 
-  //비밀번호와 비밀번호확인이 일치하지 않을 때
-  const CheckPassWord = () => {
+  const {
+    isEmail,
+    isNotKorean,
+    isNotNumeric,
+    isNumeric,
+    isSpecialCharacter,
+    isAlphabet,
+    isOverEight,
+  } = validation
+
+  const checkEmail = (e) => {
+    isEmail(e.target.value) || toast('유효한 이메일을 입력해주세요')
+  }
+
+  const checkPassWord = () => {
     if (pass !== passConfirm) {
-      console.log('비밀번호가 일치하지 않습니다')
+      toast('비밀번호가 일치하지 않습니다!')
     }
   }
 
-  const CheckPasswordPolicy = (password) => {
-    console.log('password policy: ', password)
-
-    const numeric = /[0-9]/g
-    const alphabet = /[a-z]/gi
-    const special = /[~!@#$%^&*()_+|<>?:{}]/g
-
-    const currentPassword = {}
-
-    if (numeric.test(password)) {
-      console.log('숫자')
-      currentPassword.numeric = true
+  const checkName = (event) => {
+    if (isNotKorean(event.target.value)) {
+      toast('이름을 한글로 입력해주세요!')
+      return
     }
-    if (special.test(password)) {
-      console.log('특수문자')
-      currentPassword.special = true
-      console.log(passPolicy)
-    }
-    if (alphabet.test(password)) {
-      currentPassword.alphabet = true
-      console.log('영문')
-    }
-    if (password.length >= 8) {
-      currentPassword.eight = true
-      console.log('8자리 이상')
-    }
+    setName(event.target.value)
+  }
 
-    setPassPolicy(currentPassword)
+  const checkAge = (event) => {
+    if (isNotNumeric(event.target.value)) {
+      toast('숫자만 입력해주세요!')
+      return
+    }
+    setAge(event.target.value)
+  }
+
+  const checkPasswordPolicy = (e) => {
+    const currentInput = e.target.value
+    const currentPassPolicy = {
+      numeric: isNumeric(currentInput),
+      special: isSpecialCharacter(currentInput),
+      alphabet: isAlphabet(currentInput),
+      eight: isOverEight(currentInput),
+    }
+    setPassPolicy(currentPassPolicy)
+    const validated = Object.values(currentPassPolicy).every((item) => item)
+    validated || toast('비밀번호 규칙에 맞는 비밀번호를 입력해주세요')
   }
 
   const onCardSubmit = (cardData, close) => {
@@ -65,92 +94,176 @@ export default function Signup() {
     setPopup(close)
   }
 
+  const handleOption = (event) => {
+    const currentSelectedOption = event.target.value
+    setSelectedOption(currentSelectedOption)
+  }
+
+  const onSubmitHandler = (e) => {
+    e.preventDefault()
+
+    const savedId = userListStorage.load()
+    const currentIndex = savedId.length
+
+    const userInfo = {
+      id: currentIndex + 1,
+      name: name,
+      age: age,
+      password: pass,
+      address: { postcode: post, address: addr, address_detail: extraAddr },
+      card_number: cardNum,
+      auth: selectedOption,
+    }
+
+    savedId.push(userInfo)
+    userListStorage.save(savedId)
+  }
+
   return (
-    <FormSection>
-      <FormTitle>
-        <div>간편하게 회원가입하고</div>
-        <div>선생님 정보를 받아보세요</div>
-      </FormTitle>
-      <form action="">
-        <ul>
-          <li>
-            <Input type="text" placeholder="이메일" />
-          </li>
-          <li>
+    <Layout footerColor="blue">
+      <StyledSection>
+        <h2 className="a11y">회원가입 페이지</h2>
+        <FormSection>
+          <FormTitle>
+            <div>간편하게 회원가입하고</div>
+            <div>자란다를 이용해보세요</div>
+          </FormTitle>
+          <Input
+            type="text"
+            placeholder="이메일"
+            value={email}
+            onChange={onChangeEmail}
+            onBlur={checkEmail}
+          />
+          <Input
+            type="password"
+            placeholder="비밀번호"
+            value={pass}
+            onChange={onChangePass}
+            onBlur={checkPasswordPolicy}
+          />
+          <PasswordPolicy passPolicy={passPolicy} />
+          <Input
+            type="password"
+            placeholder="비밀번호 확인"
+            onBlur={checkPassWord}
+            value={passConfirm}
+            onChange={onChangePassConfirm}
+          />
+          <Input
+            type="text"
+            name="name"
+            placeholder="이름"
+            value={name}
+            onChange={checkName}
+          />
+          <Input
+            type="text"
+            name="age"
+            placeholder="나이"
+            value={age}
+            onChange={checkAge}
+          />
+          <InputTitle>주소</InputTitle>
+          <Address
+            post={post}
+            setPost={setPost}
+            addr={addr}
+            setAddr={setAddr}
+            extraAddr={extraAddr}
+            setExtraAddr={setExtraAddr}
+            onChangeExtraAddr={onChangeExtraAddr}
+          />
+          <InputTitle>결제 정보</InputTitle>
+          <FlexDiv>
             <Input
-              type="password"
-              placeholder="비밀번호"
-              value={pass}
-              onChange={onChangePass}
-              onBlur={(e) => CheckPasswordPolicy(e.target.value)}
+              type="text"
+              value={cardNum}
+              placeholder="카드 번호"
+              disabled
             />
-            <PasswordPolicy passPolicy={passPolicy} />
-            <Input
-              type="password"
-              placeholder="비밀번호 확인"
-              onBlur={CheckPassWord}
-              value={passConfirm}
-              onChange={onChangePassConfirm}
-            />
-          </li>
-          <li>
-            <Input type="text" placeholder="이름" />
-          </li>
-          <li>
-            <Input type="text" placeholder="나이" />
-          </li>
-          <li>
-            {/* <InputTitle>주소</InputTitle> */}
-            <Address
-              post={post}
-              setPost={setPost}
-              addr={addr}
-              setAddr={setAddr}
-              extraAddr={extraAddr}
-              setExtraAddr={setExtraAddr}
-              onChangeExtraAddr={onChangeExtraAddr}
-            />
-          </li>
-          <li>
-            <InputTitle>결제 정보</InputTitle>
-            <FlexDiv>
-              <Input
-                type="text"
-                value={cardNum}
-                placeholder="{cardNum}"
-                disabled
-              />
-              <SmallButton onClick={openPopup}>카드 입력하기</SmallButton>
-            </FlexDiv>
-          </li>
-          <li>
-            <InputTitle>학부모님 이신가요?</InputTitle>
-            <Radio type="radio" name="role" id="radio_parent" />
-            <Label htmlFor="radio_parent">학부모님</Label>
-            <Radio type="radio" name="role" id="radio_teacher" />
-            <Label htmlFor="radio_teacher">선생님</Label>
-          </li>
-          <LongButton>가입하기</LongButton>
-        </ul>
-      </form>
-      {showPopup ? (
-        <>
-          <CardPopup onSubmit={onCardSubmit} />
-          <Background onClick={closePopup} />
-        </>
-      ) : null}
-    </FormSection>
+            <SmallButton clickHandler={openPopup} type="button">
+              카드 입력하기
+            </SmallButton>
+          </FlexDiv>
+          <InputTitle>회원 유형을 선택해주세요</InputTitle>
+          <Radio
+            type="radio"
+            name="role"
+            id="radio_student"
+            value="student"
+            checked={selectedOption === 'student'}
+            onChange={handleOption}
+          />
+          <Label htmlFor="radio_student">학생</Label>
+          <Radio
+            type="radio"
+            name="role"
+            id="radio_parent"
+            value="parent"
+            checked={selectedOption === 'parent'}
+            onChange={handleOption}
+          />
+          <Label htmlFor="radio_parent">학부모님</Label>
+          <Radio
+            type="radio"
+            name="role"
+            id="radio_teacher"
+            value="teacher"
+            checked={selectedOption === 'teacher'}
+            onChange={handleOption}
+          />
+          <Label htmlFor="radio_teacher">선생님</Label>
+          <LongButton clickHandler={onSubmitHandler}>가입하기</LongButton>
+          {showPopup ? (
+            <>
+              <CardPopup onSubmit={onCardSubmit} />
+              <Background onClick={closePopup} />
+            </>
+          ) : null}
+          <Toast message={message} isShow={isShow} />
+        </FormSection>
+      </StyledSection>
+    </Layout>
   )
 }
 
-const FormSection = styled.div`
+const StyledSection = styled.section`
+  position: relative;
+  padding: 19.2rem 0 12.8rem;
+  z-index: 100;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    display: block;
+    width: 100%;
+    height: 37.7rem;
+    background: url(${bgImgUrl}) no-repeat top right;
+    transform: translateY(-7rem);
+    z-index: -1;
+  }
+  @media screen and ${({ theme }) => theme.device.tablet} {
+    padding: 3.7rem 0 0;
+    &::before {
+      height: 13.7rem;
+      background: url(${mBgImgUrl}) no-repeat top right;
+      transform: translateY(-4rem);
+    }
+  }
+`
+
+const FormSection = styled.form`
   width: 45rem;
   margin: 0 auto;
 `
 
 const FormTitle = styled.div`
   font-size: 2.4rem;
-  margin: 10rem 0 3rem;
+  margin-bottom: 3rem;
+  @media screen and ${({ theme }) => theme.device.tablet} {
+    margin-top: 4.8rem;
+  }
 `
 
 export const InputTitle = styled.div`
@@ -163,17 +276,13 @@ export const FlexDiv = styled.div`
   display: flex;
 `
 
-export const Input = styled.input`
-  width: 100%;
-  height: 4.5rem;
-  border: 1px solid rgba(154, 154, 154, 0.5);
-  padding: 0.5rem 1rem;
+export const Input = styled(CustomInput)`
   margin-bottom: 1rem;
-
-  :hover {
-    color: #0085fd;
-    border: solid 1px #0085fd;
-    background-color: rgba(0, 133, 253, 0.1);
+  :hover,
+  :focus {
+    color: ${({ theme }) => theme.color.secondary};
+    border: solid 1px ${({ theme }) => theme.color.secondary};
+    background-color: ${({ theme }) => theme.color.secondaryAlpha};
   }
 `
 
@@ -185,21 +294,17 @@ const Label = styled.label`
   margin: 0 4rem 0 0.8rem;
 `
 
-const Button1 = styled.button`
-  height: 4.5rem;
-  background-color: #0085fd;
-  color: white;
-  cursor: pointer;
-`
-
-export const LongButton = styled(Button1)`
+export const LongButton = styled(Button)`
   width: 100%;
-  margin-top: 3rem;
+  margin-top: 5rem;
+  background-color: ${({ theme }) => theme.color.secondary};
 `
 
-export const SmallButton = styled(Button1)`
+export const SmallButton = styled(Button)`
   width: 30rem;
   margin-left: 1rem;
+  background-color: ${({ theme }) => theme.color.secondary};
+  border-radius: 0.2rem;
 `
 const Background = styled.div`
   width: 100vw;

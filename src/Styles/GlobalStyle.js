@@ -18,6 +18,10 @@ const GlobalStyle = createGlobalStyle`
     font-size: 62.5%;
   }
   
+  html {
+    font-size: 62.5%;
+  }
+  
   body {
     font-family: Circular, -apple-system, BlinkMacSystemFont, Roboto, Helvetica Neue, sans-serif;
     font-size: 14px;

@@ -1,4 +1,5 @@
 import { userListStorage, currentAccountStorage } from 'Utils/Storage'
+import { loginState } from 'Constant'
 
 class Auth {
   constructor() {
@@ -14,9 +15,9 @@ class Auth {
     )
     const isPasswordMatch = isRegisteredAccount && account.password === pw
     if (!isRegisteredAccount) {
-      return { state: 'fail', reason: '등록된 계정이 없습니다.' }
+      return loginState.FAIL.reason.NO_ACCOUNT_REGISTERED
     } else if (!isPasswordMatch) {
-      return { state: 'fail', reason: '패스워드가 일치하지 않습니다.' }
+      return loginState.FAIL.reason.PASSWORD_MISMATCH
     } else {
       const protectedAccountInfo = {
         loginTime: new Date().getTime(),
@@ -28,7 +29,7 @@ class Auth {
       }
       this.currentAccountStorage.save(protectedAccountInfo)
       this.auth = protectedAccountInfo
-      return { state: 'success' }
+      return loginState.SUCCESS
     }
   }
 

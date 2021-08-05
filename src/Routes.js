@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-
+import { BrowserRouter as Router, Switch } from 'react-router-dom'
 import PublicRoute from 'Routes/PublicRoute'
 import PrivateRoute from 'Routes/PrivateRoute'
 import Main from 'Pages/Main/Main'
@@ -17,6 +16,8 @@ import { userListStorage } from 'Utils/Storage'
 
 export default function Routes() {
   useEffect(() => {
+    if (userListStorage.load()) return
+
     fetchData().then((res) => userListStorage.save(res))
   }, [])
 
