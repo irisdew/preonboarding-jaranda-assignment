@@ -19,19 +19,17 @@ import bgImgUrl from 'Assets/Images/bg-sign_up.png'
 import mBgImgUrl from 'Assets/Images/bg-sign-m.png'
 
 export default function Signup() {
-  const { isShow, message, toast } = useToast()
-
   const [email, , onChangeEmail] = useInput('')
-  const [name, setName] = useState('')
-  const [age, setAge] = useState('')
   const [pass, , onChangePass] = useInput('')
-  const [passConfirm, , onChangePassConfirm] = useInput('')
   const [passPolicy, setPassPolicy] = useState({
     numeric: false,
     special: false,
     alphabet: false,
     eight: false,
   })
+  const [passConfirm, , onChangePassConfirm] = useInput('')
+  const [name, setName] = useState('')
+  const [age, setAge] = useState('')
   const [post, setPost] = useInput('')
   const [addr, setAddr] = useInput('')
   const [extraAddr, setExtraAddr, onChangeExtraAddr] = useInput('')
@@ -39,12 +37,15 @@ export default function Signup() {
   const [selectedOption, setSelectedOption] = useState('')
 
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
+  const { isShow, message, toast } = useToast()
 
   const {
     isEmail,
     isNotKorean,
+    isName,
     isNotNumeric,
     isNumeric,
+    isAge,
     isSpecialCharacter,
     isAlphabet,
     isOverEight,
@@ -54,39 +55,47 @@ export default function Signup() {
     isEmail(e.target.value) || toast('유효한 이메일을 입력해주세요')
   }
 
-  const checkPassWord = () => {
-    if (pass !== passConfirm) {
-      toast('비밀번호가 일치하지 않습니다!')
-    }
+  const validatePassword = (password) => {
+    return (
+      isNumeric(password) &&
+      isSpecialCharacter(password) &&
+      isAlphabet(password) &&
+      isOverEight(password)
+    )
   }
 
-  const checkName = (event) => {
-    if (isNotKorean(event.target.value)) {
-      toast('이름을 한글로 입력해주세요!')
-      return
-    }
-    setName(event.target.value)
-  }
-
-  const checkAge = (event) => {
-    if (isNotNumeric(event.target.value)) {
-      toast('숫자만 입력해주세요!')
-      return
-    }
-    setAge(event.target.value)
-  }
-
-  const checkPasswordPolicy = (e) => {
-    const currentInput = e.target.value
-    const currentPassPolicy = {
+  const createPasswordPolicyState = (currentInput) => {
+    return {
       numeric: isNumeric(currentInput),
       special: isSpecialCharacter(currentInput),
       alphabet: isAlphabet(currentInput),
       eight: isOverEight(currentInput),
     }
+  }
+
+  const checkPasswordPolicy = (e) => {
+    const currentInput = e?.targetValue || pass
+    const currentPassPolicy = createPasswordPolicyState(currentInput)
     setPassPolicy(currentPassPolicy)
     const validated = Object.values(currentPassPolicy).every((item) => item)
     validated || toast('비밀번호 규칙에 맞는 비밀번호를 입력해주세요')
+    return validated
+  }
+
+  const checkPassword = () => {
+    if (pass !== passConfirm) {
+      toast('비밀번호가 일치하지 않습니다!')
+    }
+  }
+
+  const checkName = (e) => {
+    isNotKorean(e.target.value) || toast('이름을 한글로 입력해주세요!')
+    setName(e.target.value)
+  }
+
+  const checkAge = (e) => {
+    isNotNumeric(e.target.value) || toast('숫자만 입력해주세요!')
+    setAge(e.target.value)
   }
 
   const onCardSubmit = (cardData, close) => {
@@ -94,30 +103,55 @@ export default function Signup() {
     setPopup(close)
   }
 
-  const handleOption = (event) => {
-    const currentSelectedOption = event.target.value
+  const handleOption = (e) => {
+    const currentSelectedOption = e.target.value
     setSelectedOption(currentSelectedOption)
   }
 
   const onSubmitHandler = (e) => {
     e.preventDefault()
 
+    // 체크체크!
+    !email && toast('이메일을 입력해주세요')
+    !isEmail(email) && toast('유효한 이메일을 입력해주세요')
+    !pass && toast('비밀번호를 입력해주세요')
+    checkPasswordPolicy()
+    pass !== passConfirm && toast('비밀번호가 서로 일치하지 않습니다')
+    !name && toast('이름을 입력해주세요')
+    !isName(name) && toast('유효한 이름을 입력해주세요')
+    !age && toast('나이를 입력해주세요')
+    // !isNotNumeric(age) && toast('유효한 나이를 입력해주세요')
+    !post && toast('주소를 입력해주세요')
+    !cardNum && toast('카드번호를 입력해주세요')
+    !selectedOption && toast('회원 유형을 선택해주세요')
+
     const usersInfo = userListStorage.load()
     const currentIndex = usersInfo.length
-
     const newUserInfo = {
       id: currentIndex + 1,
-      email: email,
-      name: name,
-      age: age,
-      password: pass,
-      address: { postcode: post, address: addr, address_detail: extraAddr },
+      email: isEmail(email) ? email : '',
+      name: isName(name) ? name : '',
+      age: !isNotNumeric(age) ? age : '',
+      password: validatePassword(pass) ? pass : '',
+      address:
+        post.length > 0
+          ? { postcode: post, address: addr, address_detail: extraAddr }
+          : '',
       card_number: cardNum,
       auth: selectedOption,
       access: [`/${selectedOption}`],
     }
 
-    userListStorage.save([...usersInfo, newUserInfo])
+    const checkUserInfo = Object.values(newUserInfo).every((item) =>
+      Boolean(item)
+    )
+
+    console.log(
+      Object.values(newUserInfo),
+      Object.values(newUserInfo).map((item) => Boolean(item))
+    )
+
+    checkUserInfo && userListStorage.save([...usersInfo, newUserInfo])
   }
 
   return (
@@ -147,7 +181,7 @@ export default function Signup() {
           <Input
             type="password"
             placeholder="비밀번호 확인"
-            onBlur={checkPassWord}
+            onBlur={checkPassword}
             value={passConfirm}
             onChange={onChangePassConfirm}
           />

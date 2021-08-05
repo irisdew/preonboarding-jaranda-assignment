@@ -59,6 +59,22 @@ const validation = {
     const reg = /[a-z0-9]|[ \[\]{}()<>?|`~!@#$%^&*-_+=,.;:\"'\\]/g
     return reg.test(data)
   },
+
+  isName(data) {
+    if (!data) {
+      return false
+    }
+    const reg = /^[가-힣]+$/
+    return reg.test(data)
+  },
+
+  isAge(data) {
+    // if (!data) {
+    //   return false
+    // }
+    const reg = /[0-9]/g
+    return reg.test(data) && parseInt(data) > 0 && parseInt(data) < 120
+  },
 }
 
 export default validation
