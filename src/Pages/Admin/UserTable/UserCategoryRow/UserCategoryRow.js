@@ -20,7 +20,7 @@ export default function UserCategoryRow() {
 const Th = styled.th`
   height: 50px;
   border: 1px solid #cbcbcb;
-  background: #eaeaea;
+  background: #e8e3f3;
   text-align: center;
   line-height: 50px;
   font-weight: bold;
