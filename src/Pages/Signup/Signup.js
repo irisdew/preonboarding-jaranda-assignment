@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components/macro'
 
 import Layout from 'Layout/Layout'
@@ -10,10 +10,10 @@ import CardPopup from 'Pages/Signup/CardPopup'
 import Toast from 'Components/Toast/Toast'
 import useToast from 'Utils/Hooks/useToast'
 import validation from 'Utils/Validation/Validation'
+import CustomCheckBox from 'Components/Form/CustomCheckBox'
 import { useInput } from 'Utils/Hooks/useInput'
 import { usePopup } from 'Pages/Signup/usePopup'
 import { userListStorage } from 'Utils/Storage'
-import { save, load } from 'Utils/Storage/Generator'
 
 import bgImgUrl from 'Assets/Images/bg-sign_up.png'
 import mBgImgUrl from 'Assets/Images/bg-sign-m.png'
@@ -97,6 +97,7 @@ export default function Signup() {
     setPopup(close)
   }
 
+
   const handleOption = (e) => {
     const currentSelectedOption = e.target.value
     setSelectedOption(currentSelectedOption)
@@ -105,7 +106,6 @@ export default function Signup() {
   const onSubmitHandler = (e) => {
     e.preventDefault()
 
-    // 체크체크!
     !email && toast('이메일을 입력해주세요')
     !isEmail(email) && toast('유효한 이메일을 입력해주세요')
     !pass && toast('비밀번호를 입력해주세요')
@@ -140,10 +140,10 @@ export default function Signup() {
       Boolean(item)
     )
 
-    console.log(
-      Object.values(newUserInfo),
-      Object.values(newUserInfo).map((item) => Boolean(item))
-    )
+//     console.log(
+//       Object.values(newUserInfo),
+//       Object.values(newUserInfo).map((item) => Boolean(item))
+//     )
 
     checkUserInfo && userListStorage.save([...usersInfo, newUserInfo])
   }
@@ -216,7 +216,7 @@ export default function Signup() {
             </SmallButton>
           </FlexDiv>
           <InputTitle>회원 유형을 선택해주세요</InputTitle>
-          <Radio
+          {/* <Radio
             type="radio"
             name="role"
             id="radio_student"
@@ -224,7 +224,7 @@ export default function Signup() {
             checked={selectedOption === 'student'}
             onChange={handleOption}
           />
-          <Label htmlFor="radio_student">학생</Label>
+          <Label htmlFor="radio_student">자란다어린이</Label>
           <Radio
             type="radio"
             name="role"
@@ -233,7 +233,7 @@ export default function Signup() {
             checked={selectedOption === 'parent'}
             onChange={handleOption}
           />
-          <Label htmlFor="radio_parent">학부모님</Label>
+          <Label htmlFor="radio_parent">자란다부모님</Label>
           <Radio
             type="radio"
             name="role"
@@ -242,7 +242,31 @@ export default function Signup() {
             checked={selectedOption === 'teacher'}
             onChange={handleOption}
           />
-          <Label htmlFor="radio_teacher">선생님</Label>
+          <Label htmlFor="radio_teacher">자란다선생님</Label> */}
+          <FlexDiv>
+            <StyledCustomCheckBox
+              checked={selectedOption === 'student'}
+              id="student"
+              checkHandler={handleOption}
+            >
+              자란다어린이
+            </StyledCustomCheckBox>
+            <StyledCustomCheckBox
+              checked={selectedOption === 'parent'}
+              id="parent"
+              checkHandler={handleOption}
+            >
+              자란다부모님
+            </StyledCustomCheckBox>
+            <StyledCustomCheckBox
+              checked={selectedOption === 'teacher'}
+              id="teacher"
+              checkHandler={handleOption}
+            >
+              자란다선생님
+            </StyledCustomCheckBox>
+          </FlexDiv>
+
           <LongButton clickHandler={onSubmitHandler}>가입하기</LongButton>
           {showPopup ? (
             <>
@@ -303,6 +327,7 @@ export const InputTitle = styled.div`
 
 export const FlexDiv = styled.div`
   display: flex;
+  justify-content: space-around;
 `
 
 export const Input = styled(CustomInput)`
@@ -343,4 +368,8 @@ const Background = styled.div`
   left: 0;
   background-color: rgba(0, 0, 0, 0.15);
   z-index: 1;
+`
+const StyledCustomCheckBox = styled(CustomCheckBox)`
+  align-self: flex-start;
+  margin-top: 1rem;
 `

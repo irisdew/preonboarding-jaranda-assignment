@@ -3,7 +3,8 @@ import styled from 'styled-components'
 import validation from 'Utils/Validation/Validation'
 import Toast from 'Components/Toast/Toast'
 import useToast from 'Utils/Hooks/useToast'
-import { FlexDiv, Input, InputTitle, LongButton } from 'Pages/Signup/Signup'
+import CustomInput from 'Components/Form/CustomInput'
+import { FlexDiv, InputTitle, LongButton } from 'Pages/Signup/Signup'
 
 export default function CardPopup(props) {
   const { isShow, message, toast } = useToast()
@@ -31,24 +32,23 @@ export default function CardPopup(props) {
     const { name, value } = event.target
     let currentCardNum = Number(name[name.length - 1])
     //카드 정보 입력 (숫자인지 확인 && 4글자 까지만 입력 가능)
-    if (!validation.isNumeric(value)) {
+    if (validation.isNotNumeric(value)) {
       toast('숫자만 입력하세요')
     }
 
-    if (validation.isNumeric(value) && value.length <= 4) {
+    if (!validation.isNotNumeric(value) && value.length <= 4) {
       setInputs({
         ...inputs,
         [name]: value,
       })
     }
 
-    //4글자를 다 치면 다음 칸 focuss
     if (value.length === 4) {
       if (currentCardNum < 4) {
         cardInputs[currentCardNum + 1].current.focus()
       }
     }
-  } //onChange
+  }
 
   const resetInput = (event) => {
     const { name } = event.target
@@ -115,18 +115,16 @@ export default function CardPopup(props) {
   )
 }
 
-const CardInput = styled.input`
+const CardInput = styled(CustomInput)`
   margin: 0 0.5rem;
   text-align: center;
-  width: 5rem;
-  height: 5rem;
-  border: 1px solid black;
+  :hover,
+  :focus {
+    color: ${({ theme }) => theme.color.secondary};
+    border: solid 1px ${({ theme }) => theme.color.secondary};
+    background-color: ${({ theme }) => theme.color.secondaryAlpha};
+  }
 `
-
-// const CardInput = styled(Input)`
-//   margin: 0 0.5rem;
-//   text-align: center;
-// `
 
 const Wrapper = styled.div`
   width: 40rem;
