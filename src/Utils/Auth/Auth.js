@@ -4,9 +4,10 @@ import CustomError from 'Utils/Error/CustomError'
 
 class Auth {
   constructor() {
+    this.currentAccountStorage = currentAccountStorage
+    this.userListStorage = userListStorage
     this.auth = currentAccountStorage.load()
     this.userList = userListStorage.load()
-    this.currentAccountStorage = currentAccountStorage
   }
 
   async login(loginData, isAdminRestrict = false) {
@@ -42,6 +43,22 @@ class Auth {
   logout() {
     this.auth = null
     this.currentAccountStorage.remove()
+  }
+
+  update(account) {
+    this.userList[account.id - 1] = account
+    console.log('account', account)
+    console.log('newUserList', this.userList)
+    this.userListStorage.save(this.userList)
+    this.currentAccountStorage.save(account)
+    this.auth = {
+      ...this.auth,
+      name: account.name,
+      access: account.access,
+      auth: account.auth,
+      id: account.id,
+      email: account.email,
+    }
   }
 
   getAuth() {
