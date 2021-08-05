@@ -10,6 +10,7 @@ import Signup from 'Pages/Signup/Signup'
 import Parent from 'Pages/Parent/Parent'
 import Teacher from 'Pages/Teacher/Teacher'
 import Student from 'Pages/Student/Student'
+import Mypage from 'Pages/Mypage/Mypage'
 import NotFound from 'Pages/NotFound/NotFound'
 import MyPage from 'Pages/MyPage/MyPage'
 import { fetchData } from 'Utils/fetch'
@@ -33,6 +34,7 @@ export default function Routes() {
         <PrivateRoute exact path="/teacher" component={Teacher} />
         <PrivateRoute exact path="/student" component={Student} />
         <PublicRoute path="/mypage" component={MyPage} />
+        <PrivateRoute exact path="/mypage" component={Mypage} />
         <PublicRoute component={NotFound} />
       </Switch>
     </Router>
