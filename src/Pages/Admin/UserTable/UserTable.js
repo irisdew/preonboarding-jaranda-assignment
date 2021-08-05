@@ -24,10 +24,8 @@ export default function UserTable() {
   )
 
   const handleClickTable = ({ target: { parentNode, id, nodeName } }) => {
-    console.log(parentNode.id, nodeName)
     if (nodeName === 'INPUT') return
     if (!parentNode.id) return
-    console.log(filterInfo)
 
     const clickedRowData = filterInfo.find((data) => {
       return data.id === Number(parentNode.id)
@@ -50,8 +48,6 @@ export default function UserTable() {
 }
 
 const Table = styled.table`
-  /* width: 100%;
-  min-width: 1300px; */
   background: white;
   z-index: 10;
 

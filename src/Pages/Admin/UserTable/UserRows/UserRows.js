@@ -22,6 +22,7 @@ const getNullDataTemplate = () =>
   Array(5).fill({
     id: '',
     email: '',
+    password: '',
     name: '',
     age: '',
     postcode: '',
