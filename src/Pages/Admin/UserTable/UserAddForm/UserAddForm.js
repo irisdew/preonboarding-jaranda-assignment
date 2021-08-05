@@ -28,7 +28,7 @@ export default function UserAddForm({
 
     if (name === 'confirm') {
       const itemValue = Object.values(newUserInfo).find((value) => value === '')
-      if (!itemValue.length) {
+      if (itemValue === '') {
         return alert('항목의 값을 입력해주세요')
       }
 
@@ -64,7 +64,7 @@ export default function UserAddForm({
   )
 }
 
-function getUserDataTemplate() {
+const getUserDataTemplate = () => {
   const template = {
     email: 'ex: abcdefg@jaranda.com',
     password: '00000000',

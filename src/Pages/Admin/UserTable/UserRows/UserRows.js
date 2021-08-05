@@ -7,9 +7,26 @@ export default function UserRows() {
 
   return (
     <tbody>
-      {filterInfo.map((userInfo) => (
-        <UserRow key={userInfo.id} userInfo={userInfo} />
-      ))}
+      {filterInfo.length
+        ? filterInfo.map((userInfo) => (
+            <UserRow key={userInfo.id} userInfo={userInfo} />
+          ))
+        : getNullDataTemplate().map((userInfo, index) => (
+            <UserRow key={index} userInfo={userInfo} />
+          ))}
     </tbody>
   )
 }
+
+const getNullDataTemplate = () =>
+  Array(5).fill({
+    id: '',
+    email: '',
+    name: '',
+    age: '',
+    postcode: '',
+    address: '',
+    address_detail: '',
+    card_number: '',
+    auth: '',
+  })
