@@ -6,5 +6,5 @@ export default function useDidMountEffect(func, deps) {
   useEffect(() => {
     if (didMount.current) func()
     else didMount.current = true
-  }, deps)
+  }, deps) // eslint-disable-line react-hooks/exhaustive-deps
 }
