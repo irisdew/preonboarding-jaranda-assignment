@@ -20,9 +20,6 @@ Layout.defaultProps = {
 }
 
 const StyledMain = styled.main`
-  display: flex;
-  justify-content: center;
-  align-items: center;
   width: 100%;
   min-height: calc(100vh - 49.3rem);
   padding-top: 6.3rem;

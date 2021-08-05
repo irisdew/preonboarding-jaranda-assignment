@@ -7,6 +7,7 @@ export default function UserCategoryRow() {
       <tr>
         <Th></Th>
         <Th>이메일</Th>
+        <Th>비밀번호</Th>
         <Th>이름</Th>
         <Th>나이</Th>
         <Th>우편번호</Th>
