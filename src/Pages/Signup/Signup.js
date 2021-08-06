@@ -192,7 +192,7 @@ export default function Signup() {
       isValidatedUserInfo && toast(toastMsg.SIGNUP_SUCCESSED)
       setTimeout(() => {
         history.push('/login')
-      }, 3000)
+      }, 500)
     }
   }
 
