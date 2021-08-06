@@ -49,6 +49,7 @@ export default function Signup() {
     isName,
     isNotNumeric,
     isNumeric,
+    isAge,
     isSpecialCharacter,
     isAlphabet,
     isOverEight,
@@ -190,7 +191,7 @@ export default function Signup() {
     !name && toast(ALERT_NAME_BLANK)
     !isName(name) && toast(ALERT_NAME_INVALID)
     !age && toast(ALERT_AGE_BLANK)
-    // !isNotNumeric(age) && toast(ALERT_AGE_INVALID)
+    !isAge(age) && toast(ALERT_AGE_INVALID)
     !post && toast(ALERT_ADDRESS_BLANK)
     !cardNum && toast(ALERT_CARD_BLANK)
     !selectedOption && toast(ALERT_AUTH_BLANK)
@@ -202,7 +203,7 @@ export default function Signup() {
       email: !checkEmailDuplication(email) && isEmail(email) ? email : '',
       password: isCheckedPassword(pass) ? pass : '',
       name: isName(name) ? name : '',
-      age: !isNotNumeric(age) ? age : '',
+      age: isAge(age) ? age : '',
       address:
         post.length > 0
           ? { postcode: post, address: addr, address_detail: extraAddr }

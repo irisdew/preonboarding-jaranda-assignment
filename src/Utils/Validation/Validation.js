@@ -67,6 +67,14 @@ const validation = {
     const reg = /^[가-힣]+$/
     return reg.test(data)
   },
+
+  isAge(data) {
+    if (!data) {
+      return false
+    }
+    const reg = /^[1-9]?[0-9]{1}$|^100$/
+    return reg.test(data)
+  },
 }
 
 export default validation
