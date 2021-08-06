@@ -14,7 +14,7 @@ import Toast from 'Components/Toast/Toast'
 import useToast from 'Utils/Hooks/useToast'
 import { errorState } from 'Constant'
 import { userListStorage } from 'Utils/Storage'
-import Layout from 'Layout/Layout'
+import AdminLayout from 'Layout/Admin/AdminLayout'
 
 export const FilterInfoContext = createContext({
   filterInfo: [],
@@ -188,7 +188,7 @@ export default function Admin() {
   }
 
   return (
-    <Layout>
+    <AdminLayout header>
       <AdminWrapper>
         <Search
           filterUserInfo={filterUserInfo}
@@ -216,7 +216,7 @@ export default function Admin() {
         />
         <Toast message={message} isShow={isShow} />
       </AdminWrapper>
-    </Layout>
+    </AdminLayout>
   )
 }
 
