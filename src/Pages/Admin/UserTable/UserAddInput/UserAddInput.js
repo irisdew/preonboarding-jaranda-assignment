@@ -29,6 +29,11 @@ const InputContainer = styled.div`
   width: 30%;
   margin: 10px;
 
+  @media ${(props) => props.theme.device.tablet} {
+    width: 100%;
+    margin: 5px;
+  }
+
   div {
     display: flex;
     justify-content: center;

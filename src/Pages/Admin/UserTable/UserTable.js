@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { FilterInfoContext } from '../Admin'
-import UserCategoryRow from './UserCategoryRow/UserCategoryRow'
-import UserRows from './UserRows/UserRows'
+import UserCategoryRow from 'Pages/Admin/UserTable/UserCategoryRow/UserCategoryRow'
+import UserRows from 'Pages/Admin/UserTable/UserRows/UserRows'
+import { FilterInfoContext } from 'Pages/Admin/Admin'
 
 export const EditContext = createContext({
   targetData: {},
@@ -71,8 +71,16 @@ const Table = styled.table`
       left: -9999px;
     }
 
+    tr {
+      margin-bottom: 1rem;
+    }
+
     tr:nth-child(odd) {
       background: #e8e3f3;
+    }
+
+    tr:nth-child(even) {
+      background: whitesmoke;
     }
   }
 `
