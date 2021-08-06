@@ -1,4 +1,4 @@
-import React, { useState, useRef, forwardRef } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components/macro'
 
 import Layout from 'Layout/Layout'
@@ -70,13 +70,7 @@ export default function Signup() {
   const ALERT_ISNOT_KOREAN = '한글만 입력하실 수 있습니다.'
   const ALERT_ISNOT_NUMERIC = '숫자만 입력하실 수 있습니다.'
 
-  //이메일 유효성 검사, 이메일 중복 검사
-  const checkEmail = (e) => {
-    checkEmailDuplication(e.target.value)
-    isEmail(e.target.value) || toast(ALERT_EMAIL_INVALID)
-  }
-
-  // 이메일 중복 확인
+  // 이메일 중복 검사
   const checkEmailDuplication = (currentValue) => {
     const usersInfo = userListStorage.load()
     for (const info of usersInfo) {
@@ -86,8 +80,14 @@ export default function Signup() {
     }
   }
 
-  // 비밀번호 검사
-  const validatePassword = (password) => {
+  //이메일 유효성 검사, 이메일 중복 검사
+  const checkEmail = (e) => {
+    checkEmailDuplication(e.target.value)
+    isEmail(e.target.value) || toast(ALERT_EMAIL_INVALID)
+  }
+
+  // 비밀번호 유효성 검사
+  const isCheckedPassword = (password) => {
     return (
       isNumeric(password) &&
       isSpecialCharacter(password) &&
@@ -105,11 +105,11 @@ export default function Signup() {
       eight: isOverEight(currentInput),
     }
     setPassPolicy(currentPassPolicy)
-    validatePassword(currentInput) || toast(ALERT_PASSWORD_INVALID)
+    isCheckedPassword(currentInput) || toast(ALERT_PASSWORD_INVALID)
   }
 
   // 비밀번호 === 비밀번호 확인 일치 검사
-  const checkPassword = () => {
+  const checkPasswordConfirm = () => {
     pass !== passConfirm && toast(ALERT_PASSWORD)
   }
 
@@ -136,48 +136,6 @@ export default function Signup() {
     setSelectedOption(currentSelectedOption)
   }
 
-  const onSubmitHandler = (e) => {
-    e.preventDefault()
-    // 체크체크!
-    !email && toast(ALERT_EMAIL_BLANK)
-    // !isEmail(email) && toast(ALERT_EMAIL_INVALID)
-    !pass && toast(ALERT_PASSWORD_BLANK)
-    checkPasswordPolicy()
-    pass !== passConfirm && toast(ALERT_PASSWORD)
-    !name && toast(ALERT_NAME_BLANK)
-    !isName(name) && toast(ALERT_NAME_INVALID)
-    !age && toast(ALERT_AGE_BLANK)
-    // !isNotNumeric(age) && toast('유효한 나이를 입력해주세요')
-    !post && toast(ALERT_ADDRESS_BLANK)
-    !cardNum && toast(ALERT_CARD_BLANK)
-    !selectedOption && toast(ALERT_AUTH_BLANK)
-
-    const usersInfo = userListStorage.load()
-    const currentIndex = usersInfo.length
-    const newUserInfo = {
-      id: currentIndex + 1,
-      email: isEmail(email) ? email : '',
-      password: validatePassword(pass) ? pass : '',
-      name: isName(name) ? name : '',
-      age: !isNotNumeric(age) ? age : '',
-      address:
-        post.length > 0
-          ? { postcode: post, address: addr, address_detail: extraAddr }
-          : '',
-      card_number: cardNum,
-      auth: selectedOption,
-      access: [`/${selectedOption}`],
-    }
-
-    const checkUserInfo = Object.values(newUserInfo).every((item) =>
-      Boolean(item)
-    )
-
-    checkBlank(newUserInfo)
-
-    checkUserInfo && userListStorage.save([...usersInfo, newUserInfo])
-  }
-
   //빈 칸 있는지 확인 후 toast, focus
   const checkBlank = (newUserInfo) => {
     const userInfoInputs = [
@@ -199,15 +157,58 @@ export default function Signup() {
       ALERT_ADDRESS_BLANK,
       ALERT_CARD_BLANK,
     ]
+
     let index = 0
     for (let key in newUserInfo) {
-      if (index < userInfoInputs.length && newUserInfo[key] == '') {
+      if (index < userInfoInputs.length && newUserInfo[key] === '') {
         userInfoInputs[index].current.focus()
         toast(alerts[index])
         return
       }
       index++
     }
+  }
+
+  const onSubmitHandler = (e) => {
+    e.preventDefault()
+
+    !email && toast(ALERT_EMAIL_BLANK)
+    // !isEmail(email) && toast(ALERT_EMAIL_INVALID)
+    !pass && toast(ALERT_PASSWORD_BLANK)
+    checkPasswordPolicy()
+    pass !== passConfirm && toast(ALERT_PASSWORD)
+    !name && toast(ALERT_NAME_BLANK)
+    !isName(name) && toast(ALERT_NAME_INVALID)
+    !age && toast(ALERT_AGE_BLANK)
+    // !isNotNumeric(age) && toast('유효한 나이를 입력해주세요')
+    !post && toast(ALERT_ADDRESS_BLANK)
+    !cardNum && toast(ALERT_CARD_BLANK)
+    !selectedOption && toast(ALERT_AUTH_BLANK)
+
+    const usersInfo = userListStorage.load()
+    const currentIndex = usersInfo.length
+    const newUserInfo = {
+      id: currentIndex + 1,
+      email: isEmail(email) ? email : '',
+      password: isCheckedPassword(pass) ? pass : '',
+      name: isName(name) ? name : '',
+      age: !isNotNumeric(age) ? age : '',
+      address:
+        post.length > 0
+          ? { postcode: post, address: addr, address_detail: extraAddr }
+          : '',
+      card_number: cardNum,
+      auth: selectedOption,
+      access: [`/${selectedOption}`],
+    }
+
+    const isValidatedUserInfo = Object.values(newUserInfo).every((item) =>
+      Boolean(item)
+    )
+
+    checkBlank(newUserInfo)
+
+    isValidatedUserInfo && userListStorage.save([...usersInfo, newUserInfo])
   }
 
   return (
@@ -239,7 +240,7 @@ export default function Signup() {
           <Input
             type="password"
             placeholder="비밀번호 확인"
-            onBlur={checkPassword}
+            onBlur={checkPasswordConfirm}
             value={passConfirm}
             onChange={onChangePassConfirm}
             ref={inputPasswordConfirm}
@@ -379,14 +380,6 @@ export const Input = styled(CustomInput)`
     border: solid 1px ${({ theme }) => theme.color.secondary};
     background-color: ${({ theme }) => theme.color.secondaryAlpha};
   }
-`
-
-const Radio = styled.input`
-  /* height: 1rem; */
-`
-
-const Label = styled.label`
-  margin: 0 4rem 0 0.8rem;
 `
 
 export const LongButton = styled(Button)`
