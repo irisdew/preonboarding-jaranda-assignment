@@ -145,4 +145,61 @@ const Td = styled.td`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  @media ${(props) => props.theme.device.tablet} {
+    border: none;
+    border-bottom: 1px solid #cbcbcb;
+    position: relative;
+    padding-left: 50%;
+    width: 100%;
+    min-width: 41rem;
+
+    :before {
+      position: absolute;
+      left: 2px;
+      width: 40%;
+      white-space: nowrap;
+    }
+
+    :nth-of-type(1) {
+      padding-left: 0%;
+      font-weight: bold;
+    }
+    :nth-of-type(2):before {
+      content: '이메일';
+      font-weight: bold;
+    }
+    :nth-of-type(3):before {
+      content: '비밀번호';
+      font-weight: bold;
+    }
+    :nth-of-type(4):before {
+      content: '이름';
+      font-weight: bold;
+    }
+    :nth-of-type(5):before {
+      content: '나이';
+      font-weight: bold;
+    }
+    :nth-of-type(6):before {
+      content: '우편번호';
+      font-weight: bold;
+    }
+    :nth-of-type(7):before {
+      content: '주소';
+      font-weight: bold;
+    }
+    :nth-of-type(8):before {
+      content: '상세주소';
+      font-weight: bold;
+    }
+    :nth-of-type(9):before {
+      content: '카드정보';
+      font-weight: bold;
+    }
+    :nth-of-type(10):before {
+      content: '권한';
+      font-weight: bold;
+    }
+  }
 `
