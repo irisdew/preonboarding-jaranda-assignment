@@ -44,7 +44,7 @@
 - 관리자 페이지
   - 가입된 사용자의 정보를 조회, 검색, 수정 가능
   - 사용자 계정 생성
-  - 관리자 페이지 테스트 계정 (email: admin@jaranda.com, password: admin1234)
+  - 관리자 페이지 테스트 계정 (email: admin<span></span>@jaranda.com, password: admin1234)
 
 <br>
 
