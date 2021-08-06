@@ -218,7 +218,9 @@ export default function Signup() {
     if (isValidatedUserInfo) {
       userListStorage.save([...usersInfo, newUserInfo])
       isValidatedUserInfo && toast(ALERT_SIGNUP_SUCCESSED)
-      // setTimeout(history.push('/login'), 10000)
+      setTimeout(() => {
+        history.push('/login')
+      }, 5000)
     }
   }
 
