@@ -76,6 +76,22 @@ $ npm run start
 
 <https://epic-jepsen-a6fdee.netlify.app/>
 
+- 관리자 계정
+```
+email: admin@jaranda.com
+password: admin1234
+```
+- 테스트 계정
+```
+email: kimteacher@jaranda.com
+password: kimteacher1234
+
+email: leestudent@jaranda.com
+password: leestudent1234
+
+email: parkparent@jaranda.com
+password : parkparent1234
+```
 
 <br>
 
