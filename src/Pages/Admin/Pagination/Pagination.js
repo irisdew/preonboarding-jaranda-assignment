@@ -59,7 +59,6 @@ const PageNumber = styled.button`
   }
 `
 
-// 이전
 const Prev = styled.button`
   background-color: #fafafa;
 
@@ -70,7 +69,6 @@ const Prev = styled.button`
   }
 `
 
-// 이후
 const Next = styled.button`
   background-color: #fafafa;
 

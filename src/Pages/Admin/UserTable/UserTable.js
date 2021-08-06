@@ -54,4 +54,25 @@ const Table = styled.table`
   :hover {
     cursor: pointer;
   }
+
+  @media ${(props) => props.theme.device.tablet} {
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+      display: block;
+    }
+
+    thead tr {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+
+    tr:nth-child(odd) {
+      background: #e8e3f3;
+    }
+  }
 `
