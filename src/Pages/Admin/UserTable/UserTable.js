@@ -71,8 +71,16 @@ const Table = styled.table`
       left: -9999px;
     }
 
+    tr {
+      margin-bottom: 1rem;
+    }
+
     tr:nth-child(odd) {
       background: #e8e3f3;
+    }
+
+    tr:nth-child(even) {
+      background: whitesmoke;
     }
   }
 `

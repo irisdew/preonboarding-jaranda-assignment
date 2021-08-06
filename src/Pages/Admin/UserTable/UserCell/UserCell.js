@@ -165,7 +165,8 @@ const Td = styled.td`
       white-space: nowrap;
     }
 
-    :nth-of-type(1) {
+    :nth-of-type(1):before {
+      content: 'ID';
       padding-left: 0%;
       font-weight: bold;
     }

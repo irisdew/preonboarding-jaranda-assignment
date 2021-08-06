@@ -6,5 +6,5 @@ export default function useDidMountEffect(func, deps) {
   useEffect(() => {
     if (isFristRun.current) func()
     else isFristRun.current = true
-  }, deps)
+  }, [deps, func])
 }

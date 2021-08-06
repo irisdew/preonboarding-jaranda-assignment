@@ -148,5 +148,95 @@
     "age": "40",
     "auth": "parent",
     "access": ["/parent"]
+  },
+  {
+    "id": 11,
+    "email": "wdsggdd@jaranda.com",
+    "password": "kimstudent1234",
+    "name": "김학생",
+    "address": {
+      "postcode": "12457",
+      "address": "경기도 가평군 청평면 은행나무길 8-8",
+      "address_detail": "101-301"
+    },
+    "card_number": "2342-7235-2347-9201",
+    "age": "5",
+    "auth": "student",
+    "access": ["/student"]
+  },
+  {
+    "id": 12,
+    "email": "dfgas@jaranda.com",
+    "password": "leestudent1234",
+    "name": "이학생",
+    "address": {
+      "postcode": "25922",
+      "address": "강원도 삼척시 당저동1길 21",
+      "address_detail": "A동 1층"
+    },
+    "card_number": "5678-8342-2345-9973",
+    "age": "10",
+    "auth": "student",
+    "access": ["/student"]
+  },
+  {
+    "id": 13,
+    "email": "dhff@jaranda.com",
+    "password": "parkstudent1234",
+    "name": "박학생",
+    "address": {
+      "postcode": "13802",
+      "address": "경기도 과천시 관문로 143",
+      "address_detail": "중앙동, 래미안에코팰리스아파트"
+    },
+    "card_number": "7345-9485-1122-4212",
+    "age": "15",
+    "auth": "student",
+    "access": ["/student"]
+  },
+  {
+    "id": 14,
+    "email": "hsad@jaranda.com",
+    "password": "kimstudent1234",
+    "name": "김학생",
+    "address": {
+      "postcode": "12457",
+      "address": "경기도 가평군 청평면 은행나무길 8-8",
+      "address_detail": "101-301"
+    },
+    "card_number": "2342-7235-2347-9201",
+    "age": "5",
+    "auth": "student",
+    "access": ["/student"]
+  },
+  {
+    "id": 15,
+    "email": "ledasnt@jaranda.com",
+    "password": "leestudent1234",
+    "name": "이학생",
+    "address": {
+      "postcode": "25922",
+      "address": "강원도 삼척시 당저동1길 21",
+      "address_detail": "A동 1층"
+    },
+    "card_number": "5678-8342-2345-9973",
+    "age": "10",
+    "auth": "student",
+    "access": ["/student"]
+  },
+  {
+    "id": 16,
+    "email": "paagent@jaranda.com",
+    "password": "parkstudent1234",
+    "name": "박학생",
+    "address": {
+      "postcode": "13802",
+      "address": "경기도 과천시 관문로 143",
+      "address_detail": "중앙동, 래미안에코팰리스아파트"
+    },
+    "card_number": "7345-9485-1122-4212",
+    "age": "15",
+    "auth": "student",
+    "access": ["/student"]
   }
 ]

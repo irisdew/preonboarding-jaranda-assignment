@@ -18,6 +18,7 @@ const color = {
   white: '#fff',
   black: '#0b0b0b',
   blueGrey: '#65737e',
+  blueGreyAlpha: 'rgba(101, 115, 126, 0.1)',
   grey: '#aeb0b4',
   deepGrey: '#4a4a4a',
   lightGreyA: '#ccc',

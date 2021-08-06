@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from 'react'
 import styled from 'styled-components/macro'
-import Layout from 'Layout/Layout'
+import AdminLayout from 'Layout/Admin/AdminLayout'
 import UserTable from 'Pages/Admin/UserTable/UserTable'
 import Search from 'Pages/Admin/Search/Search'
 import UserAddForm from 'Pages/Admin/UserTable/UserAddForm/UserAddForm'
@@ -188,7 +188,7 @@ export default function Admin() {
   }
 
   return (
-    <Layout>
+    <AdminLayout header>
       <AdminWrapper>
         <Search
           filterUserInfo={filterUserInfo}
@@ -216,7 +216,7 @@ export default function Admin() {
         />
         <Toast message={message} isShow={isShow} />
       </AdminWrapper>
-    </Layout>
+    </AdminLayout>
   )
 }
 
