@@ -73,11 +73,14 @@ export default function Signup() {
   // 이메일 중복 검사
   const checkEmailDuplication = (currentValue) => {
     const usersInfo = userListStorage.load()
+    let isEmailDuplicate = false
     for (const info of usersInfo) {
       if (currentValue === info.email) {
         toast(ALERT_EMAIL_DUPLICATE)
+        isEmailDuplicate = true
       }
     }
+    return isEmailDuplicate
   }
 
   //이메일 유효성 검사, 이메일 중복 검사
@@ -162,7 +165,7 @@ export default function Signup() {
     for (let key in newUserInfo) {
       if (index < userInfoInputs.length && newUserInfo[key] === '') {
         userInfoInputs[index].current.focus()
-        toast(alerts[index])
+        userInfoInputs[index].current.value || toast(alerts[index])
         return
       }
       index++
@@ -171,6 +174,7 @@ export default function Signup() {
 
   const onSubmitHandler = (e) => {
     e.preventDefault()
+    console.log('email 중복', checkEmailDuplication(email))
 
     !email && toast(ALERT_EMAIL_BLANK)
     // !isEmail(email) && toast(ALERT_EMAIL_INVALID)
@@ -189,7 +193,7 @@ export default function Signup() {
     const currentIndex = usersInfo.length
     const newUserInfo = {
       id: currentIndex + 1,
-      email: isEmail(email) ? email : '',
+      email: !checkEmailDuplication(email) && isEmail(email) ? email : '',
       password: isCheckedPassword(pass) ? pass : '',
       name: isName(name) ? name : '',
       age: !isNotNumeric(age) ? age : '',
