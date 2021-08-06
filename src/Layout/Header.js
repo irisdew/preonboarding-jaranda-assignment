@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components/macro'
 import auth from 'Utils/Auth/Auth'
 import Toast from 'Components/Toast/Toast'
 import useToast from 'Utils/Hooks/useToast'
+import { toastMsg } from 'Constant'
 import { ReactComponent as Hamburger } from 'Assets/Icon/ic_hamburger.svg'
 import logoImgUrl from 'Assets/Images/logo.png'
 
@@ -45,7 +46,7 @@ export default function Header() {
     const isLogged = auth.getAuth()
     const accessibleAuth = auth.getAuth()?.access
     if (isLogged && accessibleAuth.indexOf(path) === -1) {
-      toast('접근 권한이 없습니다.')
+      toast(toastMsg.NO_ACCESS_RIGHT)
     } else {
       history.push(path)
     }

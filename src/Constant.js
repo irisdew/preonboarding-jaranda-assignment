@@ -60,6 +60,8 @@ export const toastMsg = Object.freeze({
   MY_INFO_EDIT_ERROR: '내 정보 수정 기능이 원활하지 않습니다.',
   NO_RESULT_SEARCH: '일치하는 검색결과가 없습니다.',
   INIT_RESULT_SEARCH: '검색결과가 초기화 되었습니다.',
+  FAIL_LOGIN: '로그인에 실패 했습니다. 다시 시도해주세요.',
+  NO_ACCESS_RIGHT: '접근 권한이 없습니다.',
 })
 
 export const fetchDataType = Object.freeze({

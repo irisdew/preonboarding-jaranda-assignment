@@ -42,7 +42,7 @@ const GlobalStyle = createGlobalStyle`
     background-color: transparent;
     border: none;
     outline: none;
-    /* cursor: pointer; */
+    cursor: pointer;
   }
 
   ol, ul, li {

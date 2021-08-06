@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components/macro'
-import useDidMountEffect from 'Utils/Hooks/useDidMountEffect'
 import { userListStorage } from 'Utils/Storage'
 import Toast from 'Components/Toast/Toast'
 import Search from 'Pages/Admin/Search/Search'
 import Pagination from 'Pages/Admin/Pagination/Pagination'
 import useToast from 'Utils/Hooks/useToast'
-import { errorState } from 'Constant'
+import { toastMsg } from 'Constant'
 const StudentInfo = () => {
   const [filterInfo, setFilterInfo] = useState([])
   const [pagingData, setPagingData] = useState({
@@ -16,6 +15,7 @@ const StudentInfo = () => {
   const [usersInfo, setUsersInfo] = useState([])
   const { isShow, message, toast } = useToast()
   const searchRef = useRef()
+  const isFristRun = useRef(true)
   useEffect(() => {
     const studentList = userListStorage
       .load()
@@ -28,7 +28,12 @@ const StudentInfo = () => {
     })
     setFilterInfo(studentList.slice(0, 5))
   }, [])
-  useDidMountEffect(() => {
+  useEffect(() => {
+    if (isFristRun.current) {
+      isFristRun.current = false
+      return
+    }
+
     if (usersInfo.length < userListStorage.load().length) {
       setFilterInfo(
         usersInfo.slice(
@@ -45,7 +50,7 @@ const StudentInfo = () => {
         )
       )
     }
-  }, [pagingData.currentPage])
+  }, [pagingData.currentPage, usersInfo])
   const filterUserInfo = (selected) => {
     const userList = userListStorage
       .load()
@@ -59,7 +64,7 @@ const StudentInfo = () => {
           item.name.indexOf(inputValue) !== -1 ||
           item.age.indexOf(inputValue) !== -1
       )
-      if (dataFilter.length === 0) toast(errorState.NO_RESULT_SEARCH.desc)
+      if (dataFilter.length === 0) toast(toastMsg.NO_RESULT_SEARCH.desc)
       setUsersInfo(dataFilter)
       setFilterInfo(
         dataFilter.slice(
@@ -80,7 +85,7 @@ const StudentInfo = () => {
       const dataFilter = userList.filter(
         (item) => item[filtering].indexOf(inputValue) !== -1
       )
-      if (dataFilter.length === 0) toast(errorState.NO_RESULT_SEARCH.desc)
+      if (dataFilter.length === 0) toast(toastMsg.NO_RESULT_SEARCH.desc)
       setUsersInfo(dataFilter)
       setFilterInfo(
         dataFilter.slice(
@@ -102,7 +107,7 @@ const StudentInfo = () => {
     setUsersInfo(userList)
     setPagingData({ currentPage: 1, fullPage: Math.ceil(userList.length / 5) })
     setFilterInfo(userList.slice(0, 5))
-    toast(errorState.INIT_RESULT_SEARCH.desc)
+    toast(toastMsg.INIT_RESULT_SEARCH.desc)
   }
   const changePageNum = (e) => {
     setPagingData({ ...pagingData, currentPage: Number(e.target.innerText) })
