@@ -42,8 +42,9 @@ export default function Header() {
   }
 
   const handleClickNavItem = (path) => {
-    const accessibleAuth = auth.getAuth().access
-    if (accessibleAuth.indexOf(path) === -1) {
+    const isLogged = auth.getAuth()
+    const accessibleAuth = auth.getAuth()?.access
+    if (isLogged && accessibleAuth.indexOf(path) === -1) {
       toast('접근 권한이 없습니다.')
     } else {
       history.push(path)
