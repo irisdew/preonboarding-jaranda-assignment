@@ -14,7 +14,9 @@ const MyPage = () => {
           render={(props) => (
             <>
               <MypageHeaderWrap>
-                <MypageHeader>마이페이지</MypageHeader>
+                <MypageHeader>
+                  <h2>마이페이지</h2>
+                </MypageHeader>
               </MypageHeaderWrap>
               <Wrap>
                 <Sidebar>
@@ -73,7 +75,7 @@ const AsideItem = styled.li`
   font-weight: bold;
 `
 
-const MainContent = styled.main`
+const MainContent = styled.article`
   width: 100%;
   height: 500px;
   padding: 0 2rem;

@@ -230,7 +230,7 @@ export default function Signup() {
 
 const StyledSection = styled.section`
   position: relative;
-  padding: 19.2rem 0 12.8rem;
+  padding-top: 10rem;
   z-index: 100;
   &::before {
     content: '';
@@ -244,7 +244,7 @@ const StyledSection = styled.section`
     z-index: -1;
   }
   @media screen and ${({ theme }) => theme.device.tablet} {
-    padding: 3.7rem 0 0;
+    padding-top: 3.7rem;
     &::before {
       height: 13.7rem;
       background: url(${mBgImgUrl}) no-repeat top right;

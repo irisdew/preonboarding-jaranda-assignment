@@ -84,6 +84,11 @@ const StyledTitle = styled.span`
 
 const StyledInput = styled(CustomInput)`
   margin-bottom: 1.6rem;
+  :hover,
+  :focus {
+    border: solid 0.1rem ${({ theme }) => theme.color.blueGrey};
+    color: ${({ theme }) => theme.color.blueGrey};
+    background-color: ${({ theme }) => theme.color.blueGreyAlpha};
 `
 
 const StyledCustomCheckBox = styled(CustomCheckBox)`

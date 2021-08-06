@@ -167,7 +167,6 @@ const StudentInfo = () => {
 }
 const Table = styled.table`
   border-collapse: collapse;
-  width: 100%;
 `
 const Th = styled.th`
   height: 50px;
@@ -177,27 +176,28 @@ const Th = styled.th`
   line-height: 50px;
   font-weight: bold;
   &:nth-child(1) {
-    min-width: 50px;
+    width: 50px;
   }
   &:nth-child(2) {
     min-width: 200px;
+    max-width: 200px;
   }
   &:nth-child(3) {
-    min-width: 100px;
+    width: 100px;
   }
   &:nth-child(4) {
-    min-width: 50px;
+    width: 50px;
   }
   &:nth-child(5) {
-    min-width: 350px;
+    width: 450px;
   }
 `
 const Td = styled.td`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 0 20px;
   height: 50px;
+  padding: 0.5rem 1.3rem;
   border: 1px solid #cbcbcb;
   text-align: center;
   line-height: 50px;

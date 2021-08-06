@@ -42,7 +42,7 @@ export default function Header() {
     <Wrapper>
       <Container>
         <StyledLogo to="/">
-          <h1 className="a11y">Jaranda</h1>
+          <h1 className="a11y">RE4CT</h1>
           <LogoImg src={logoImgUrl} alt="logo" />
         </StyledLogo>
         <StyledNav mobileShow={isOpenNav} onClick={handleCloseMobileMenu}>
@@ -200,6 +200,8 @@ const StyledLink = styled(Link).attrs(({ active, theme }) => ({
 `
 const LogoutBtn = styled.button`
   ${navButtonMixin};
+  font-weight: 600;
+  color: ${({ theme }) => theme.color.primary};
 `
 
 const HamburgerBtn = styled.button`
