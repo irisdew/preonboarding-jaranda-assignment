@@ -102,21 +102,22 @@ export default function Signup() {
   const onSubmitHandler = (e) => {
     e.preventDefault()
 
-    const savedId = userListStorage.load()
-    const currentIndex = savedId.length
+    const usersInfo = userListStorage.load()
+    const currentIndex = usersInfo.length
 
-    const userInfo = {
+    const newUserInfo = {
       id: currentIndex + 1,
+      email: email,
       name: name,
       age: age,
       password: pass,
       address: { postcode: post, address: addr, address_detail: extraAddr },
       card_number: cardNum,
       auth: selectedOption,
+      access: [`/${selectedOption}`],
     }
 
-    savedId.push(userInfo)
-    userListStorage.save(savedId)
+    userListStorage.save([...usersInfo, newUserInfo])
   }
 
   return (
