@@ -26,7 +26,6 @@ export const loginMaintenance = Object.freeze({
   },
 })
 
-// TODO error state
 export const errorState = Object.freeze({
   NO_ACCOUNT_REGISTERED: {
     name: 'NO_ACCOUNT_REGISTERED',
@@ -35,14 +34,6 @@ export const errorState = Object.freeze({
   PASSWORD_MISMATCH: {
     name: 'PASSWORD_MISMATCH',
     desc: '패스워드가 일치하지 않습니다.',
-  },
-  NO_RESULT_SEARCH: {
-    name: 'NO_RESULT_SEARCH',
-    desc: '일치하는 검색결과가 없습니다.',
-  },
-  INIT_RESULT_SEARCH: {
-    name: 'INIT_RESULT_SEARCH',
-    desc: '검색결과가 초기화 되었습니다.',
   },
 })
 
@@ -67,6 +58,8 @@ export const toastMsg = Object.freeze({
   INVALID_PREVIOUS_PASSWORD: '이전 비밀번호를 확인해주세요.',
   INVALID_NEW_PASSWORD: '비밀번호를 규칙에 맞게 입력해주세요.',
   MY_INFO_EDIT_ERROR: '내 정보 수정 기능이 원활하지 않습니다.',
+  NO_RESULT_SEARCH: '일치하는 검색결과가 없습니다.',
+  INIT_RESULT_SEARCH: '검색결과가 초기화 되었습니다.',
 })
 
 export const fetchDataType = Object.freeze({
