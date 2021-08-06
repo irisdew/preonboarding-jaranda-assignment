@@ -1,11 +1,7 @@
 import React from 'react'
 
-import Layout from 'Layout/Layout'
+import EtcPage from 'Components/EtcPage/EtcPage'
 
 export default function Parent() {
-  return (
-    <Layout header footer>
-      Parent Page
-    </Layout>
-  )
+  return <EtcPage content="부모님 페이지입니다." />
 }

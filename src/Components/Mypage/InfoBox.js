@@ -1,59 +1,43 @@
 import styled from 'styled-components/macro'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import GetDataFromLocalStorage from 'Utils/Storage/GetDataFromLocalStorage'
 import GetLoggedAccountData from 'Utils/Storage/GetLoggedAccountData'
+import { storageKeys, accountInfoType, errorState } from 'Constant'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit } from '@fortawesome/free-solid-svg-icons'
 
-export function InfoBox({
-  infoTitle,
-  infoType,
-  setEditEmail,
-  setEditAddress,
-  setEditCardNum,
-  setEditPassword,
-}) {
+export function InfoBox({ infoTitle, infoType, setEditMode }) {
   const handleEditClick = (editItem) => {
     switch (editItem) {
-      case 'email':
-        setEditEmail((prev) => !prev)
-        console.log('edit email')
+      case accountInfoType.EMAIL.name:
+        setEditMode((prev) => ({ ...prev, email: true }))
         return
 
-      case 'address':
-        setEditAddress((prev) => !prev)
-        // setAddr('')
-        // setExtraAddr('')
-        console.log('edit address')
-
+      case accountInfoType.ADDRESS.name:
+        setEditMode((prev) => ({ ...prev, address: true }))
         return
 
-      case 'card_number':
-        // setCardNum('')
-        setEditCardNum((prev) => !prev)
-        console.log('edit cardNum')
-
+      case accountInfoType.CARD_NUMBER.name:
+        setEditMode((prev) => ({ ...prev, cardNum: true }))
         return
-      case 'password':
-        // setCardNum('')
-        setEditPassword((prev) => !prev)
-        console.log('edit password')
 
+      case accountInfoType.PASSWORD.name:
+        setEditMode((prev) => ({ ...prev, password: true }))
         return
 
       default:
-        throw new Error("Error! Edit button doesn't work properly.")
+        throw new Error(errorState.MY_INFO_EDIT_ERROR.desc)
     }
   }
   return (
     <>
       <Info>
         {infoTitle} :{' '}
-        {GetDataFromLocalStorage('USER_LIST') &&
-        infoType !== 'address' &&
-        infoType !== 'password'
+        {GetDataFromLocalStorage(storageKeys.USER_LIST.name) &&
+        infoType !== accountInfoType.ADDRESS.name &&
+        infoType !== accountInfoType.PASSWORD.name
           ? GetLoggedAccountData()[infoType]
           : GetLoggedAccountData()[infoType][infoType]}
-        {infoType === 'password' && '********'}
+        {infoType === accountInfoType.PASSWORD.name && '********'}
         <EditIcon icon={faEdit} onClick={() => handleEditClick(infoType)} />
       </Info>
     </>

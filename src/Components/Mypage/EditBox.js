@@ -3,28 +3,21 @@ import styled from 'styled-components/macro'
 import GetDataFromLocalStorage from 'Utils/Storage/GetDataFromLocalStorage'
 import GetLoggedAccountData from 'Utils/Storage/GetLoggedAccountData'
 import useToast from 'Utils/Hooks/useToast'
-import validation from 'Utils/Validation/Validation'
-import SaveDataToLocalStorage from 'Utils/Storage/SaveDataToLocalStorage'
 import { useInput } from 'Utils/Hooks/useInput'
+import validation from 'Utils/Validation/Validation'
 import setDaumAddr from 'Utils/SetDaumAddr'
 import auth from 'Utils/Auth/Auth'
-import { EditIcon } from './InfoBox'
-import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import CustomInput from 'Components/Form/CustomInput'
-import { usePopup } from 'Pages/Signup/usePopup'
-import Button from 'Components/Form/Button'
-import CardPopup from 'Pages/Signup/CardPopup'
 import Toast from 'Components/Toast/Toast'
 import PasswordPolicy from 'Components/PasswordPolicy/PasswordPolicy'
+import Button from 'Components/Form/Button'
+import CardPopup from 'Pages/Signup/CardPopup'
+import { usePopup } from 'Pages/Signup/usePopup'
+import { EditIcon } from './InfoBox'
+import { storageKeys, accountInfoType, errorState } from 'Constant'
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
-export function EditBox({
-  inputTitle,
-  inputType,
-  setEditEmail,
-  setEditAddress,
-  setEditCardNum,
-  setEditPassword,
-}) {
+export function EditBox({ inputTitle, inputType, setEditMode }) {
   const { isShow, message, toast } = useToast()
   const emailInputRef = useRef(null)
   const prevPasswordInputRef = useRef(null)
@@ -48,105 +41,90 @@ export function EditBox({
     const emailRef = emailInputRef.current
     const prevPasswordRef = prevPasswordInputRef.current
     const newPasswordRef = newPasswordInputRef.current
-    const data = GetDataFromLocalStorage('USER_LIST')
-
+    const data = GetDataFromLocalStorage(storageKeys.USER_LIST.name)
     const currentAccountData = data.find(
       (account) => account.id === GetLoggedAccountData().id
     )
-
     const currentAccountIdx = data.indexOf(currentAccountData)
 
     switch (editItem) {
-      case 'email':
+      case accountInfoType.EMAIL.name:
         if (!emailRef.value) {
-          setEditEmail((prev) => !prev)
+          setEditMode((prev) => ({ ...prev, email: false }))
           return
         }
 
         if (!validation.isEmail(emailRef.value)) {
-          toast('유효하지 않은 이메일입니다.')
+          toast(errorState.INVALID_EMAIL.desc)
           emailRef.value = ''
           emailRef.focus()
           return
         }
 
-        // 이메일 변경 로직 추가
-        // CURRENT_ACCOUNT와 USER_LIST 모두 수정
         data[currentAccountIdx].email = emailRef.value
         auth.update(data[currentAccountIdx])
-        // SaveDataToLocalStorage('USER_LIST', data)
-
-        // const emailModifiedObj = GetDataFromLocalStorage('CURRENT_ACCOUNT')
-        // emailModifiedObj.email = emailRef.value
-        // SaveDataToLocalStorage('CURRENT_ACCOUNT', emailModifiedObj)
-
-        setEditEmail((prev) => !prev)
+        setEditMode((prev) => ({ ...prev, email: false }))
         return
 
-      case 'address':
+      case accountInfoType.ADDRESS.name:
         if (!addr) {
-          setEditAddress((prev) => !prev)
+          setEditMode((prev) => ({ ...prev, address: false }))
           return
         }
 
-        // 주소 변경 로직 추가
-        // USER_LIST만 바꿔야함
         const newAddress = {
           postcode: post,
           address: addr,
           address_detail: extraAddr,
         }
-        // USER_LIST의 현재 로그인 한 계정의 address를 newAddress로 대체
+
         data[currentAccountIdx].address = newAddress
         auth.update(data[currentAccountIdx])
-        setEditAddress((prev) => !prev)
+        setEditMode((prev) => ({ ...prev, address: false }))
         return
 
-      case 'card_number':
+      case accountInfoType.CARD_NUMBER.name:
         if (!cardNum) {
-          setEditCardNum((prev) => !prev)
+          setEditMode((prev) => ({ ...prev, cardNum: false }))
           return
         }
-        // 카드 번호 변경 로직 추가
-        // USER_LIST만 바꿔야함
+
         data[currentAccountIdx].card_number = cardNum
         auth.update(data[currentAccountIdx])
-        setEditCardNum((prev) => !prev)
-
+        setEditMode((prev) => ({ ...prev, cardNum: false }))
         return
 
-      case 'password':
+      case accountInfoType.PASSWORD.name:
         if (!newPasswordRef.value) {
-          setEditPassword((prev) => !prev)
+          setEditMode((prev) => ({ ...prev, password: false }))
           return
         }
-        // 비밀 번호 변경 로직 추가
-        // 이전 비밀번호 체크 후
-        // USER_LIST만 바꿔야함
+
         if (!prevPasswordRef.value) {
-          toast('이전 비밀번호를 입력해주세요.')
+          toast(errorState.NO_PREVIOUS_PASSWORD.desc)
           prevPasswordRef.focus()
           return
         }
 
         if (prevPasswordRef.value !== currentAccountData.password) {
-          toast('이전 비밀번호를 확인해주세요.')
+          toast(errorState.INVALID_PREVIOUS_PASSWORD.desc)
           prevPasswordRef.focus()
           return
         }
 
         if (!isPassPolicy) {
-          toast('비밀번호를 규칙에 맞게 입력해주세요.')
+          toast(errorState.INVALID_NEW_PASSWORD.desc)
           newPasswordRef.focus()
           return
         }
+
         data[currentAccountIdx].password = newPasswordRef.value
         auth.update(data[currentAccountIdx])
-        setEditPassword((prev) => !prev)
+        setEditMode((prev) => ({ ...prev, password: false }))
         return
 
       default:
-        throw new Error("Error! Edit button doesn't work properly.")
+        throw new Error(errorState.MY_INFO_EDIT_ERROR.desc)
     }
   }
 
@@ -176,10 +154,10 @@ export function EditBox({
     <>
       <Edit>
         <Label>{inputTitle} :</Label>
-        {inputType === 'email' && (
+        {inputType === accountInfoType.EMAIL.name && (
           <Input ref={emailInputRef} placeholder="Email" />
         )}
-        {inputType === 'password' && (
+        {inputType === accountInfoType.PASSWORD.name && (
           <InputBox>
             <Input
               placeholder="이전 비밀번호"
@@ -196,7 +174,7 @@ export function EditBox({
           </InputBox>
         )}
 
-        {inputType === 'address' && (
+        {inputType === accountInfoType.ADDRESS.name && (
           <InputBox>
             <Input
               onClick={(e) => handleSearchAddress(e)}
@@ -214,7 +192,7 @@ export function EditBox({
             </EditButton>
           </InputBox>
         )}
-        {inputType === 'card_number' && (
+        {inputType === accountInfoType.CARD_NUMBER.name && (
           <Input
             placeholder="Card Number"
             onClick={openPopup}

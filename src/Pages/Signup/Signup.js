@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import Layout from 'Layout/Layout'
@@ -6,78 +7,107 @@ import CustomInput from 'Components/Form/CustomInput'
 import Button from 'Components/Form/Button'
 import PasswordPolicy from 'Components/PasswordPolicy/PasswordPolicy'
 import Address from 'Components/Address/Address'
-import CardPopup from 'Pages/Signup/CardPopup'
+import CardPopup from 'Components/CardInputPopup/CardPopup'
+import CustomCheckBox from 'Components/Form/CustomCheckBox'
 import Toast from 'Components/Toast/Toast'
 import useToast from 'Utils/Hooks/useToast'
 import validation from 'Utils/Validation/Validation'
 import { useInput } from 'Utils/Hooks/useInput'
-import { usePopup } from 'Pages/Signup/usePopup'
+import { usePopup } from 'Components/CardInputPopup/usePopup'
 import { userListStorage } from 'Utils/Storage'
-import { save, load } from 'Utils/Storage/Generator'
 
 import bgImgUrl from 'Assets/Images/bg-sign_up.png'
 import mBgImgUrl from 'Assets/Images/bg-sign-m.png'
 
 export default function Signup() {
-  const { isShow, message, toast } = useToast()
-
-  const [email, , onChangeEmail] = useInput('')
-  const [name, setName] = useState('')
-  const [age, setAge] = useState('')
-  const [pass, , onChangePass] = useInput('')
-  const [passConfirm, , onChangePassConfirm] = useInput('')
+  const [email, , onChangeEmail, inputEmail] = useInput('')
+  const [pass, , onChangePass, inputPassword] = useInput('')
   const [passPolicy, setPassPolicy] = useState({
     numeric: false,
     special: false,
     alphabet: false,
     eight: false,
   })
-  const [post, setPost] = useInput('')
+  const [passConfirm, , onChangePassConfirm, inputPasswordConfirm] =
+    useInput('')
+  const [name, setName, , inputName] = useInput('')
+  const [age, setAge, , inputAge] = useInput('')
+  const [post, setPost, , inputPostCode] = useInput('')
   const [addr, setAddr] = useInput('')
   const [extraAddr, setExtraAddr, onChangeExtraAddr] = useInput('')
-  const [cardNum, setCardNum] = useState('')
+  const [cardNum, setCardNum, , inputCard] = useInput('')
   const [selectedOption, setSelectedOption] = useState('')
 
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
+  const { isShow, message, toast } = useToast()
+
+  const history = useHistory()
 
   const {
     isEmail,
     isNotKorean,
+    isName,
     isNotNumeric,
     isNumeric,
+    isAge,
     isSpecialCharacter,
     isAlphabet,
     isOverEight,
   } = validation
 
+  const ALERT_EMAIL_BLANK = '이메일을 입력해주세요'
+  const ALERT_EMAIL_INVALID = '유효한 이메일을 입력해주세요.'
+  const ALERT_EMAIL_DUPLICATE = '이미 가입된 이메일 입니다.'
+
+  const ALERT_PASSWORD_BLANK = '비밀번호를 입력해주세요'
+  const ALERT_PASSWORD_INVALID = '비밀번호 규칙에 맞는 비밀번호를 입력해주세요'
+  const ALERT_PASSWORD = '비밀번호가 일치하지 않습니다.'
+
+  const ALERT_NAME_BLANK = '이름을 입력해주세요.'
+  const ALERT_NAME_INVALID = '유효한 이름을 입력해주세요.'
+
+  const ALERT_AGE_BLANK = '나이를 입력해주세요.'
+  const ALERT_AGE_INVALID = '유효한 나이를 입력해주세요.'
+  const ALERT_ADDRESS_BLANK = '주소를 입력해주세요.'
+  const ALERT_CARD_BLANK = '카드번호를 입력해주세요.'
+  const ALERT_AUTH_BLANK = '회원 유형을 선택해주세요.'
+
+  const ALERT_ISNOT_KOREAN = '한글만 입력하실 수 있습니다.'
+  const ALERT_ISNOT_NUMERIC = '숫자만 입력하실 수 있습니다.'
+
+  const ALERT_SIGNUP_SUCCESSED = '회원가입이 완료되었습니다.'
+
+  // 이메일 중복 검사
+  const checkEmailDuplication = (currentValue) => {
+    const usersInfo = userListStorage.load()
+    let isEmailDuplicate = false
+    for (const info of usersInfo) {
+      if (currentValue === info.email) {
+        toast(ALERT_EMAIL_DUPLICATE)
+        isEmailDuplicate = true
+      }
+    }
+    return isEmailDuplicate
+  }
+
+  //이메일 유효성 검사, 이메일 중복 검사
   const checkEmail = (e) => {
-    isEmail(e.target.value) || toast('유효한 이메일을 입력해주세요')
+    checkEmailDuplication(e.target.value)
+    isEmail(e.target.value) || toast(ALERT_EMAIL_INVALID)
   }
 
-  const checkPassWord = () => {
-    if (pass !== passConfirm) {
-      toast('비밀번호가 일치하지 않습니다!')
-    }
-  }
-
-  const checkName = (event) => {
-    if (isNotKorean(event.target.value)) {
-      toast('이름을 한글로 입력해주세요!')
-      return
-    }
-    setName(event.target.value)
-  }
-
-  const checkAge = (event) => {
-    if (isNotNumeric(event.target.value)) {
-      toast('숫자만 입력해주세요!')
-      return
-    }
-    setAge(event.target.value)
+  // 비밀번호 유효성 검사
+  const isCheckedPassword = (password) => {
+    return (
+      isNumeric(password) &&
+      isSpecialCharacter(password) &&
+      isAlphabet(password) &&
+      isOverEight(password)
+    )
   }
 
   const checkPasswordPolicy = (e) => {
-    const currentInput = e.target.value
+    const currentInput = e?.targetValue || pass
     const currentPassPolicy = {
       numeric: isNumeric(currentInput),
       special: isSpecialCharacter(currentInput),
@@ -85,8 +115,24 @@ export default function Signup() {
       eight: isOverEight(currentInput),
     }
     setPassPolicy(currentPassPolicy)
-    const validated = Object.values(currentPassPolicy).every((item) => item)
-    validated || toast('비밀번호 규칙에 맞는 비밀번호를 입력해주세요')
+    isCheckedPassword(currentInput) || toast(ALERT_PASSWORD_INVALID)
+  }
+
+  // 비밀번호 === 비밀번호 확인 일치 검사
+  const checkPasswordConfirm = () => {
+    pass !== passConfirm && toast(ALERT_PASSWORD)
+  }
+
+  const checkName = (e) => {
+    isNotKorean(e.target.value)
+      ? toast(ALERT_ISNOT_KOREAN)
+      : setName(e.target.value)
+  }
+
+  const checkAge = (e) => {
+    isNotNumeric(e.target.value)
+      ? toast(ALERT_ISNOT_NUMERIC)
+      : setAge(e.target.value)
   }
 
   const onCardSubmit = (cardData, close) => {
@@ -94,30 +140,89 @@ export default function Signup() {
     setPopup(close)
   }
 
-  const handleOption = (event) => {
-    const currentSelectedOption = event.target.value
+  // checkBox 선택 시 값 변경
+  const handleOption = (e) => {
+    const currentSelectedOption = e.target.id
     setSelectedOption(currentSelectedOption)
+  }
+
+  //빈 칸 있는지 확인 후 toast, focus
+  const checkBlank = (newUserInfo) => {
+    const userInfoInputs = [
+      '',
+      inputEmail,
+      inputPassword,
+      inputName,
+      inputAge,
+      inputPostCode,
+      inputCard,
+    ]
+
+    const alerts = [
+      '',
+      ALERT_EMAIL_BLANK,
+      ALERT_PASSWORD_BLANK,
+      ALERT_NAME_BLANK,
+      ALERT_AGE_BLANK,
+      ALERT_ADDRESS_BLANK,
+      ALERT_CARD_BLANK,
+    ]
+
+    let index = 0
+    for (let key in newUserInfo) {
+      if (index < userInfoInputs.length && newUserInfo[key] === '') {
+        userInfoInputs[index].current.focus()
+        userInfoInputs[index].current.value || toast(alerts[index])
+        return
+      }
+      index++
+    }
   }
 
   const onSubmitHandler = (e) => {
     e.preventDefault()
+    console.log('email 중복', checkEmailDuplication(email))
+
+    !email && toast(ALERT_EMAIL_BLANK)
+    !isEmail(email) && toast(ALERT_EMAIL_INVALID)
+    !pass && toast(ALERT_PASSWORD_BLANK)
+    checkPasswordPolicy()
+    pass !== passConfirm && toast(ALERT_PASSWORD)
+    !name && toast(ALERT_NAME_BLANK)
+    !isName(name) && toast(ALERT_NAME_INVALID)
+    !age && toast(ALERT_AGE_BLANK)
+    !isAge(age) && toast(ALERT_AGE_INVALID)
+    !post && toast(ALERT_ADDRESS_BLANK)
+    !cardNum && toast(ALERT_CARD_BLANK)
+    !selectedOption && toast(ALERT_AUTH_BLANK)
 
     const usersInfo = userListStorage.load()
     const currentIndex = usersInfo.length
-
     const newUserInfo = {
       id: currentIndex + 1,
-      email: email,
-      name: name,
-      age: age,
-      password: pass,
-      address: { postcode: post, address: addr, address_detail: extraAddr },
+      email: !checkEmailDuplication(email) && isEmail(email) ? email : '',
+      password: isCheckedPassword(pass) ? pass : '',
+      name: isName(name) ? name : '',
+      age: isAge(age) ? age : '',
+      address:
+        post.length > 0
+          ? { postcode: post, address: addr, address_detail: extraAddr }
+          : '',
       card_number: cardNum,
       auth: selectedOption,
       access: [`/${selectedOption}`],
     }
 
-    userListStorage.save([...usersInfo, newUserInfo])
+    checkBlank(newUserInfo)
+
+    const isValidatedUserInfo = Object.values(newUserInfo).every((item) => item)
+    if (isValidatedUserInfo) {
+      userListStorage.save([...usersInfo, newUserInfo])
+      isValidatedUserInfo && toast(ALERT_SIGNUP_SUCCESSED)
+      setTimeout(() => {
+        history.push('/login')
+      }, 5000)
+    }
   }
 
   return (
@@ -135,6 +240,7 @@ export default function Signup() {
             value={email}
             onChange={onChangeEmail}
             onBlur={checkEmail}
+            ref={inputEmail}
           />
           <Input
             type="password"
@@ -142,14 +248,16 @@ export default function Signup() {
             value={pass}
             onChange={onChangePass}
             onBlur={checkPasswordPolicy}
+            ref={inputPassword}
           />
           <PasswordPolicy passPolicy={passPolicy} />
           <Input
             type="password"
             placeholder="비밀번호 확인"
-            onBlur={checkPassWord}
+            onBlur={checkPasswordConfirm}
             value={passConfirm}
             onChange={onChangePassConfirm}
+            ref={inputPasswordConfirm}
           />
           <Input
             type="text"
@@ -157,6 +265,7 @@ export default function Signup() {
             placeholder="이름"
             value={name}
             onChange={checkName}
+            ref={inputName}
           />
           <Input
             type="text"
@@ -164,6 +273,7 @@ export default function Signup() {
             placeholder="나이"
             value={age}
             onChange={checkAge}
+            ref={inputAge}
           />
           <InputTitle>주소</InputTitle>
           <Address
@@ -174,6 +284,7 @@ export default function Signup() {
             extraAddr={extraAddr}
             setExtraAddr={setExtraAddr}
             onChangeExtraAddr={onChangeExtraAddr}
+            ref={inputPostCode}
           />
           <InputTitle>결제 정보</InputTitle>
           <FlexDiv>
@@ -181,40 +292,37 @@ export default function Signup() {
               type="text"
               value={cardNum}
               placeholder="카드 번호"
-              disabled
+              ref={inputCard}
+              readOnly
             />
             <SmallButton clickHandler={openPopup} type="button">
               카드 입력하기
             </SmallButton>
           </FlexDiv>
           <InputTitle>회원 유형을 선택해주세요</InputTitle>
-          <Radio
-            type="radio"
-            name="role"
-            id="radio_student"
-            value="student"
-            checked={selectedOption === 'student'}
-            onChange={handleOption}
-          />
-          <Label htmlFor="radio_student">학생</Label>
-          <Radio
-            type="radio"
-            name="role"
-            id="radio_parent"
-            value="parent"
-            checked={selectedOption === 'parent'}
-            onChange={handleOption}
-          />
-          <Label htmlFor="radio_parent">학부모님</Label>
-          <Radio
-            type="radio"
-            name="role"
-            id="radio_teacher"
-            value="teacher"
-            checked={selectedOption === 'teacher'}
-            onChange={handleOption}
-          />
-          <Label htmlFor="radio_teacher">선생님</Label>
+          <FlexDiv>
+            <StyledCustomCheckBox
+              checked={selectedOption === 'student'}
+              id="student"
+              checkHandler={handleOption}
+            >
+              자란다어린이
+            </StyledCustomCheckBox>
+            <StyledCustomCheckBox
+              checked={selectedOption === 'parent'}
+              id="parent"
+              checkHandler={handleOption}
+            >
+              자란다부모님
+            </StyledCustomCheckBox>
+            <StyledCustomCheckBox
+              checked={selectedOption === 'teacher'}
+              id="teacher"
+              checkHandler={handleOption}
+            >
+              자란다선생님
+            </StyledCustomCheckBox>
+          </FlexDiv>
           <LongButton clickHandler={onSubmitHandler}>가입하기</LongButton>
           {showPopup ? (
             <>
@@ -231,7 +339,7 @@ export default function Signup() {
 
 const StyledSection = styled.section`
   position: relative;
-  padding: 19.2rem 0 12.8rem;
+  padding-top: 10rem;
   z-index: 100;
   &::before {
     content: '';
@@ -245,7 +353,7 @@ const StyledSection = styled.section`
     z-index: -1;
   }
   @media screen and ${({ theme }) => theme.device.tablet} {
-    padding: 3.7rem 0 0;
+    padding-top: 3.7rem;
     &::before {
       height: 13.7rem;
       background: url(${mBgImgUrl}) no-repeat top right;
@@ -275,6 +383,7 @@ export const InputTitle = styled.div`
 
 export const FlexDiv = styled.div`
   display: flex;
+  justify-content: space-around;
 `
 
 export const Input = styled(CustomInput)`
@@ -285,14 +394,6 @@ export const Input = styled(CustomInput)`
     border: solid 1px ${({ theme }) => theme.color.secondary};
     background-color: ${({ theme }) => theme.color.secondaryAlpha};
   }
-`
-
-const Radio = styled.input`
-  /* height: 1rem; */
-`
-
-const Label = styled.label`
-  margin: 0 4rem 0 0.8rem;
 `
 
 export const LongButton = styled(Button)`
@@ -307,6 +408,7 @@ export const SmallButton = styled(Button)`
   background-color: ${({ theme }) => theme.color.secondary};
   border-radius: 0.2rem;
 `
+
 const Background = styled.div`
   width: 100vw;
   height: 100vh;
@@ -315,4 +417,9 @@ const Background = styled.div`
   left: 0;
   background-color: rgba(0, 0, 0, 0.15);
   z-index: 1;
+`
+
+const StyledCustomCheckBox = styled(CustomCheckBox)`
+  align-self: flex-start;
+  margin-top: 1rem;
 `

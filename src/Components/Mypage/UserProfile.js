@@ -1,6 +1,7 @@
 import auth from 'Utils/Auth/Auth'
 import styled from 'styled-components/macro'
 import userImg from 'Assets/Images/profile-user.png'
+import { authType } from 'Constant'
 
 export function UserProfile() {
   return (
@@ -10,11 +11,11 @@ export function UserProfile() {
       </ProfileImgBox>
       <Name>{auth.getAuth().name} 님</Name>
       <Role>
-        {auth.getAuth().auth === 'teacher'
-          ? '선생님'
-          : auth.getAuth().auth === 'parent'
-          ? '부모님'
-          : '학생'}
+        {auth.getAuth().auth === authType.TEACHER.name
+          ? authType.TEACHER.desc
+          : auth.getAuth().auth === authType.PARENT.name
+          ? authType.PARENT.desc
+          : authType.STUDENT.desc}
       </Role>
     </UserContainer>
   )

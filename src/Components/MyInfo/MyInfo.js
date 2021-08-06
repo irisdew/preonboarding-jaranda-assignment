@@ -1,71 +1,73 @@
 import React, { useState } from 'react'
 import styled from 'styled-components/macro'
-import Layout from 'Layout/Layout'
 import { UserProfile, UserContainer } from 'Components/Mypage/UserProfile'
 import { InfoBox } from 'Components/Mypage/InfoBox'
 import { EditBox } from 'Components/Mypage/EditBox'
+import { accountInfoType } from 'Constant'
 
 export default function MyInfo() {
-  const [editEmail, setEditEmail] = useState(false)
-  const [editAddress, setEditAddress] = useState(false)
-  const [editCardNum, setEditCardNum] = useState(false)
-  const [editPassword, setEditPassword] = useState(false)
+  const [editMode, setEditMode] = useState({
+    email: false,
+    password: false,
+    address: false,
+    cardNum: false,
+  })
 
   return (
     <Container>
       <UserProfile />
       <InfoContainer>
-        {!editEmail ? (
+        {!editMode.email ? (
           <InfoBox
-            infoTitle="이메일"
-            infoType="email"
-            setEditEmail={setEditEmail}
+            infoTitle={accountInfoType.EMAIL.desc}
+            infoType={accountInfoType.EMAIL.name}
+            setEditMode={setEditMode}
           />
         ) : (
           <EditBox
-            inputTitle="이메일"
-            inputType="email"
-            setEditEmail={setEditEmail}
+            inputTitle={accountInfoType.EMAIL.desc}
+            inputType={accountInfoType.EMAIL.name}
+            setEditMode={setEditMode}
           />
         )}
-        {!editPassword ? (
+        {!editMode.password ? (
           <InfoBox
-            infoTitle="비밀번호"
-            infoType="password"
-            setEditPassword={setEditPassword}
+            infoTitle={accountInfoType.PASSWORD.desc}
+            infoType={accountInfoType.PASSWORD.name}
+            setEditMode={setEditMode}
           />
         ) : (
           <EditBox
-            inputTitle="비밀번호"
-            inputType="password"
-            setEditPassword={setEditPassword}
+            inputTitle={accountInfoType.PASSWORD.desc}
+            inputType={accountInfoType.PASSWORD.name}
+            setEditMode={setEditMode}
           />
         )}
 
-        {!editAddress ? (
+        {!editMode.address ? (
           <InfoBox
             infoTitle="주소"
             infoType="address"
-            setEditAddress={setEditAddress}
+            setEditMode={setEditMode}
           />
         ) : (
           <EditBox
-            inputTitle="주소"
-            inputType="address"
-            setEditAddress={setEditAddress}
+            inputTitle={accountInfoType.ADDRESS.desc}
+            inputType={accountInfoType.ADDRESS.name}
+            setEditMode={setEditMode}
           />
         )}
-        {!editCardNum ? (
+        {!editMode.cardNum ? (
           <InfoBox
-            infoTitle="결제 수단"
-            infoType="card_number"
-            setEditCardNum={setEditCardNum}
+            infoTitle={accountInfoType.CARD_NUMBER.desc}
+            infoType={accountInfoType.CARD_NUMBER.name}
+            setEditMode={setEditMode}
           />
         ) : (
           <EditBox
-            inputTitle="결제 수단"
-            inputType="card_number"
-            setEditCardNum={setEditCardNum}
+            inputTitle={accountInfoType.CARD_NUMBER.desc}
+            inputType={accountInfoType.CARD_NUMBER.name}
+            setEditMode={setEditMode}
           />
         )}
       </InfoContainer>
@@ -77,7 +79,6 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  /* background-color: ${({ theme }) => theme.color.primary}; */
   width: auto;
 `
 
