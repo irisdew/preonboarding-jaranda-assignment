@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react'
 
 export default function useDidMountEffect(func, deps) {
-  const didMount = useRef(false)
+  const isFristRun = useRef(false)
 
   useEffect(() => {
-    if (didMount.current) func()
-    else didMount.current = true
-  }, deps) // eslint-disable-line react-hooks/exhaustive-deps
+    if (isFristRun.current) func()
+    else isFristRun.current = true
+  }, deps)
 }

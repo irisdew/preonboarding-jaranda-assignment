@@ -11,19 +11,16 @@ export default function Search({ filterUserInfo, searchRef, refreshBtn }) {
   const [selected, setSelected] = useState('선택')
   const [checkSelect, setCheckSelect] = useState(false)
 
-  // 선택 버튼
   const selectBtn = () => {
     setCheckSelect(!checkSelect)
   }
 
-  // 아이디, 이름, 나이 선택
   const selectValue = (e) => {
     setCheckSelect(false)
     setSelected(e.target.innerText)
     filterUserInfo(e.target.innerText)
   }
 
-  // 엔터
   const EnterBtn = () => {
     if (window.event.keyCode === 13) {
       filterUserInfo(selected)
@@ -66,24 +63,33 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  min-width: 41rem;
   margin: 30px 0;
+
+  @media ${(props) => props.theme.device.tablet} {
+    width: 0%;
+  }
 
   h1 {
     font-size: 2.5rem;
     font-weight: bold;
     color: #65737e;
-    /* margin: 2rem; */
+
+    @media ${(props) => props.theme.device.tablet} {
+      font-size: 1.8rem;
+    }
   }
 `
-// 선택 + 검색
 const Wrapper = styled.div`
   display: flex;
 `
 
-// 드롭다운
 const Dropdown = styled.div`
-  /* margin: 2rem auto; */
   margin-right: 2rem;
+
+  @media ${(props) => props.theme.device.tablet} {
+    margin-right: 0.5rem;
+  }
 `
 
 const DropBtn = styled.button`
@@ -100,7 +106,6 @@ const DropBtn = styled.button`
 
   span {
     color: #65737e;
-    /* margin-left: 1.4rem; */
   }
 `
 
@@ -129,10 +134,7 @@ const Menu = styled.div`
   }
 `
 
-// 입력
 const InputBox = styled.div`
-  /* margin: 2rem; */
-
   input {
     width: 16rem;
     height: 3rem;
@@ -167,9 +169,12 @@ const InputBtn = styled.button`
   }
 `
 
-// 초기화
 const InitBox = styled.div`
   margin-right: 2rem;
+
+  @media ${(props) => props.theme.device.tablet} {
+    margin-right: 0.5rem;
+  }
 
   button {
     width: 3rem;
