@@ -112,7 +112,7 @@ export default function Admin() {
       )
 
       if (dataFilter.length === 0) {
-        toast(toastMsg.NO_RESULT_SEARCH.desc)
+        toast(toastMsg.NO_RESULT_SEARCH)
       }
 
       setUsersInfo(dataFilter)
@@ -138,7 +138,7 @@ export default function Admin() {
       )
 
       if (dataFilter.length === 0) {
-        toast(toastMsg.NO_RESULT_SEARCH.desc)
+        toast(toastMsg.NO_RESULT_SEARCH)
       }
 
       setUsersInfo(dataFilter)
@@ -160,7 +160,7 @@ export default function Admin() {
     setUsersInfo(userList)
     setPagingData({ currentPage: 1, fullPage: Math.ceil(userList.length / 5) })
     setFilterInfo(userList.slice(0, 5))
-    toast(toastMsg.INIT_RESULT_SEARCH.desc)
+    toast(toastMsg.INIT_RESULT_SEARCH)
   }
 
   const changePageNum = (e) => {
