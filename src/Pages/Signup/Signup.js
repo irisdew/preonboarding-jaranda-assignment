@@ -19,21 +19,22 @@ import bgImgUrl from 'Assets/Images/bg-sign_up.png'
 import mBgImgUrl from 'Assets/Images/bg-sign-m.png'
 
 export default function Signup() {
-  const [email, , onChangeEmail] = useInput('')
-  const [pass, , onChangePass] = useInput('')
+  const [email, , onChangeEmail, inputEmail] = useInput('')
+  const [pass, , onChangePass, inputPassword] = useInput('')
   const [passPolicy, setPassPolicy] = useState({
     numeric: false,
     special: false,
     alphabet: false,
     eight: false,
   })
-  const [passConfirm, , onChangePassConfirm] = useInput('')
-  const [name, setName] = useState('')
-  const [age, setAge] = useState('')
-  const [post, setPost] = useInput('')
+  const [passConfirm, , onChangePassConfirm, inputPasswordConfirm] =
+    useInput('')
+  const [name, setName, , inputName] = useInput('')
+  const [age, setAge, , inputAge] = useInput('')
+  const [post, setPost, , inputPostCode] = useInput('')
   const [addr, setAddr] = useInput('')
   const [extraAddr, setExtraAddr, onChangeExtraAddr] = useInput('')
-  const [cardNum, setCardNum] = useState('')
+  const [cardNum, setCardNum, , inputCard] = useInput('')
   const [selectedOption, setSelectedOption] = useState('')
 
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
@@ -49,14 +50,6 @@ export default function Signup() {
     isAlphabet,
     isOverEight,
   } = validation
-
-  const inputEmail = useRef(null)
-  const inputPassword = useRef(null)
-  const inputPasswordConfirm = useRef(null)
-  const inputName = useRef(null)
-  const inputAge = useRef(null)
-  const inputCard = useRef(null)
-  const inputPostCode = useRef(null)
 
   const ALERT_EMAIL_BLANK = '이메일을 입력해주세요'
   const ALERT_EMAIL_INVALID = '유효한 이메일을 입력해주세요.'
