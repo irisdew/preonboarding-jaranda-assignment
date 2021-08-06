@@ -27,33 +27,25 @@ export default function UserCell({ info, id, index }) {
     if (!editInputData.length) return
 
     const originalUsersInfo = userListStorage.load()
-    const [modifiedItem] = filterInfo.filter(
+    const clickedItem = filterInfo.find(
       (userInfo) => userInfo.id === targetData.id
     )
 
     const modifyCallback = (userInfo) => {
-      if (userInfo.id === targetData.id) {
-        if (
-          DATA_TABLE[index] === DATA_TABLE[5] ||
-          DATA_TABLE[index] === DATA_TABLE[6] ||
-          DATA_TABLE[index] === DATA_TABLE[7]
-        ) {
-          return {
-            ...modifiedItem,
+      if (userInfo.id !== targetData.id) return userInfo
+
+      return checkAdressData(index)
+        ? {
+            ...clickedItem,
             address: {
               ...userInfo.address,
               [DATA_TABLE[index]]: editInputData,
             },
           }
-        } else {
-          return {
-            ...modifiedItem,
+        : {
+            ...clickedItem,
             [DATA_TABLE[index]]: editInputData,
           }
-        }
-      } else {
-        return userInfo
-      }
     }
 
     const modifiedStates = filterInfo.map(modifyCallback)
@@ -94,6 +86,17 @@ const DATA_TABLE = {
   7: 'address_detail',
   8: 'card_number',
   9: 'auth',
+}
+
+const checkAdressData = (index) => {
+  if (
+    DATA_TABLE[index] === DATA_TABLE[5] ||
+    DATA_TABLE[index] === DATA_TABLE[6] ||
+    DATA_TABLE[index] === DATA_TABLE[7]
+  ) {
+    return true
+  }
+  return false
 }
 
 const setElementWidth = (index) => {
