@@ -70,16 +70,25 @@ $ npm run start
 
 <br>
 
-## 💗Project Link
+
+## 🤍Project Link
 
 <https://epic-jepsen-a6fdee.netlify.app/>
 
-### 화면 스크린샷
 
-![main](https://user-images.githubusercontent.com/76525368/128481763-8237d41d-3626-47e3-a366-12c8123ec9bd.jpg)
-![login](https://user-images.githubusercontent.com/76525368/128483520-9eb2b914-c4e8-4885-b8c1-0f0e90283c98.jpg)
-![signup](https://user-images.githubusercontent.com/76525368/128483730-354b77e7-7e6b-4644-92f1-05789f7cfed3.jpg)
-![admin](https://user-images.githubusercontent.com/76525368/128483548-6a4897df-2c99-4708-a0ce-05508b36dccb.jpg)
-![mypage_myinfo](https://user-images.githubusercontent.com/76525368/128483538-37b59198-96ea-40ec-871a-871148ce548e.jpg)
-![mypage_studentinfo](https://user-images.githubusercontent.com/76525368/128483544-0b7f4b90-4877-431f-82fe-bb1e58a53b6d.jpg)
+<br>
+
+## 💗Preview
+
+<div style={display: flex;}>
+   
+<img src="https://user-images.githubusercontent.com/76525368/128481763-8237d41d-3626-47e3-a366-12c8123ec9bd.jpg" alt="drawing" width="400"/>
+<img src="https://user-images.githubusercontent.com/76525368/128483520-9eb2b914-c4e8-4885-b8c1-0f0e90283c98.jpg" alt="drawing" width="400"/>
+<img src="https://user-images.githubusercontent.com/76525368/128483730-354b77e7-7e6b-4644-92f1-05789f7cfed3.jpg" alt="drawing" width="400"/>
+<img src="https://user-images.githubusercontent.com/76525368/128483548-6a4897df-2c99-4708-a0ce-05508b36dccb.jpg" alt="drawing" width="400" height="300"/>
+<img src="https://user-images.githubusercontent.com/76525368/128483538-37b59198-96ea-40ec-871a-871148ce548e.jpg" alt="drawing" width="400"/>
+<img src="https://user-images.githubusercontent.com/76525368/128483544-0b7f4b90-4877-431f-82fe-bb1e58a53b6d.jpg" alt="drawing" width="400"/>
+
+</div>
+
 
