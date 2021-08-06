@@ -14,7 +14,7 @@ import Button from 'Components/Form/Button'
 import CardPopup from 'Components/CardInputPopup/CardPopup'
 import { usePopup } from 'Components/CardInputPopup/usePopup'
 import { EditIcon } from './InfoBox'
-import { storageKeys, accountInfoType, errorState } from 'Constant'
+import { storageKeys, accountInfoType, toastMsg } from 'Constant'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
 export function EditBox({ inputTitle, inputType, setEditMode }) {
@@ -55,7 +55,7 @@ export function EditBox({ inputTitle, inputType, setEditMode }) {
         }
 
         if (!validation.isEmail(emailRef.value)) {
-          toast(errorState.INVALID_EMAIL.desc)
+          toast(toastMsg.EMAIL_INVALID)
           emailRef.value = ''
           emailRef.focus()
           return
@@ -101,19 +101,19 @@ export function EditBox({ inputTitle, inputType, setEditMode }) {
         }
 
         if (!prevPasswordRef.value) {
-          toast(errorState.NO_PREVIOUS_PASSWORD.desc)
+          toast(toastMsg.NO_PREVIOUS_PASSWORD)
           prevPasswordRef.focus()
           return
         }
 
         if (prevPasswordRef.value !== currentAccountData.password) {
-          toast(errorState.INVALID_PREVIOUS_PASSWORD.desc)
+          toast(toastMsg.INVALID_PREVIOUS_PASSWORD)
           prevPasswordRef.focus()
           return
         }
 
         if (!isPassPolicy) {
-          toast(errorState.INVALID_NEW_PASSWORD.desc)
+          toast(toastMsg.INVALID_NEW_PASSWORD)
           newPasswordRef.focus()
           return
         }
@@ -124,7 +124,7 @@ export function EditBox({ inputTitle, inputType, setEditMode }) {
         return
 
       default:
-        throw new Error(errorState.MY_INFO_EDIT_ERROR.desc)
+        throw new Error(toastMsg.MY_INFO_EDIT_ERROR)
     }
   }
 

@@ -36,26 +36,6 @@ export const errorState = Object.freeze({
     name: 'PASSWORD_MISMATCH',
     desc: '패스워드가 일치하지 않습니다.',
   },
-  NO_PREVIOUS_PASSWORD: {
-    name: 'NO_PREVIOUS_PASSWORD',
-    desc: '이전 비밀번호를 입력해주세요.',
-  },
-  INVALID_PREVIOUS_PASSWORD: {
-    name: 'INVALID_PREVIOUS_PASSWORD',
-    desc: '이전 비밀번호를 확인해주세요.',
-  },
-  INVALID_NEW_PASSWORD: {
-    name: 'INVALID_NEW_PASSWORD',
-    desc: '비밀번호를 규칙에 맞게 입력해주세요.',
-  },
-  INVALID_EMAIL: {
-    name: 'INVALID_EMAIL',
-    desc: '유효하지 않은 이메일입니다.',
-  },
-  MY_INFO_EDIT_ERROR: {
-    name: 'MY_INFO_EDIT_ERROR',
-    desc: '내 정보 수정 기능이 원활하지 않습니다.',
-  },
   NO_RESULT_SEARCH: {
     name: 'NO_RESULT_SEARCH',
     desc: '일치하는 검색결과가 없습니다.',
@@ -83,6 +63,10 @@ export const toastMsg = Object.freeze({
   ISNOT_KOREAN: '한글만 입력하실 수 있습니다.',
   ISNOT_NUMERIC: '숫자만 입력하실 수 있습니다.',
   SIGNUP_SUCCESSED: '회원가입이 완료되었습니다.',
+  NO_PREVIOUS_PASSWORD: '이전 비밀번호를 입력해주세요.',
+  INVALID_PREVIOUS_PASSWORD: '이전 비밀번호를 확인해주세요.',
+  INVALID_NEW_PASSWORD: '비밀번호를 규칙에 맞게 입력해주세요.',
+  MY_INFO_EDIT_ERROR: '내 정보 수정 기능이 원활하지 않습니다.',
 })
 
 export const fetchDataType = Object.freeze({
