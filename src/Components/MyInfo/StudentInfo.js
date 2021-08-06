@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components/macro'
-import useDidMountEffect from 'Utils/Hooks/useDidMountEffect'
 import { userListStorage } from 'Utils/Storage'
 import Toast from 'Components/Toast/Toast'
 import Search from 'Pages/Admin/Search/Search'
@@ -16,6 +15,7 @@ const StudentInfo = () => {
   const [usersInfo, setUsersInfo] = useState([])
   const { isShow, message, toast } = useToast()
   const searchRef = useRef()
+  const isFristRun = useRef(true)
   useEffect(() => {
     const studentList = userListStorage
       .load()
@@ -28,7 +28,12 @@ const StudentInfo = () => {
     })
     setFilterInfo(studentList.slice(0, 5))
   }, [])
-  useDidMountEffect(() => {
+  useEffect(() => {
+    if (isFristRun.current) {
+      isFristRun.current = false
+      return
+    }
+
     if (usersInfo.length < userListStorage.load().length) {
       setFilterInfo(
         usersInfo.slice(
@@ -45,7 +50,7 @@ const StudentInfo = () => {
         )
       )
     }
-  }, [pagingData.currentPage])
+  }, [pagingData.currentPage, usersInfo])
   const filterUserInfo = (selected) => {
     const userList = userListStorage
       .load()
