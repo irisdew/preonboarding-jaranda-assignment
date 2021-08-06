@@ -66,12 +66,15 @@ export default function Signup() {
   const ALERT_NAME_INVALID = '유효한 이름을 입력해주세요.'
 
   const ALERT_AGE_BLANK = '나이를 입력해주세요.'
+  const ALERT_AGE_INVALID = '유효한 나이를 입력해주세요.'
   const ALERT_ADDRESS_BLANK = '주소를 입력해주세요.'
   const ALERT_CARD_BLANK = '카드번호를 입력해주세요.'
   const ALERT_AUTH_BLANK = '회원 유형을 선택해주세요.'
 
   const ALERT_ISNOT_KOREAN = '한글만 입력하실 수 있습니다.'
   const ALERT_ISNOT_NUMERIC = '숫자만 입력하실 수 있습니다.'
+
+  const ALERT_SIGNUP_SUCCESSED = '회원가입이 완료되었습니다.'
 
   // 이메일 중복 검사
   const checkEmailDuplication = (currentValue) => {
@@ -187,7 +190,7 @@ export default function Signup() {
     !name && toast(ALERT_NAME_BLANK)
     !isName(name) && toast(ALERT_NAME_INVALID)
     !age && toast(ALERT_AGE_BLANK)
-    // !isNotNumeric(age) && toast('유효한 나이를 입력해주세요')
+    // !isNotNumeric(age) && toast(ALERT_AGE_INVALID)
     !post && toast(ALERT_ADDRESS_BLANK)
     !cardNum && toast(ALERT_CARD_BLANK)
     !selectedOption && toast(ALERT_AUTH_BLANK)
@@ -214,7 +217,7 @@ export default function Signup() {
     const isValidatedUserInfo = Object.values(newUserInfo).every((item) => item)
     if (isValidatedUserInfo) {
       userListStorage.save([...usersInfo, newUserInfo])
-      isValidatedUserInfo && toast('회원가입이 완료되었습니다')
+      isValidatedUserInfo && toast(ALERT_SIGNUP_SUCCESSED)
       // setTimeout(history.push('/login'), 10000)
     }
   }
