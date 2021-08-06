@@ -22,12 +22,9 @@ export default function useLogin(isAdminRestrict = false) {
     }
   }, [])
 
-  const handleRememberMe = useCallback(
-    ({ target: { checked } }) => {
-      checked ? setIsRememberId(true) : setIsRememberId(false)
-    },
-    [isRememberId]
-  )
+  const handleRememberMe = useCallback(({ target: { checked } }) => {
+    checked ? setIsRememberId(true) : setIsRememberId(false)
+  }, [])
 
   const handleAfterLogin = (account) => {
     const { email, auth } = account
@@ -75,7 +72,7 @@ export default function useLogin(isAdminRestrict = false) {
           throw new Error('is not valid error type')
       }
     }
-  }, [])
+  }, [isAdminRestrict, toast])
 
   return {
     isRememberId,
