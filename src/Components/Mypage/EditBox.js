@@ -61,16 +61,8 @@ export function EditBox({ inputTitle, inputType, setEditMode }) {
           return
         }
 
-        // 이메일 변경 로직 추가
-        // CURRENT_ACCOUNT와 USER_LIST 모두 수정
         data[currentAccountIdx].email = emailRef.value
         auth.update(data[currentAccountIdx])
-        // SaveDataToLocalStorage('USER_LIST', data)
-
-        // const emailModifiedObj = GetDataFromLocalStorage('CURRENT_ACCOUNT')
-        // emailModifiedObj.email = emailRef.value
-        // SaveDataToLocalStorage('CURRENT_ACCOUNT', emailModifiedObj)
-
         setEditMode((prev) => ({ ...prev, email: false }))
         return
 
@@ -80,14 +72,12 @@ export function EditBox({ inputTitle, inputType, setEditMode }) {
           return
         }
 
-        // 주소 변경 로직 추가
-        // USER_LIST만 바꿔야함
         const newAddress = {
           postcode: post,
           address: addr,
           address_detail: extraAddr,
         }
-        // USER_LIST의 현재 로그인 한 계정의 address를 newAddress로 대체
+
         data[currentAccountIdx].address = newAddress
         auth.update(data[currentAccountIdx])
         setEditMode((prev) => ({ ...prev, address: false }))
@@ -98,12 +88,10 @@ export function EditBox({ inputTitle, inputType, setEditMode }) {
           setEditMode((prev) => ({ ...prev, cardNum: false }))
           return
         }
-        // 카드 번호 변경 로직 추가
-        // USER_LIST만 바꿔야함
+
         data[currentAccountIdx].card_number = cardNum
         auth.update(data[currentAccountIdx])
         setEditMode((prev) => ({ ...prev, cardNum: false }))
-
         return
 
       case accountInfoType.PASSWORD.name:
@@ -111,9 +99,7 @@ export function EditBox({ inputTitle, inputType, setEditMode }) {
           setEditMode((prev) => ({ ...prev, password: false }))
           return
         }
-        // 비밀 번호 변경 로직 추가
-        // 이전 비밀번호 체크 후
-        // USER_LIST만 바꿔야함
+
         if (!prevPasswordRef.value) {
           toast(errorState.NO_PREVIOUS_PASSWORD.desc)
           prevPasswordRef.focus()
@@ -131,6 +117,7 @@ export function EditBox({ inputTitle, inputType, setEditMode }) {
           newPasswordRef.focus()
           return
         }
+
         data[currentAccountIdx].password = newPasswordRef.value
         auth.update(data[currentAccountIdx])
         setEditMode((prev) => ({ ...prev, password: false }))

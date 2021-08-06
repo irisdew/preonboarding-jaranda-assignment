@@ -1,11 +1,7 @@
 import React from 'react'
 
-import Layout from 'Layout/Layout'
+import EtcPage from 'Components/EtcPage/EtcPage'
 
 export default function Student() {
-  return (
-    <Layout header footer>
-      Student Page
-    </Layout>
-  )
+  return <EtcPage content="학생 페이지입니다." />
 }

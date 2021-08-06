@@ -1,9 +1,9 @@
 import styled from 'styled-components/macro'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import GetDataFromLocalStorage from 'Utils/Storage/GetDataFromLocalStorage'
 import GetLoggedAccountData from 'Utils/Storage/GetLoggedAccountData'
 import { storageKeys, accountInfoType, errorState } from 'Constant'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit } from '@fortawesome/free-solid-svg-icons'
 
 export function InfoBox({ infoTitle, infoType, setEditMode }) {
   const handleEditClick = (editItem) => {
