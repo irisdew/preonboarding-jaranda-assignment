@@ -10,7 +10,7 @@ export default function useToast(timer = 3000) {
     }, [timer])
 
     return () => clearTimeout(timeId)
-  }, [message, isShow])
+  }, [message, isShow, timer])
 
   const toast = useCallback((message) => {
     setIsShow(true)

@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef } from 'react'
+import React, { forwardRef } from 'react'
 import { FlexDiv, Input, SmallButton } from 'Pages/Signup/Signup'
 import setDaumAddr from 'Utils/SetDaumAddr'
 
@@ -8,7 +8,6 @@ const Address = (
 ) => {
   const handleClick = (e) => {
     e.preventDefault()
-
     setDaumAddr({ setPost, setAddr, setExtraAddr })
   }
 
@@ -23,7 +22,7 @@ const Address = (
           ref={ref}
           readOnly
         />
-        <SmallButton type="button" clickHandler={(e) => handleClick(e)}>
+        <SmallButton type="button" clickHandler={handleClick}>
           주소 검색하기
         </SmallButton>
       </FlexDiv>

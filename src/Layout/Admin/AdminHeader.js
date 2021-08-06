@@ -3,7 +3,6 @@ import { useHistory, Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
 import auth from 'Utils/Auth/Auth'
-import { ReactComponent as Hamburger } from 'Assets/Icon/ic_hamburger.svg'
 import logoImgUrl from 'Assets/Images/logo.png'
 
 export default function AdminHeader() {
