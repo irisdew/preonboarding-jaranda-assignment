@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components/macro'
 
-export default function Toast({ message, isShow }) {
+export default function Toast({ message, isShow, className }) {
   const [show, setShow] = useState(null)
 
   useEffect(() => {
@@ -23,6 +23,7 @@ export default function Toast({ message, isShow }) {
             role="alertdialog"
             aria-live="assertive"
             isShow={isShow ? 1 : 0}
+            className={className}
           >
             <Message>{message}</Message>
           </Wrapper>,
