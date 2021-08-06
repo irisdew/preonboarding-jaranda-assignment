@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 
 import { rememberMeStorage } from 'Utils/Storage'
-import { authType, errorState } from 'Constant'
+import { authType, errorState, toastMsg } from 'Constant'
 import validation from 'Utils/Validation/Validation'
 import auth from 'Utils/Auth/Auth'
 import useToast from 'Utils/Hooks/useToast'
@@ -39,15 +39,15 @@ export default function useLogin(isAdminRestrict = false) {
     const id = idInputRef.current
     const pw = pwInputRef.current
     if (!id.value) {
-      toast('이메일을 입력해주세요.')
+      toast(toastMsg.EMAIL_BLANK)
       id.focus()
       return
     } else if (!pw.value) {
-      toast('비밀번호를 입력해주세요.')
+      toast(toastMsg.PASSWORD_BLANK)
       pw.focus()
       return
     } else if (!validation.isEmail(id.value)) {
-      toast('유효하지 않은 이메일입니다.')
+      toast(toastMsg.EMAIL_INVALID)
       id.value = ''
       id.focus()
       return
@@ -62,6 +62,7 @@ export default function useLogin(isAdminRestrict = false) {
       handleAfterLogin(account)
     } catch (err) {
       toast(err.message)
+      console.log(',err', err)
       switch (err.type) {
         case errorState.NO_ACCOUNT_REGISTERED.name:
           id.focus()
@@ -72,7 +73,8 @@ export default function useLogin(isAdminRestrict = false) {
           return
 
         default:
-          throw new Error('is not valid error type')
+          auth.reload()
+          toast(toastMsg.FAIL_LOGIN)
       }
     }
   }, [handleAfterLogin, isAdminRestrict, toast])
