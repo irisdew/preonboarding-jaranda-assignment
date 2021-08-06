@@ -3,12 +3,15 @@ import { useHistory, Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
 import auth from 'Utils/Auth/Auth'
+import Toast from 'Components/Toast/Toast'
+import useToast from 'Utils/Hooks/useToast'
 import { ReactComponent as Hamburger } from 'Assets/Icon/ic_hamburger.svg'
 import logoImgUrl from 'Assets/Images/logo.png'
 
 export default function Header() {
   const history = useHistory()
   const [isOpenNav, setIsOpenNav] = useState(false)
+  const { isShow, message, toast } = useToast()
 
   const isActiveLink = (path) => {
     const {
@@ -38,6 +41,15 @@ export default function Header() {
     history.push('/login')
   }
 
+  const handleClickNavItem = (path) => {
+    const accessibleAuth = auth.getAuth().access
+    if (accessibleAuth.indexOf(path) === -1) {
+      toast('접근 권한이 없습니다.')
+    } else {
+      history.push(path)
+    }
+  }
+
   return (
     <Wrapper>
       <Container>
@@ -48,19 +60,28 @@ export default function Header() {
         <StyledNav mobileShow={isOpenNav} onClick={handleCloseMobileMenu}>
           <NavList>
             <NavItem>
-              <StyledLink to="/teacher" active={isActiveLink('/teacher')}>
+              <StyledNavBtn
+                active={isActiveLink('/teacher')}
+                onClick={() => handleClickNavItem('/teacher')}
+              >
                 자란다선생님 메뉴
-              </StyledLink>
+              </StyledNavBtn>
             </NavItem>
             <NavItem>
-              <StyledLink to="/parent" active={isActiveLink('/parent')}>
+              <StyledNavBtn
+                active={isActiveLink('/parent')}
+                onClick={() => handleClickNavItem('/parent')}
+              >
                 자란다부모님 메뉴
-              </StyledLink>
+              </StyledNavBtn>
             </NavItem>
             <NavItem>
-              <StyledLink to="/student" active={isActiveLink('/student')}>
+              <StyledNavBtn
+                active={isActiveLink('/student')}
+                onClick={() => handleClickNavItem('/student')}
+              >
                 자란다어린이 메뉴
-              </StyledLink>
+              </StyledNavBtn>
             </NavItem>
             {auth.getAuth() ? (
               <>
@@ -89,6 +110,7 @@ export default function Header() {
           <HamburgerIcon />
         </HamburgerBtn>
       </Container>
+      <Toast message={message} isShow={isShow} />
     </Wrapper>
   )
 }
@@ -185,6 +207,15 @@ const navButtonMixin = css`
   height: 100%;
   font-weight: 400;
   color: ${({ theme }) => theme.color.deepGrey};
+`
+
+const StyledNavBtn = styled.button.attrs(({ active, theme }) => ({
+  color: active ? theme.color.primary : theme.color.deepGrey,
+  weight: active ? '600' : '400',
+}))`
+  ${navButtonMixin};
+  font-weight: ${({ weight }) => weight};
+  color: ${({ color }) => color};
 
   &:hover {
     font-weight: 600;
@@ -199,7 +230,13 @@ const StyledLink = styled(Link).attrs(({ active, theme }) => ({
   ${navButtonMixin};
   font-weight: ${({ weight }) => weight};
   color: ${({ color }) => color};
+
+  &:hover {
+    font-weight: 600;
+    color: ${({ theme }) => theme.color.primary};
+  }
 `
+
 const LogoutBtn = styled.button`
   ${navButtonMixin};
   font-weight: 600;
