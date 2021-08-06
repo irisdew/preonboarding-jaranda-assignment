@@ -1,5 +1,5 @@
 import React from 'react'
-import UserCell from './UserCell/UserCell'
+import UserCell from 'Pages/Admin/UserTable/UserCell/UserCell'
 
 export default function UserRow({
   userInfo: {

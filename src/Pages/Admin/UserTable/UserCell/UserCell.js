@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import useValidateCell from 'Pages/Admin/Hooks/useValidateCell'
 import { EditContext } from 'Pages/Admin/UserTable/UserTable'
 import { FilterInfoContext } from 'Pages/Admin/Admin'
 import { userListStorage } from 'Utils/Storage'
-import useValidateCell from 'Pages/Admin/UserTable/Hooks/useValidateCell'
 
 export default function UserCell({ info, id, index }) {
   const [editInputData, setEditInputData] = useState('')
@@ -131,6 +131,10 @@ const EditInput = styled.input`
   padding: 0 10px;
   width: ${(props) => setElementWidth(props.index)};
   height: 50px;
+
+  @media ${(props) => props.theme.device.tablet} {
+    min-width: 41rem;
+  }
 `
 
 const Td = styled.td`
@@ -161,7 +165,8 @@ const Td = styled.td`
       white-space: nowrap;
     }
 
-    :nth-of-type(1) {
+    :nth-of-type(1):before {
+      content: 'ID';
       padding-left: 0%;
       font-weight: bold;
     }

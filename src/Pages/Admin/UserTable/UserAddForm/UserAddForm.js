@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styled, { keyframes } from 'styled-components'
-import UserAddInput from './UserAddInput/UserAddInput'
+import UserAddInput from 'Pages/Admin/UserTable/UserAddInput/UserAddInput'
 
 export default function UserAddForm({
   setIsOpenedUserAddForm,
@@ -107,8 +107,12 @@ const Form = styled.form`
   border: 1px solid #cbcbcb;
   border-radius: 20px;
   animation: ${(props) =>
-    props.isStartAnimation ? renderAnimation : cancelAnimation} 0.4s;
-}
+      props.isStartAnimation ? renderAnimation : cancelAnimation}
+    0.4s;
+
+  @media ${(props) => props.theme.device.tablet} {
+    width: 41rem;
+  }
 `
 
 const TitleWrapper = styled.div`
