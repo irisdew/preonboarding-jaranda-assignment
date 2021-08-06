@@ -64,7 +64,7 @@ const StudentInfo = () => {
           item.name.indexOf(inputValue) !== -1 ||
           item.age.indexOf(inputValue) !== -1
       )
-      if (dataFilter.length === 0) toast(toastMsg.NO_RESULT_SEARCH.desc)
+      if (dataFilter.length === 0) toast(toastMsg.NO_RESULT_SEARCH)
       setUsersInfo(dataFilter)
       setFilterInfo(
         dataFilter.slice(
@@ -85,7 +85,7 @@ const StudentInfo = () => {
       const dataFilter = userList.filter(
         (item) => item[filtering].indexOf(inputValue) !== -1
       )
-      if (dataFilter.length === 0) toast(toastMsg.NO_RESULT_SEARCH.desc)
+      if (dataFilter.length === 0) toast(toastMsg.NO_RESULT_SEARCH)
       setUsersInfo(dataFilter)
       setFilterInfo(
         dataFilter.slice(
@@ -107,7 +107,7 @@ const StudentInfo = () => {
     setUsersInfo(userList)
     setPagingData({ currentPage: 1, fullPage: Math.ceil(userList.length / 5) })
     setFilterInfo(userList.slice(0, 5))
-    toast(toastMsg.INIT_RESULT_SEARCH.desc)
+    toast(toastMsg.INIT_RESULT_SEARCH)
   }
   const changePageNum = (e) => {
     setPagingData({ ...pagingData, currentPage: Number(e.target.innerText) })
