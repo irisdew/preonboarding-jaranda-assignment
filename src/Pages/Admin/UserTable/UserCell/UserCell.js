@@ -153,6 +153,10 @@ const Td = styled.td`
   text-overflow: ellipsis;
   white-space: nowrap;
 
+  :hover {
+    font-weight: ${(props) => props.index !== 0 && 'bold'};
+  }
+
   @media ${(props) => props.theme.device.tablet} {
     border: none;
     border-bottom: 1px solid #cbcbcb;
