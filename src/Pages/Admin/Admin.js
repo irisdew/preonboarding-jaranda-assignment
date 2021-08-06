@@ -50,6 +50,7 @@ export default function Admin() {
         postcode: value.postcode,
         address_detail: value.detail,
       },
+      access: AUTH_TABLE[value.auth],
     }
 
     if ('detail' in newUserInfo) {
@@ -218,6 +219,13 @@ export default function Admin() {
       </AdminWrapper>
     </AdminLayout>
   )
+}
+
+const AUTH_TABLE = {
+  admin: ['/admin', '/teacher', '/student', '/parent'],
+  parent: ['/parent'],
+  student: ['/student'],
+  teacher: ['/teacher'],
 }
 
 const AdminWrapper = styled.div`
