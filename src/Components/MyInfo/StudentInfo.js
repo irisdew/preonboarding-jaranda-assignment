@@ -19,8 +19,8 @@ const StudentInfo = () => {
   useEffect(() => {
     const studentList = userListStorage
       .load()
-      .filter((user) => user.access.find((access) => access === '/student'))
-      .filter((user) => user.access[0] !== '/admin')
+      .filter((user) => user.auth === 'student')
+      .filter((user) => user.auth !== 'admin')
     setUsersInfo(studentList)
     setPagingData({
       currentPage: 1,
@@ -51,12 +51,11 @@ const StudentInfo = () => {
       )
     }
   }, [pagingData.currentPage, usersInfo])
+
   const filterUserInfo = (selected) => {
-    const userList = userListStorage
-      .load()
-      .filter((user) => user.access.find((access) => access === '/student'))
-      .filter((user) => user.access[0] !== '/admin')
+    const userList = userListStorage.load()
     const inputValue = searchRef.current.value
+
     if (inputValue.length > 0 && selected === '선택') {
       const dataFilter = userList.filter(
         (item) =>
@@ -64,7 +63,11 @@ const StudentInfo = () => {
           item.name.indexOf(inputValue) !== -1 ||
           item.age.indexOf(inputValue) !== -1
       )
-      if (dataFilter.length === 0) toast(toastMsg.NO_RESULT_SEARCH)
+
+      if (dataFilter.length === 0) {
+        toast(toastMsg.NO_RESULT_SEARCH)
+      }
+
       setUsersInfo(dataFilter)
       setFilterInfo(
         dataFilter.slice(
@@ -77,6 +80,7 @@ const StudentInfo = () => {
         fullPage: Math.ceil(dataFilter.length / 5),
       })
     }
+
     if (inputValue.length > 0 && selected !== '선택') {
       let filtering = ''
       if (selected === '이메일') filtering = 'email'
@@ -85,7 +89,11 @@ const StudentInfo = () => {
       const dataFilter = userList.filter(
         (item) => item[filtering].indexOf(inputValue) !== -1
       )
-      if (dataFilter.length === 0) toast(toastMsg.NO_RESULT_SEARCH)
+
+      if (dataFilter.length === 0) {
+        toast(toastMsg.NO_RESULT_SEARCH)
+      }
+
       setUsersInfo(dataFilter)
       setFilterInfo(
         dataFilter.slice(
@@ -99,24 +107,25 @@ const StudentInfo = () => {
       })
     }
   }
+
   const refreshBtn = () => {
-    const userList = userListStorage
-      .load()
-      .filter((user) => user.access.find((access) => access === '/student'))
-      .filter((user) => user.access[0] !== '/admin')
+    const userList = userListStorage.load()
     setUsersInfo(userList)
     setPagingData({ currentPage: 1, fullPage: Math.ceil(userList.length / 5) })
     setFilterInfo(userList.slice(0, 5))
     toast(toastMsg.INIT_RESULT_SEARCH)
   }
+
   const changePageNum = (e) => {
     setPagingData({ ...pagingData, currentPage: Number(e.target.innerText) })
   }
+
   const arrowBtn = (e) => {
     let target = e.target.dataset.check
     if (e.target.localName === 'path') {
       target = e.target.parentNode.parentNode.dataset.check
     }
+
     if (target === 'prev') {
       setPagingData({
         ...pagingData,
