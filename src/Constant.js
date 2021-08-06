@@ -15,7 +15,6 @@ export const authType = Object.freeze({
 })
 
 // TODO error state
-
 export const errorState = Object.freeze({
   NO_ACCOUNT_REGISTERED: {
     name: 'NO_ACCOUNT_REGISTERED',
@@ -24,6 +23,14 @@ export const errorState = Object.freeze({
   PASSWORD_MISMATCH: {
     name: 'PASSWORD_MISMATCH',
     desc: '패스워드가 일치하지 않습니다.',
+  },
+  NO_RESULT_SEARCH: {
+    name: 'NO_RESULT_SEARCH',
+    desc: '일치하는 검색결과가 없습니다.',
+  },
+  INIT_RESULT_SEARCH: {
+    name: 'INIT_RESULT_SEARCH',
+    desc: '검색결과가 초기화 되었습니다.',
   },
 })
 
