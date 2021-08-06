@@ -160,7 +160,7 @@ export default function Admin() {
     setUsersInfo(userList)
     setPagingData({ currentPage: 1, fullPage: Math.ceil(userList.length / 5) })
     setFilterInfo(userList.slice(0, 5))
-    toast(errorState.INIT_RESULT_SEARCH.desc)
+    toast(toastMsg.INIT_RESULT_SEARCH.desc)
   }
 
   const changePageNum = (e) => {

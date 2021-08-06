@@ -6,7 +6,7 @@ import Toast from 'Components/Toast/Toast'
 import Search from 'Pages/Admin/Search/Search'
 import Pagination from 'Pages/Admin/Pagination/Pagination'
 import useToast from 'Utils/Hooks/useToast'
-import { errorState } from 'Constant'
+import { toastMsg } from 'Constant'
 const StudentInfo = () => {
   const [filterInfo, setFilterInfo] = useState([])
   const [pagingData, setPagingData] = useState({
@@ -59,7 +59,7 @@ const StudentInfo = () => {
           item.name.indexOf(inputValue) !== -1 ||
           item.age.indexOf(inputValue) !== -1
       )
-      if (dataFilter.length === 0) toast(errorState.NO_RESULT_SEARCH.desc)
+      if (dataFilter.length === 0) toast(toastMsg.NO_RESULT_SEARCH.desc)
       setUsersInfo(dataFilter)
       setFilterInfo(
         dataFilter.slice(
@@ -80,7 +80,7 @@ const StudentInfo = () => {
       const dataFilter = userList.filter(
         (item) => item[filtering].indexOf(inputValue) !== -1
       )
-      if (dataFilter.length === 0) toast(errorState.NO_RESULT_SEARCH.desc)
+      if (dataFilter.length === 0) toast(toastMsg.NO_RESULT_SEARCH.desc)
       setUsersInfo(dataFilter)
       setFilterInfo(
         dataFilter.slice(
@@ -102,7 +102,7 @@ const StudentInfo = () => {
     setUsersInfo(userList)
     setPagingData({ currentPage: 1, fullPage: Math.ceil(userList.length / 5) })
     setFilterInfo(userList.slice(0, 5))
-    toast(errorState.INIT_RESULT_SEARCH.desc)
+    toast(toastMsg.INIT_RESULT_SEARCH.desc)
   }
   const changePageNum = (e) => {
     setPagingData({ ...pagingData, currentPage: Number(e.target.innerText) })
