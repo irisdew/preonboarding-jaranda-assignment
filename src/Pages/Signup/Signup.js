@@ -15,6 +15,7 @@ import validation from 'Utils/Validation/Validation'
 import { useInput } from 'Utils/Hooks/useInput'
 import { usePopup } from 'Components/CardInputPopup/usePopup'
 import { userListStorage } from 'Utils/Storage'
+import { toastMsg } from 'Constant'
 
 import bgImgUrl from 'Assets/Images/bg-sign_up.png'
 import mBgImgUrl from 'Assets/Images/bg-sign-m.png'
@@ -40,7 +41,6 @@ export default function Signup() {
 
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
   const { isShow, message, toast } = useToast()
-
   const history = useHistory()
 
   const {
@@ -55,35 +55,13 @@ export default function Signup() {
     isOverEight,
   } = validation
 
-  const ALERT_EMAIL_BLANK = '이메일을 입력해주세요'
-  const ALERT_EMAIL_INVALID = '유효한 이메일을 입력해주세요.'
-  const ALERT_EMAIL_DUPLICATE = '이미 가입된 이메일 입니다.'
-
-  const ALERT_PASSWORD_BLANK = '비밀번호를 입력해주세요'
-  const ALERT_PASSWORD_INVALID = '비밀번호 규칙에 맞는 비밀번호를 입력해주세요'
-  const ALERT_PASSWORD = '비밀번호가 일치하지 않습니다.'
-
-  const ALERT_NAME_BLANK = '이름을 입력해주세요.'
-  const ALERT_NAME_INVALID = '유효한 이름을 입력해주세요.'
-
-  const ALERT_AGE_BLANK = '나이를 입력해주세요.'
-  const ALERT_AGE_INVALID = '유효한 나이를 입력해주세요.'
-  const ALERT_ADDRESS_BLANK = '주소를 입력해주세요.'
-  const ALERT_CARD_BLANK = '카드번호를 입력해주세요.'
-  const ALERT_AUTH_BLANK = '회원 유형을 선택해주세요.'
-
-  const ALERT_ISNOT_KOREAN = '한글만 입력하실 수 있습니다.'
-  const ALERT_ISNOT_NUMERIC = '숫자만 입력하실 수 있습니다.'
-
-  const ALERT_SIGNUP_SUCCESSED = '회원가입이 완료되었습니다.'
-
   // 이메일 중복 검사
   const checkEmailDuplication = (currentValue) => {
     const usersInfo = userListStorage.load()
     let isEmailDuplicate = false
     for (const info of usersInfo) {
       if (currentValue === info.email) {
-        toast(ALERT_EMAIL_DUPLICATE)
+        toast(toastMsg.EMAIL_DUPLICATE)
         isEmailDuplicate = true
       }
     }
@@ -93,7 +71,7 @@ export default function Signup() {
   //이메일 유효성 검사, 이메일 중복 검사
   const checkEmail = (e) => {
     checkEmailDuplication(e.target.value)
-    isEmail(e.target.value) || toast(ALERT_EMAIL_INVALID)
+    isEmail(e.target.value) || toast(toastMsg.EMAIL_INVALID)
   }
 
   // 비밀번호 유효성 검사
@@ -115,23 +93,23 @@ export default function Signup() {
       eight: isOverEight(currentInput),
     }
     setPassPolicy(currentPassPolicy)
-    isCheckedPassword(currentInput) || toast(ALERT_PASSWORD_INVALID)
+    isCheckedPassword(currentInput) || toast(toastMsg.PASSWORD_INVALID)
   }
 
   // 비밀번호 === 비밀번호 확인 일치 검사
   const checkPasswordConfirm = () => {
-    pass !== passConfirm && toast(ALERT_PASSWORD)
+    pass !== passConfirm && toast(toastMsg.PASSWORD)
   }
 
   const checkName = (e) => {
     isNotKorean(e.target.value)
-      ? toast(ALERT_ISNOT_KOREAN)
+      ? toast(toastMsg.ISNOT_KOREAN)
       : setName(e.target.value)
   }
 
   const checkAge = (e) => {
     isNotNumeric(e.target.value)
-      ? toast(ALERT_ISNOT_NUMERIC)
+      ? toast(toastMsg.ISNOT_NUMERIC)
       : setAge(e.target.value)
   }
 
@@ -160,12 +138,12 @@ export default function Signup() {
 
     const alerts = [
       '',
-      ALERT_EMAIL_BLANK,
-      ALERT_PASSWORD_BLANK,
-      ALERT_NAME_BLANK,
-      ALERT_AGE_BLANK,
-      ALERT_ADDRESS_BLANK,
-      ALERT_CARD_BLANK,
+      toastMsg.EMAIL_BLANK,
+      toastMsg.PASSWORD_BLANK,
+      toastMsg.NAME_BLANK,
+      toastMsg.AGE_BLANK,
+      toastMsg.ADDRESS_BLANK,
+      toastMsg.CARD_BLANK,
     ]
 
     let index = 0
@@ -181,20 +159,19 @@ export default function Signup() {
 
   const onSubmitHandler = (e) => {
     e.preventDefault()
-    console.log('email 중복', checkEmailDuplication(email))
 
-    !email && toast(ALERT_EMAIL_BLANK)
-    !isEmail(email) && toast(ALERT_EMAIL_INVALID)
-    !pass && toast(ALERT_PASSWORD_BLANK)
+    !email && toast(toastMsg.EMAIL_BLANK)
+    !isEmail(email) && toast(toastMsg.EMAIL_INVALID)
+    !pass && toast(toastMsg.PASSWORD_BLANK)
     checkPasswordPolicy()
-    pass !== passConfirm && toast(ALERT_PASSWORD)
-    !name && toast(ALERT_NAME_BLANK)
-    !isName(name) && toast(ALERT_NAME_INVALID)
-    !age && toast(ALERT_AGE_BLANK)
-    !isAge(age) && toast(ALERT_AGE_INVALID)
-    !post && toast(ALERT_ADDRESS_BLANK)
-    !cardNum && toast(ALERT_CARD_BLANK)
-    !selectedOption && toast(ALERT_AUTH_BLANK)
+    pass !== passConfirm && toast(toastMsg.PASSWORD)
+    !name && toast(toastMsg.NAME_BLANK)
+    !isName(name) && toast(toastMsg.NAME_INVALID)
+    !age && toast(toastMsg.AGE_BLANK)
+    !isAge(age) && toast(toastMsg.AGE_INVALID)
+    !post && toast(toastMsg.ADDRESS_BLANK)
+    !cardNum && toast(toastMsg.CARD_BLANK)
+    !selectedOption && toast(toastMsg.AUTH_BLANK)
 
     const usersInfo = userListStorage.load()
     const currentIndex = usersInfo.length
@@ -218,10 +195,10 @@ export default function Signup() {
     const isValidatedUserInfo = Object.values(newUserInfo).every((item) => item)
     if (isValidatedUserInfo) {
       userListStorage.save([...usersInfo, newUserInfo])
-      isValidatedUserInfo && toast(ALERT_SIGNUP_SUCCESSED)
+      isValidatedUserInfo && toast(toastMsg.SIGNUP_SUCCESSED)
       setTimeout(() => {
         history.push('/login')
-      }, 5000)
+      }, 3000)
     }
   }
 
