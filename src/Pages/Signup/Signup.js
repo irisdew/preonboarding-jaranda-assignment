@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import Layout from 'Layout/Layout'
@@ -39,6 +40,8 @@ export default function Signup() {
 
   const [showPopup, setPopup, openPopup, closePopup] = usePopup()
   const { isShow, message, toast } = useToast()
+
+  const history = useHistory()
 
   const {
     isEmail,
@@ -177,7 +180,7 @@ export default function Signup() {
     console.log('email 중복', checkEmailDuplication(email))
 
     !email && toast(ALERT_EMAIL_BLANK)
-    // !isEmail(email) && toast(ALERT_EMAIL_INVALID)
+    !isEmail(email) && toast(ALERT_EMAIL_INVALID)
     !pass && toast(ALERT_PASSWORD_BLANK)
     checkPasswordPolicy()
     pass !== passConfirm && toast(ALERT_PASSWORD)
@@ -206,13 +209,14 @@ export default function Signup() {
       access: [`/${selectedOption}`],
     }
 
-    const isValidatedUserInfo = Object.values(newUserInfo).every((item) =>
-      Boolean(item)
-    )
-
     checkBlank(newUserInfo)
 
-    isValidatedUserInfo && userListStorage.save([...usersInfo, newUserInfo])
+    const isValidatedUserInfo = Object.values(newUserInfo).every((item) => item)
+    if (isValidatedUserInfo) {
+      userListStorage.save([...usersInfo, newUserInfo])
+      isValidatedUserInfo && toast('회원가입이 완료되었습니다')
+      // setTimeout(history.push('/login'), 10000)
+    }
   }
 
   return (
