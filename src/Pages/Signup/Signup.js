@@ -55,7 +55,6 @@ export default function Signup() {
     isOverEight,
   } = validation
 
-  // 이메일 중복 검사
   const checkEmailDuplication = (currentValue) => {
     const usersInfo = userListStorage.load()
     let isEmailDuplicate = false
@@ -68,13 +67,11 @@ export default function Signup() {
     return isEmailDuplicate
   }
 
-  //이메일 유효성 검사, 이메일 중복 검사
   const checkEmail = (e) => {
     checkEmailDuplication(e.target.value)
     isEmail(e.target.value) || toast(toastMsg.EMAIL_INVALID)
   }
 
-  // 비밀번호 유효성 검사
   const isCheckedPassword = (password) => {
     return (
       isNumeric(password) &&
@@ -96,7 +93,6 @@ export default function Signup() {
     isCheckedPassword(currentInput) || toast(toastMsg.PASSWORD_INVALID)
   }
 
-  // 비밀번호 === 비밀번호 확인 일치 검사
   const checkPasswordConfirm = () => {
     pass !== passConfirm && toast(toastMsg.PASSWORD_MISSMATCH)
   }
@@ -118,13 +114,11 @@ export default function Signup() {
     setPopup(close)
   }
 
-  // checkBox 선택 시 값 변경
   const handleOption = (e) => {
     const currentSelectedOption = e.target.id
     setSelectedOption(currentSelectedOption)
   }
 
-  //빈 칸 있는지 확인 후 toast, focus
   const checkBlank = (newUserInfo) => {
     const userInfoInputs = [
       '',
