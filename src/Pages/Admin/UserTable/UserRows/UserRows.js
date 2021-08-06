@@ -1,6 +1,6 @@
-import { FilterInfoContext } from 'Pages/Admin/Admin'
 import React, { useContext } from 'react'
-import UserRow from './UserRow/UserRow'
+import { FilterInfoContext } from 'Pages/Admin/Admin'
+import UserRow from 'Pages/Admin/UserTable/UserRow/UserRow'
 
 export default function UserRows() {
   const { filterInfo } = useContext(FilterInfoContext)
