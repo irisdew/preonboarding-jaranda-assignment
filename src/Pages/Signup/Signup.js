@@ -98,7 +98,7 @@ export default function Signup() {
 
   // 비밀번호 === 비밀번호 확인 일치 검사
   const checkPasswordConfirm = () => {
-    pass !== passConfirm && toast(toastMsg.PASSWORD)
+    pass !== passConfirm && toast(toastMsg.PASSWORD_MISSMATCH)
   }
 
   const checkName = (e) => {
@@ -164,7 +164,7 @@ export default function Signup() {
     !isEmail(email) && toast(toastMsg.EMAIL_INVALID)
     !pass && toast(toastMsg.PASSWORD_BLANK)
     checkPasswordPolicy()
-    pass !== passConfirm && toast(toastMsg.PASSWORD)
+    pass !== passConfirm && toast(toastMsg.PASSWORD_MISSMATCH)
     !name && toast(toastMsg.NAME_BLANK)
     !isName(name) && toast(toastMsg.NAME_INVALID)
     !age && toast(toastMsg.AGE_BLANK)
