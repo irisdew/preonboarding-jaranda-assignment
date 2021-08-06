@@ -11,11 +11,12 @@ class Auth {
   }
 
   async login(loginData, isAdminRestrict = false) {
+    if (!this.userList) {
+      this.userList = this.userListStorage.load()
+    }
     const database = isAdminRestrict
       ? this.userList.filter((account) => account.auth === authType.ADMIN.name)
       : this.userList
-    console.log('userList', this.userList)
-    console.log('database', database)
     const account = database.find((account) => account.email === loginData.id)
     const isRegisteredAccount = database.some(
       (account) => account.email === loginData.id
@@ -48,8 +49,6 @@ class Auth {
 
   update(account) {
     this.userList[account.id - 1] = account
-    console.log('account', account)
-    console.log('newUserList', this.userList)
     this.userListStorage.save(this.userList)
     this.currentAccountStorage.save(account)
     this.auth = {
@@ -60,10 +59,6 @@ class Auth {
       id: account.id,
       email: account.email,
     }
-  }
-
-  reload() {
-    this.userList = userListStorage.load()
   }
 
   getAuth() {

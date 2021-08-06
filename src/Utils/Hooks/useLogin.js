@@ -62,7 +62,6 @@ export default function useLogin(isAdminRestrict = false) {
       handleAfterLogin(account)
     } catch (err) {
       toast(err.message)
-      console.log(',err', err)
       switch (err.type) {
         case errorState.NO_ACCOUNT_REGISTERED.name:
           id.focus()
@@ -73,8 +72,7 @@ export default function useLogin(isAdminRestrict = false) {
           return
 
         default:
-          auth.reload()
-          toast(toastMsg.FAIL_LOGIN)
+          throw new Error('is not valid error type')
       }
     }
   }, [handleAfterLogin, isAdminRestrict, toast])
