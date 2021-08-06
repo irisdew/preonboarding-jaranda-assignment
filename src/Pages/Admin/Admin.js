@@ -12,7 +12,7 @@ import Search from 'Pages/Admin/Search/Search'
 import UserAddForm from 'Pages/Admin/UserTable/UserAddForm/UserAddForm'
 import Pagination from 'Pages/Admin/Pagination/Pagination'
 import Toast from 'Components/Toast/Toast'
-import { errorState } from 'Constant'
+import { toastMsg } from 'Constant'
 import { userListStorage } from 'Utils/Storage'
 import useToast from 'Utils/Hooks/useToast'
 
@@ -112,7 +112,7 @@ export default function Admin() {
       )
 
       if (dataFilter.length === 0) {
-        toast(errorState.NO_RESULT_SEARCH.desc)
+        toast(toastMsg.NO_RESULT_SEARCH.desc)
       }
 
       setUsersInfo(dataFilter)
@@ -138,7 +138,7 @@ export default function Admin() {
       )
 
       if (dataFilter.length === 0) {
-        toast(errorState.NO_RESULT_SEARCH.desc)
+        toast(toastMsg.NO_RESULT_SEARCH.desc)
       }
 
       setUsersInfo(dataFilter)
