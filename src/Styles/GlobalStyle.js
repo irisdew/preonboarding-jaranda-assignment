@@ -11,11 +11,13 @@ const GlobalStyle = createGlobalStyle`
   }
 
   html {
+    width: 100%;
     height: 100%;
     font-size: 62.5%;
   }
   
   body {
+    width: 100%;
     min-height: 100%;
     font-family: Circular, -apple-system, BlinkMacSystemFont, Roboto, Helvetica Neue, sans-serif;
     font-size: 14px;
