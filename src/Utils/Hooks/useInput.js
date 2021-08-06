@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 //input에 입력된 값을 읽고 설정할 수 있음
 export const useInput = (initialValue) => {
@@ -10,5 +10,6 @@ export const useInput = (initialValue) => {
 
     setValue(value)
   }
-  return [value, setValue, onChange]
+  const inputRef = useRef(null)
+  return [value, setValue, onChange, inputRef]
 }

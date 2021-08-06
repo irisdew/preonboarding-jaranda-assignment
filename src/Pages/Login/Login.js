@@ -1,5 +1,5 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import React from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import Layout from 'Layout/Layout'
@@ -7,89 +7,40 @@ import CustomInput from 'Components/Form/CustomInput'
 import CustomCheckBox from 'Components/Form/CustomCheckBox'
 import Button from 'Components/Form/Button'
 import Toast from 'Components/Toast/Toast'
-import validation from 'Utils/Validation/Validation'
-import useToast from 'Utils/Hooks/useToast'
-import auth from 'Utils/Auth/Auth'
-import { rememberMeStorage } from 'Utils/Storage'
-import { loginState } from 'Constant'
+import useLogin from 'Utils/Hooks/useLogin'
 import bgImgUrl from 'Assets/Images/bg-sign_in.png'
 import mBgImgUrl from 'Assets/Images/bg-sign-m.png'
 
 export default function Login() {
-  const history = useHistory()
-  const [isRememberId, setIsRememberId] = useState(false)
-  const idInputRef = useRef(null)
-  const pwInputRef = useRef(null)
-  const { isShow, message, toast } = useToast()
+  const {
+    isRememberId,
+    handleRememberMe,
+    handleLogin,
+    idInputRef,
+    pwInputRef,
+    toast: { isShow, message },
+  } = useLogin()
 
-  useEffect(() => {
-    const rememberId = rememberMeStorage.load()
-    if (rememberId) {
-      setIsRememberId(true)
-      idInputRef.current.value = rememberId
+  const onKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleLogin()
     }
-  }, [])
-
-  const handleRememberMe = useCallback(
-    ({ target: { checked } }) => {
-      checked ? setIsRememberId(true) : setIsRememberId(false)
-    },
-    [isRememberId]
-  )
-
-  const handleLogin = useCallback(() => {
-    const id = idInputRef.current
-    const pw = pwInputRef.current
-    if (!id.value) {
-      toast('이메일을 입력해주세요.')
-      id.focus()
-    } else if (!pw.value) {
-      toast('비밀번호를 입력해주세요.')
-      pw.focus()
-    } else if (!validation.isEmail(id.value)) {
-      toast('유효하지 않은 이메일입니다.')
-      id.value = ''
-      id.focus()
-    } else {
-      const state = auth.login(id.value, pw.value)
-      switch (state.name) {
-        case loginState.SUCCESS.name:
-          isRememberId
-            ? rememberMeStorage.save(id.value)
-            : rememberMeStorage.remove()
-          history.push('/')
-          return
-
-        case loginState.FAIL.reason.NO_ACCOUNT_REGISTERED.name:
-          toast(state.desc)
-          id.focus()
-          return
-
-        case loginState.FAIL.reason.PASSWORD_MISMATCH.name:
-          toast(state.desc)
-          pw.focus()
-          return
-
-        default:
-          throw new Error('is not valid state')
-      }
-    }
-  }, [isRememberId])
+  }
 
   return (
-    <Layout>
+    <Layout header footer>
       <StyledSection>
         <h2 className="a11y">로그인 페이지</h2>
         <Container>
           <LoginContent>
-            <StyledTitle aria-hidden="true">
-              WELCOME<span className="a11y">welcome</span>
-            </StyledTitle>
+            <StyledTitle aria-hidden="true">WELCOME</StyledTitle>
+            <span className="a11y">welcome</span>
             <StyledInput ref={idInputRef} type="text" placeholder="이메일" />
             <StyledInput
               ref={pwInputRef}
               type="password"
               placeholder="비밀번호"
+              onKeyPress={onKeyPress}
             />
             <StyledCustomCheckBox
               checked={isRememberId}
@@ -100,7 +51,7 @@ export default function Login() {
             </StyledCustomCheckBox>
             <LoginButton clickHandler={handleLogin}>로그인</LoginButton>
             <SignupButton to="/signup">회원가입</SignupButton>
-            <StyledLink to="/">관리자 로그인</StyledLink>
+            <StyledLink to="/admin/login">관리자 로그인</StyledLink>
           </LoginContent>
         </Container>
       </StyledSection>
@@ -111,7 +62,7 @@ export default function Login() {
 
 const StyledSection = styled.section`
   position: relative;
-  padding: 19.2rem 0 12.8rem;
+  padding-top: 10rem;
   z-index: 100;
   &::before {
     content: '';
@@ -125,7 +76,7 @@ const StyledSection = styled.section`
     z-index: -1;
   }
   @media screen and ${({ theme }) => theme.device.tablet} {
-    padding: 3.7rem 0 0;
+    padding-top: 3.7rem;
     &::before {
       height: 13.7rem;
       background: url(${mBgImgUrl}) no-repeat top right;
@@ -139,7 +90,7 @@ const Container = styled.div`
   margin: 0 auto;
   border-top-right-radius: 6rem;
   padding: 4.8rem 0;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.color.white};
   @media screen and ${({ theme }) => theme.device.tablet} {
     background-color: transparent;
   }
@@ -151,6 +102,7 @@ const LoginContent = styled.div`
   align-items: center;
   max-width: 45rem;
   margin: 0 auto;
+  padding: 0 1rem;
 `
 
 const StyledTitle = styled.span`
@@ -180,7 +132,7 @@ const LoginButton = styled(Button)`
     display: block;
     width: 100%;
     height: 0.1rem;
-    background-color: #e5e5e5;
+    background-color: ${({ theme }) => theme.color.lightGreyB};
   }
   @media screen and ${({ theme }) => theme.device.tablet} {
     margin-bottom: 2.4rem;
@@ -197,11 +149,11 @@ const SignupButton = styled(Link)`
   height: 5.2rem;
   margin-bottom: 3.8rem;
   border-radius: 0.6rem;
-  color: #fff;
-  background-color: #0085fd;
+  color: ${({ theme }) => theme.color.white};
+  background-color: ${({ theme }) => theme.color.secondary};
   cursor: pointer;
   &:hover {
-    color: #fff;
+    color: ${({ theme }) => theme.color.white};
   }
   @media screen and ${({ theme }) => theme.device.tablet} {
     height: 4.4rem;

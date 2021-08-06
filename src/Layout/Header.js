@@ -34,14 +34,15 @@ export default function Header() {
   }
 
   const handleLogout = () => {
-    auth.logout(() => history.push('/login'))
+    auth.logout()
+    history.push('/login')
   }
 
   return (
     <Wrapper>
       <Container>
         <StyledLogo to="/">
-          <h1 className="a11y">Jaranda</h1>
+          <h1 className="a11y">RE4CT</h1>
           <LogoImg src={logoImgUrl} alt="logo" />
         </StyledLogo>
         <StyledNav mobileShow={isOpenNav} onClick={handleCloseMobileMenu}>
@@ -64,7 +65,7 @@ export default function Header() {
             {auth.getAuth() ? (
               <>
                 <NavItem>
-                  <StyledLink to="/">마이페이지</StyledLink>
+                  <StyledLink to="/mypage">마이페이지</StyledLink>
                 </NavItem>
                 <NavItem>
                   <LogoutBtn onClick={handleLogout}>로그아웃</LogoutBtn>
@@ -137,7 +138,7 @@ const StyledNav = styled.nav.attrs(({ mobileShow }) => ({
     right: 0;
     width: 25rem;
     height: 100vh;
-    background-color: #fff;
+    background-color: ${({ theme }) => theme.color.white};
     visibility: ${({ visibility }) => visibility};
     transform: ${({ transform }) => transform};
     transition: ${({ transition }) => transition};
@@ -164,7 +165,7 @@ const NavList = styled.ul`
     position: relative;
     flex-direction: column;
     padding: 1.7rem;
-    background-color: #fff;
+    background-color: ${({ theme }) => theme.color.white};
   }
 `
 const NavItem = styled.li`
@@ -181,16 +182,16 @@ const navButtonMixin = css`
   align-items: center;
   height: 100%;
   font-weight: 400;
-  color: #4a4a4a;
+  color: ${({ theme }) => theme.color.deepGrey};
 
   &:hover {
     font-weight: 600;
-    color: #87bf44;
+    color: ${({ theme }) => theme.color.primary};
   }
 `
 
-const StyledLink = styled(Link).attrs(({ active }) => ({
-  color: active ? '#87bf44' : '#4a4a4a',
+const StyledLink = styled(Link).attrs(({ active, theme }) => ({
+  color: active ? theme.color.primary : theme.color.deepGrey,
   weight: active ? '600' : '400',
 }))`
   ${navButtonMixin};
@@ -199,6 +200,8 @@ const StyledLink = styled(Link).attrs(({ active }) => ({
 `
 const LogoutBtn = styled.button`
   ${navButtonMixin};
+  font-weight: 600;
+  color: ${({ theme }) => theme.color.primary};
 `
 
 const HamburgerBtn = styled.button`

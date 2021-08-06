@@ -5,14 +5,26 @@ export default function UserRow({
   userInfo: {
     id,
     email,
+    password,
     name,
     age,
-    address: { address },
+    address: { address, postcode, address_detail },
     card_number,
     auth,
   },
 }) {
-  const userInfo = [id, email, name, age, address, card_number, auth]
+  const userInfo = [
+    id,
+    email,
+    password,
+    name,
+    age,
+    postcode,
+    address,
+    address_detail,
+    card_number,
+    auth,
+  ]
 
   return (
     <tr id={id}>

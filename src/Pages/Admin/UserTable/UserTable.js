@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { UsersInfoContext } from '../Admin'
+import { FilterInfoContext } from '../Admin'
 import UserCategoryRow from './UserCategoryRow/UserCategoryRow'
 import UserRows from './UserRows/UserRows'
 
@@ -9,12 +9,12 @@ export const EditContext = createContext({
   setTargetData: () => {},
 })
 
-export default function UserTable({ filterData, searchCheck }) {
+export default function UserTable() {
   const [targetData, setTargetData] = useState({
     id: '',
     index: '',
   })
-  const { usersInfo, filterInfo } = useContext(UsersInfoContext)
+  const { filterInfo } = useContext(FilterInfoContext)
   const value = useMemo(
     () => ({
       targetData,
@@ -25,8 +25,9 @@ export default function UserTable({ filterData, searchCheck }) {
 
   const handleClickTable = ({ target: { parentNode, id, nodeName } }) => {
     if (nodeName === 'INPUT') return
+    if (!parentNode.id) return
 
-    const clickedRowData = usersInfo.find((data) => {
+    const clickedRowData = filterInfo.find((data) => {
       return data.id === Number(parentNode.id)
     })
 
@@ -47,13 +48,31 @@ export default function UserTable({ filterData, searchCheck }) {
 }
 
 const Table = styled.table`
-  width: 100%;
-  min-width: 1000px;
-  max-width: 1100px;
   background: white;
   z-index: 10;
 
   :hover {
     cursor: pointer;
+  }
+
+  @media ${(props) => props.theme.device.tablet} {
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+      display: block;
+    }
+
+    thead tr {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+
+    tr:nth-child(odd) {
+      background: #e8e3f3;
+    }
   }
 `

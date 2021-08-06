@@ -8,9 +8,12 @@ export default function UserAddForm({
 }) {
   const [newUserInfo, setNewUserInfo] = useState({
     email: '',
+    password: '',
     name: '',
     age: '',
+    postcode: '',
     address: '',
+    detail: '',
     card_number: '',
     auth: '',
   })
@@ -28,6 +31,7 @@ export default function UserAddForm({
       if (itemValue === '') {
         return alert('항목의 값을 입력해주세요')
       }
+
       handleAddUserInfo(newUserInfo)
     }
     setIsStartAnimation(false)
@@ -60,14 +64,17 @@ export default function UserAddForm({
   )
 }
 
-function getUserDataTemplate() {
+const getUserDataTemplate = () => {
   const template = {
     email: 'ex: abcdefg@jaranda.com',
+    password: '00000000',
     name: 'ex: 김학생',
     age: 'ex: 10',
-    address: 'ex: 경기도 부천시 경인로117번길 27',
     card_number: 'ex: 0000-0000-0000-0000',
     auth: 'ex: parent',
+    postcode: 'ex: 00000',
+    address: 'ex: 경기도 부천시 경인로117번길 27',
+    detail: 'ex: 204호',
   }
   return Object.entries(template)
 }

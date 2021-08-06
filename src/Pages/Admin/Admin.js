@@ -12,14 +12,13 @@ import UserAddForm from 'Pages/Admin/UserTable/UserAddForm/UserAddForm'
 import Pagination from 'Pages/Admin/Pagination/Pagination'
 import Toast from 'Components/Toast/Toast'
 import useToast from 'Utils/Hooks/useToast'
-import useDidMountEffect from 'Utils/Hooks/useDidMountEffect'
+import { errorState } from 'Constant'
 import { userListStorage } from 'Utils/Storage'
-import Layout from 'Layout/Layout'
+import AdminLayout from 'Layout/Admin/AdminLayout'
 
-export const UsersInfoContext = createContext({
-  usersInfo: [],
+export const FilterInfoContext = createContext({
   filterInfo: [],
-  setUsersInfo: () => {},
+  setFilterInfo: () => {},
 })
 
 export default function Admin() {
@@ -30,16 +29,15 @@ export default function Admin() {
     currentPage: 1,
     fullPage: 0,
   })
-  const [searchCheck, setSearchCheck] = useState(false)
   const { isShow, message, toast } = useToast()
+  const isFristRun = useRef(true)
   const searchRef = useRef()
   const value = useMemo(
     () => ({
-      usersInfo,
       filterInfo,
-      setUsersInfo,
+      setFilterInfo,
     }),
-    [usersInfo, filterInfo, setUsersInfo]
+    [filterInfo, setFilterInfo]
   )
 
   const handleAddUserInfo = (value) => {
@@ -47,9 +45,22 @@ export default function Admin() {
     const newUserInfo = {
       ...value,
       id: usersInfo.length + 1,
-      address: { address: value.address },
+      address: {
+        address: value.address,
+        postcode: value.postcode,
+        address_detail: value.detail,
+      },
     }
+
+    if ('detail' in newUserInfo) {
+      delete newUserInfo.detail
+    }
+    if ('postcode' in newUserInfo) {
+      delete newUserInfo.postcode
+    }
+
     userListStorage.save([...usersInfo, newUserInfo])
+    setUsersInfo([...usersInfo, newUserInfo])
     setPagingData({
       currentPage: Math.ceil(userListStorage.load().length / 5),
       fullPage: Math.ceil(userListStorage.load().length / 5),
@@ -59,27 +70,17 @@ export default function Admin() {
   useEffect(() => {
     const userList = userListStorage.load()
 
-    // setUsersInfo(userList.slice(0, 5))
     setUsersInfo(userList)
     setPagingData({ currentPage: 1, fullPage: Math.ceil(userList.length / 5) })
     setFilterInfo(userList.slice(0, 5))
   }, [])
 
-  // 페이지 변경
-  useDidMountEffect(() => {
-    // const userList = userListStorage.load()
-    // const temp = userList.slice(
-    //   pagingData.currentPage * 5 - 5,
-    //   pagingData.currentPage * 5
-    // )
+  useEffect(() => {
+    if (isFristRun.current) {
+      isFristRun.current = false
+      return
+    }
 
-    // // setFilterInfo(temp)
-    // setUsersInfo(temp)
-    // // setPagingData({ ...pagingData, fullPage: Math.ceil(userList.length / 5) })
-    // // setSearchCheck(true)
-    // console.log('페이지 변경', pagingData.currentPage)
-
-    // 검색하고 페이지 변경하는 경우
     if (usersInfo.length < userListStorage.load().length) {
       setFilterInfo(
         usersInfo.slice(
@@ -87,9 +88,7 @@ export default function Admin() {
           pagingData.currentPage * 5
         )
       )
-      // setSearchCheck(true)
     }
-    // 검색하지 않고 페이지 변경하는 경우
     if (usersInfo.length === userListStorage.load().length) {
       setFilterInfo(
         usersInfo.slice(
@@ -97,15 +96,13 @@ export default function Admin() {
           pagingData.currentPage * 5
         )
       )
-      // setSearchCheck(true)
     }
-  }, [pagingData.currentPage])
+  }, [pagingData.currentPage, usersInfo])
 
   const filterUserInfo = (selected) => {
     const userList = userListStorage.load()
     const inputValue = searchRef.current.value
 
-    // 메뉴 선택하지 않고 검색하는 경우
     if (inputValue.length > 0 && selected === '선택') {
       const dataFilter = userList.filter(
         (item) =>
@@ -113,13 +110,12 @@ export default function Admin() {
           item.name.indexOf(inputValue) !== -1 ||
           item.age.indexOf(inputValue) !== -1
       )
-      // 검색 결과 없음
-      if (dataFilter.length === 0) toast('일치하는 검색결과가 없습니다')
 
-      console.log('검색결과', dataFilter)
+      if (dataFilter.length === 0) {
+        toast(errorState.NO_RESULT_SEARCH.desc)
+      }
 
       setUsersInfo(dataFilter)
-      // setFilterInfo(filterSlice)
       setFilterInfo(
         dataFilter.slice(
           pagingData.currentPage * 5 - 5,
@@ -130,10 +126,8 @@ export default function Admin() {
         currentPage: 1,
         fullPage: Math.ceil(dataFilter.length / 5),
       })
-      // setSearchCheck(true)
     }
 
-    // 메뉴 선택하고 검색하는 경우
     if (inputValue.length > 0 && selected !== '선택') {
       let filtering = ''
       if (selected === '이메일') filtering = 'email'
@@ -143,10 +137,9 @@ export default function Admin() {
         (item) => item[filtering].indexOf(inputValue) !== -1
       )
 
-      // 검색 결과 없음
-      if (dataFilter.length === 0) toast('일치하는 검색결과가 없습니다')
-
-      console.log('검색결과', dataFilter)
+      if (dataFilter.length === 0) {
+        toast(errorState.NO_RESULT_SEARCH.desc)
+      }
 
       setUsersInfo(dataFilter)
       setFilterInfo(
@@ -167,7 +160,7 @@ export default function Admin() {
     setUsersInfo(userList)
     setPagingData({ currentPage: 1, fullPage: Math.ceil(userList.length / 5) })
     setFilterInfo(userList.slice(0, 5))
-    toast('검색결과가 초기화 되었습니다')
+    toast(errorState.INIT_RESULT_SEARCH.desc)
   }
 
   const changePageNum = (e) => {
@@ -195,20 +188,16 @@ export default function Admin() {
   }
 
   return (
-    <Layout>
+    <AdminLayout header>
       <AdminWrapper>
         <Search
           filterUserInfo={filterUserInfo}
           searchRef={searchRef}
           refreshBtn={refreshBtn}
         />
-        <UsersInfoContext.Provider value={value}>
-          <UserTable
-            setIsOpenedUserAddForm={setIsOpenedUserAddForm}
-            filterData={filterInfo}
-            searchCheck={searchCheck}
-          />
-        </UsersInfoContext.Provider>
+        <FilterInfoContext.Provider value={value}>
+          <UserTable setIsOpenedUserAddForm={setIsOpenedUserAddForm} />
+        </FilterInfoContext.Provider>
         {isOpenedUserAddForm && (
           <UserAddForm
             handleAddUserInfo={handleAddUserInfo}
@@ -227,7 +216,7 @@ export default function Admin() {
         />
         <Toast message={message} isShow={isShow} />
       </AdminWrapper>
-    </Layout>
+    </AdminLayout>
   )
 }
 
@@ -235,10 +224,13 @@ const AdminWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  min-width: 1000px;
-  max-width: 1100px;
+  max-width: 1390px;
+  margin: 50px auto 0 auto;
   padding: 0 50px;
+
+  @media ${(props) => props.theme.device.tablet} {
+    margin: 0 auto;
+  }
 `
 
 const UserAddButtonWrapper = styled.div`
