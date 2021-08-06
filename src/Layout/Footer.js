@@ -10,7 +10,7 @@ export default function Footer({ color }) {
       <Container color={color}>
         <Content>
           <TeamInfoWrap>
-            <Title>Team RE4CT</Title>
+            <TeamName>Team RE4CT</TeamName>
           </TeamInfoWrap>
           <CustomerServiceWrap>
             <Title>고객센터/기업제휴</Title>
@@ -93,6 +93,13 @@ const TeamInfoWrap = styled.div`
     width: 100%;
   }
 `
+const TeamName = styled.strong`
+  font-size: 5rem;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 1.2rem;
+`
+
 const Title = styled.span`
   display: block;
   margin-bottom: 1.2rem;
