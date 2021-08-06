@@ -13,6 +13,7 @@ import Teacher from 'Pages/Teacher/Teacher'
 import Student from 'Pages/Student/Student'
 import Mypage from 'Pages/Mypage/Mypage'
 import NotFound from 'Pages/NotFound/NotFound'
+import ScrollToTop from 'Utils/ScrollToTop'
 import { fetchData } from 'Utils/fetch'
 import { userListStorage } from 'Utils/Storage'
 import { fetchDataType } from 'Constant'
@@ -27,6 +28,7 @@ export default function Routes() {
 
   return (
     <Router>
+      <ScrollToTop />
       <Switch>
         <PublicRoute exact path={['/', '/main']} component={Main} />
         <PublicRoute exact restricted path="/login" component={Login} />

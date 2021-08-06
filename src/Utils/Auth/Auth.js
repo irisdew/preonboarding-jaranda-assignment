@@ -11,6 +11,7 @@ class Auth {
   }
 
   async login(loginData, isAdminRestrict = false) {
+    this.userList = this.userListStorage.load()
     if (!this.userList) {
       this.userList = this.userListStorage.load()
     }
