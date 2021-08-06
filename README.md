@@ -74,6 +74,7 @@ $ npm run start
 
 <https://epic-jepsen-a6fdee.netlify.app/>
 
+### 화면 스크린샷
 
 ![main](https://user-images.githubusercontent.com/76525368/128481763-8237d41d-3626-47e3-a366-12c8123ec9bd.jpg)
 ![login](https://user-images.githubusercontent.com/76525368/128483520-9eb2b914-c4e8-4885-b8c1-0f0e90283c98.jpg)
