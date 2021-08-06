@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import GetDataFromLocalStorage from 'Utils/Storage/GetDataFromLocalStorage'
 import GetLoggedAccountData from 'Utils/Storage/GetLoggedAccountData'
-import { storageKeys, accountInfoType, errorState } from 'Constant'
+import { storageKeys, accountInfoType, toastMsg } from 'Constant'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 
@@ -25,7 +25,7 @@ export function InfoBox({ infoTitle, infoType, setEditMode }) {
         return
 
       default:
-        throw new Error(errorState.MY_INFO_EDIT_ERROR.desc)
+        throw new Error(toastMsg.MY_INFO_EDIT_ERROR)
     }
   }
   return (
