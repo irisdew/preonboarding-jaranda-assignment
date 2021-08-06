@@ -65,7 +65,9 @@ export default function Header() {
             {auth.getAuth() ? (
               <>
                 <NavItem>
-                  <StyledLink to="/mypage">마이페이지</StyledLink>
+                  <StyledLink to="/mypage" active={isActiveLink('/mypage')}>
+                    마이페이지
+                  </StyledLink>
                 </NavItem>
                 <NavItem>
                   <LogoutBtn onClick={handleLogout}>로그아웃</LogoutBtn>
@@ -201,7 +203,7 @@ const StyledLink = styled(Link).attrs(({ active, theme }) => ({
 const LogoutBtn = styled.button`
   ${navButtonMixin};
   font-weight: 600;
-  color: ${({ theme }) => theme.color.primary};
+  color: ${({ theme }) => theme.color.secondary};
 `
 
 const HamburgerBtn = styled.button`
