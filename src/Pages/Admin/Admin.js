@@ -238,6 +238,10 @@ const UserAddButtonWrapper = styled.div`
   justify-content: flex-end;
   align-items: center;
   width: 100%;
+
+  @media ${(props) => props.theme.device.tablet} {
+    width: 41rem;
+  }
 `
 
 const UserAddButton = styled.button`
