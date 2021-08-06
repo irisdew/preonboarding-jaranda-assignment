@@ -5,6 +5,7 @@ import Toast from 'Components/Toast/Toast'
 import useToast from 'Utils/Hooks/useToast'
 import CustomInput from 'Components/Form/CustomInput'
 import { FlexDiv, InputTitle, LongButton } from 'Pages/Signup/Signup'
+import { toastMsg } from 'Constant'
 
 export default function CardPopup(props) {
   const { isShow, message, toast } = useToast()
@@ -34,7 +35,7 @@ export default function CardPopup(props) {
     let currentCardNum = Number(name[name.length - 1])
 
     if (validation.isNotNumeric(value)) {
-      toast('숫자만 입력하세요')
+      toast(toastMsg.ISNOT_NUMERIC)
     }
 
     if (!validation.isNotNumeric(value) && value.length <= 4) {
@@ -64,7 +65,7 @@ export default function CardPopup(props) {
       card3.length !== 4 ||
       card4.length !== 4
     ) {
-      toast('카드 정보를 정확히 입력해주세요!')
+      toast(toastMsg.CARD_BLANK)
       return
     }
     const cardNum = card1 + '-' + card2 + '-' + card3 + '-' + card4
@@ -110,7 +111,7 @@ export default function CardPopup(props) {
           />
         </FlexDiv>
         <LongButton clickHandler={SubmitCardInfo}>입력하기</LongButton>
-        <Toast message={message} isShow={isShow} />
+        <StyledToast message={message} isShow={isShow} />
       </Wrapper>
     </>
   )
@@ -138,4 +139,8 @@ const Wrapper = styled.div`
   font-size: 2rem;
   padding: 2rem;
   z-index: 999;
+`
+
+const StyledToast = styled(Toast)`
+  top: 45%;
 `

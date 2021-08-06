@@ -26,11 +26,14 @@ export default function useLogin(isAdminRestrict = false) {
     checked ? setIsRememberId(true) : setIsRememberId(false)
   }, [])
 
-  const handleAfterLogin = (account) => {
-    const { email, auth } = account
-    isRememberId ? rememberMeStorage.save(email) : rememberMeStorage.remove()
-    auth === authType.ADMIN.name ? history.push('/admin') : history.push('/')
-  }
+  const handleAfterLogin = useCallback(
+    (account) => {
+      const { email, auth } = account
+      isRememberId ? rememberMeStorage.save(email) : rememberMeStorage.remove()
+      auth === authType.ADMIN.name ? history.push('/admin') : history.push('/')
+    },
+    [isRememberId]
+  )
 
   const handleLogin = useCallback(async () => {
     const id = idInputRef.current
@@ -72,7 +75,7 @@ export default function useLogin(isAdminRestrict = false) {
           throw new Error('is not valid error type')
       }
     }
-  }, [isAdminRestrict, toast])
+  }, [handleAfterLogin, isAdminRestrict, toast])
 
   return {
     isRememberId,

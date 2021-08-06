@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import auth from 'Utils/Auth/Auth'
-import Routes from 'Pages/Mypage/Routes'
+import Routes from 'Pages/MyPage/Routes'
 import Layout from 'Layout/Layout'
 
 const MyPage = () => {
