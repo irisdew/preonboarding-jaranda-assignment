@@ -3,27 +3,22 @@ import { createPortal } from 'react-dom'
 import styled from 'styled-components/macro'
 
 export default function Toast({ message, isShow, className }) {
-  const [show, setShow] = useState(null)
+  const [isRender, setIsRender] = useState(false)
 
   useEffect(() => {
-    if (!isShow) {
-      setTimeout(() => {
-        setShow(false)
-      }, [200])
-    } else {
-      setShow(isShow)
-    }
+    isShow && setIsRender(true)
   }, [isShow])
 
   return (
     <>
-      {show &&
+      {isRender &&
         createPortal(
           <Wrapper
+            className={className}
             role="alertdialog"
             aria-live="assertive"
             isShow={isShow ? 1 : 0}
-            className={className}
+            onTransitionEnd={() => setIsRender(false)}
           >
             <Message>{message}</Message>
           </Wrapper>,

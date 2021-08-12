@@ -10,35 +10,51 @@ class Auth {
     this.userList = this.userListStorage.load()
   }
 
-  async login(loginData, isAdminRestrict = false) {
+  updateDatabase = () => {
     this.userList = this.userListStorage.load()
-    if (!this.userList) {
-      this.userList = this.userListStorage.load()
-    }
-    const database = isAdminRestrict
+  }
+
+  getDatabase = (isAdminRestrict) => {
+    return isAdminRestrict
       ? this.userList.filter((account) => account.auth === authType.ADMIN.name)
       : this.userList
-    const account = database.find((account) => account.email === loginData.id)
-    const isRegisteredAccount = database.some(
-      (account) => account.email === loginData.id
-    )
-    const isPasswordMatch =
-      isRegisteredAccount && account.password === loginData.pw
+  }
+
+  getAccount = (database, id) => {
+    return database.find((account) => account.email === id)
+  }
+
+  isEligibleForLogin = (database, { id, pw }) => {
+    const account = this.getAccount(database, id)
+    const isRegisteredAccount = database.some((account) => account.email === id)
+    const isPasswordMatch = isRegisteredAccount && account.password === pw
+
     if (!isRegisteredAccount) {
       throw new CustomError(errorState.NO_ACCOUNT_REGISTERED)
     } else if (!isPasswordMatch) {
       throw new CustomError(errorState.PASSWORD_MISMATCH)
-    } else {
-      const protectedAccountInfo = {
-        loginTime: new Date().getTime(),
-        name: account.name,
-        access: account.access,
-        auth: account.auth,
-        id: account.id,
-        email: account.email,
-      }
+    }
+
+    return isRegisteredAccount && isPasswordMatch
+  }
+
+  static getProtectedAccountInfo(account) {
+    const { password, address, card_number, ...otherKeys } = account
+    return {
+      loginTime: new Date().getTime(),
+      ...otherKeys,
+    }
+  }
+
+  async login(loginData, isAdminRestrict = false) {
+    this.updateDatabase()
+    const database = this.getDatabase(isAdminRestrict)
+    const account = this.getAccount(database, loginData.id)
+    if (this.isEligibleForLogin(database, loginData)) {
+      const protectedAccountInfo = Auth.getProtectedAccountInfo(account)
       this.currentAccountStorage.save(protectedAccountInfo)
       this.auth = protectedAccountInfo
+
       return protectedAccountInfo
     }
   }
