@@ -1,8 +1,8 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import styled from 'styled-components'
 
-import auth from 'Utils/Auth/Auth'
+import Sidebar from 'Pages/Mypage/Sidebar'
 import Routes from 'Pages/Mypage/Routes'
 import Layout from 'Layout/Layout'
 
@@ -19,22 +19,7 @@ const MyPage = () => {
                 </MypageHeader>
               </MypageHeaderWrap>
               <Wrap>
-                <Sidebar>
-                  <ul>
-                    <AsideItem>
-                      <Link to="/mypage/myinfo">내정보</Link>
-                    </AsideItem>
-                    {auth
-                      .getAuth()
-                      .access.find(
-                        (accessiblePath) => accessiblePath === '/teacher'
-                      ) && (
-                      <AsideItem>
-                        <Link to="/mypage/studentInfo">학생정보</Link>
-                      </AsideItem>
-                    )}
-                  </ul>
-                </Sidebar>
+                <Sidebar />
                 <MainContent>
                   <Routes />
                 </MainContent>
@@ -62,16 +47,6 @@ const MypageHeader = styled.div`
   font-size: 2.5rem;
   margin: 0 auto;
   color: #eee;
-  font-weight: bold;
-`
-const Sidebar = styled.aside`
-  width: 200px;
-  padding: 2rem;
-`
-
-const AsideItem = styled.li`
-  padding: 1rem;
-  font-size: 2rem;
   font-weight: bold;
 `
 
