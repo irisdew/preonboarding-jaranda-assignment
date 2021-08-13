@@ -1,86 +1,92 @@
 import React, { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
+
+import { toastMsg } from 'Constant'
 import validation from 'Utils/Validation/Validation'
-import Toast from 'Components/Toast/Toast'
 import useToast from 'Utils/Hooks/useToast'
+import Toast from 'Components/Toast/Toast'
 import CustomInput from 'Components/Form/CustomInput'
 import { FlexDiv, InputTitle, LongButton } from 'Pages/Signup/Signup'
-import { toastMsg } from 'Constant'
 
 export default function CardPopup(props) {
   const { isShow, message, toast } = useToast()
+  const cardInputs = useRef(null)
 
-  const cardInput1 = useRef(null)
-  const cardInput2 = useRef(null)
-  const cardInput3 = useRef(null)
-  const cardInput4 = useRef(null)
-  const cardInputs = [null, cardInput1, cardInput2, cardInput3, cardInput4]
-
-  const [inputs, setInputs] = useState({
+  const [cardNums, setCardNums] = useState({
     card1: '',
     card2: '',
     card3: '',
     card4: '',
   })
-  const { card1, card2, card3, card4 } = inputs
+  const { card1, card2, card3, card4 } = cardNums
 
-  const setFocus = () => {
-    cardInput1.current.focus()
+  const setInitialFocus = () => {
+    cardInputs.current.firstChild.focus()
   }
+  useEffect(setInitialFocus, [])
 
-  useEffect(setFocus, [])
-
-  const onChange = (event) => {
-    const { name, value } = event.target
-    let currentCardNum = Number(name[name.length - 1])
-
-    if (validation.isNotNumeric(value)) {
-      toast(toastMsg.ISNOT_NUMERIC)
-    }
-
-    if (!validation.isNotNumeric(value) && value.length <= 4) {
-      setInputs({
-        ...inputs,
-        [name]: value,
-      })
-    }
-
-    if (value.length === 4) {
-      if (currentCardNum < 4) {
-        cardInputs[currentCardNum + 1].current.focus()
-      }
-    }
+  const moveFocus = (tempInput) => {
+    tempInput.nextElementSibling && tempInput.nextElementSibling.focus()
   }
 
   const resetInput = (event) => {
-    const { name } = event.target
-    setInputs({ ...inputs, [name]: '' })
+    setCardNums({
+      ...cardNums,
+      [event.target.name]: '',
+    })
   }
 
-  const SubmitCardInfo = (event) => {
-    event.preventDefault()
-    if (
-      card1.length !== 4 ||
-      card2.length !== 4 ||
-      card3.length !== 4 ||
-      card4.length !== 4
-    ) {
-      toast(toastMsg.CARD_BLANK)
+  const failedValidation = (value) => {
+    return validation.isNotNumeric(value)
+  }
+
+  const onChange = (event) => {
+    const tempInput = event.target
+    if (failedValidation(tempInput.value)) {
+      toast(toastMsg.ISNOT_NUMERIC)
       return
     }
-    const cardNum = card1 + '-' + card2 + '-' + card3 + '-' + card4
-    props.onSubmit(cardNum, false)
+
+    if (tempInput.value.length === 4) {
+      moveFocus(tempInput)
+    }
+
+    if (tempInput.value.length <= 4) {
+      setCardNums({
+        ...cardNums,
+        [tempInput.name]: tempInput.value,
+      })
+    }
+  } //onChange
+
+  const combineCardNums = () => {
+    let cardNum = ''
+    for (let key in cardNums) {
+      if (cardNums[key].length !== 4) {
+        toast(toastMsg.CARD_BLANK)
+        return
+      }
+      cardNum === ''
+        ? (cardNum += cardNums[key])
+        : (cardNum += '-' + cardNums[key])
+    }
+    return cardNum
+  }
+
+  const submitCardInfo = (event) => {
+    event.preventDefault()
+    const combinedCardNum = combineCardNums()
+    props.onSubmit(combinedCardNum, false)
   }
 
   return (
     <>
       <Wrapper>
         <InputTitle>카드 정보를 입력해주세요</InputTitle>
-        <FlexDiv>
+        <FlexDiv ref={cardInputs}>
           <CardInput
             type="text"
             name="card1"
-            ref={cardInput1}
             value={card1}
             onChange={onChange}
             onClick={resetInput}
@@ -88,7 +94,6 @@ export default function CardPopup(props) {
           <CardInput
             type="text"
             name="card2"
-            ref={cardInput2}
             value={card2}
             onChange={onChange}
             onClick={resetInput}
@@ -96,7 +101,6 @@ export default function CardPopup(props) {
           <CardInput
             type="text"
             name="card3"
-            ref={cardInput3}
             value={card3}
             onChange={onChange}
             onClick={resetInput}
@@ -104,13 +108,12 @@ export default function CardPopup(props) {
           <CardInput
             type="text"
             name="card4"
-            ref={cardInput4}
             value={card4}
             onChange={onChange}
             onClick={resetInput}
           />
         </FlexDiv>
-        <LongButton clickHandler={SubmitCardInfo}>입력하기</LongButton>
+        <LongButton clickHandler={submitCardInfo}>입력하기</LongButton>
         <StyledToast message={message} isShow={isShow} />
       </Wrapper>
     </>
