@@ -15,12 +15,12 @@ const StudentInfo = () => {
   const [usersInfo, setUsersInfo] = useState([])
   const { isShow, message, toast } = useToast()
   const searchRef = useRef()
-  const isFristRun = useRef(true)
   useEffect(() => {
     const studentList = userListStorage
       .load()
       .filter((user) => user.auth === 'student')
       .filter((user) => user.auth !== 'admin')
+      .map((user, index) => (user = { ...user, pageIndex: index }))
     setUsersInfo(studentList)
     setPagingData({
       currentPage: 1,
@@ -28,12 +28,8 @@ const StudentInfo = () => {
     })
     setFilterInfo(studentList.slice(0, 5))
   }, [])
-  useEffect(() => {
-    if (isFristRun.current) {
-      isFristRun.current = false
-      return
-    }
 
+  useEffect(() => {
     if (usersInfo.length < userListStorage.load().length) {
       setFilterInfo(
         usersInfo.slice(
@@ -161,7 +157,7 @@ const StudentInfo = () => {
           {filterInfo.map((student, index) => {
             return (
               <tr key={index}>
-                <Td>{index + 1}</Td>
+                <Td>{student.pageIndex + 1}</Td>
                 <Td>{student.email}</Td>
                 <Td>{student.name}</Td>
                 <Td>{student.age}</Td>
