@@ -120,58 +120,33 @@ export default function Signup() {
     setSelectedOption(currentSelectedOption)
   }
 
-  const checkBlank = (newUserInfo) => {
-    const userInfoInputs = [
-      '',
-      inputEmail,
-      inputPassword,
-      inputName,
-      inputAge,
-      inputPostCode,
-      inputCard,
-    ]
-
-    const alerts = [
-      '',
-      toastMsg.EMAIL_BLANK,
-      toastMsg.PASSWORD_BLANK,
-      toastMsg.NAME_BLANK,
-      toastMsg.AGE_BLANK,
-      toastMsg.ADDRESS_BLANK,
-      toastMsg.CARD_BLANK,
-    ]
-
-    let index = 0
-    for (let key in newUserInfo) {
-      if (index < userInfoInputs.length && newUserInfo[key] === '') {
-        userInfoInputs[index].current.focus()
-        userInfoInputs[index].current.value || toast(alerts[index])
-        return
-      }
-      index++
-    }
+  const toastAndCursor = (msg, ref) => {
+    toast(msg)
+    ref.current.focus()
   }
 
-  const onSubmitHandler = (e) => {
-    e.preventDefault()
+  const checkBlank = () => {
+    email || toastAndCursor(toastMsg.EMAIL_BLANK, inputEmail)
+    pass || toastAndCursor(toastMsg.PASSWORD_BLANK, inputPassword)
+    passConfirm || toastAndCursor(toastMsg.PASSWORD_BLANK, inputPasswordConfirm)
+    name || toastAndCursor(toastMsg.NAME_BLANK, inputName)
+    age || toastAndCursor(toastMsg.AGE_BLANK, inputAge)
+    post || toastAndCursor(toastMsg.ADDRESS_BLANK, inputPostCode)
+    cardNum || toastAndCursor(toastMsg.CARD_BLANK, inputCard)
+    selectedOption || toast(toastMsg.AUTH_BLANK)
+  }
 
-    !email && toast(toastMsg.EMAIL_BLANK)
-    !isEmail(email) && toast(toastMsg.EMAIL_INVALID)
-    !pass && toast(toastMsg.PASSWORD_BLANK)
-    checkPasswordPolicy()
-    pass !== passConfirm && toast(toastMsg.PASSWORD_MISSMATCH)
-    !name && toast(toastMsg.NAME_BLANK)
-    !isName(name) && toast(toastMsg.NAME_INVALID)
-    !age && toast(toastMsg.AGE_BLANK)
-    !isAge(age) && toast(toastMsg.AGE_INVALID)
-    !post && toast(toastMsg.ADDRESS_BLANK)
-    !cardNum && toast(toastMsg.CARD_BLANK)
-    !selectedOption && toast(toastMsg.AUTH_BLANK)
+  const checkValidation = () => {
+    isEmail(email) || toast(toastMsg.EMAIL_INVALID)
+    isCheckedPassword(pass) || toast(toastMsg.PASSWORD_INVALID)
+    pass === passConfirm || toast(toastMsg.PASSWORD_MISSMATCH)
+    isName(name) || toast(toastMsg.NAME_INVALID)
+    isAge(age) || toast(toastMsg.AGE_INVALID)
+  }
 
-    const usersInfo = userListStorage.load()
-    const currentIndex = usersInfo.length
-    const newUserInfo = {
-      id: currentIndex + 1,
+  const createUserInfo = (index) => {
+    return {
+      index,
       email: !checkEmailDuplication(email) && isEmail(email) ? email : '',
       password: isCheckedPassword(pass) ? pass : '',
       name: isName(name) ? name : '',
@@ -184,17 +159,33 @@ export default function Signup() {
       auth: selectedOption,
       access: [`/${selectedOption}`],
     }
+  }
 
-    checkBlank(newUserInfo)
+  const isValidatedUserInfo = (currentUserInfo) => {
+    return Object.values(currentUserInfo).every((item) => item)
+  }
 
-    const isValidatedUserInfo = Object.values(newUserInfo).every((item) => item)
-    if (isValidatedUserInfo) {
-      userListStorage.save([...usersInfo, newUserInfo])
-      isValidatedUserInfo && toast(toastMsg.SIGNUP_SUCCESSED)
+  const saveUserInfo = (newUserInfo) => {
+    const usersInfo = userListStorage.load()
+    userListStorage.save([...usersInfo, newUserInfo])
+    isValidatedUserInfo && toast(toastMsg.SIGNUP_SUCCESSED)
+  }
+
+  const onSubmitHandler = (e) => {
+    e.preventDefault()
+
+    checkValidation()
+    checkBlank()
+
+    const usersInfo = userListStorage.load()
+    const currentIndex = usersInfo.length
+    const newUserInfo = createUserInfo(currentIndex + 1)
+
+    isValidatedUserInfo(newUserInfo) && saveUserInfo(newUserInfo)
+    isValidatedUserInfo(newUserInfo) &&
       setTimeout(() => {
         history.push('/login')
       }, 500)
-    }
   }
 
   return (
